@@ -1,0 +1,90 @@
+baseURL: "https://www.mastori.dev/"
+languageCode: en
+title: "Mastori"
+theme: blowfish
+enableRobotsTXT: true
+
+params:
+  colorScheme: congo
+  defaultAppearance: dark
+  autoSwitchAppearance: true
+  enableSearch: true
+  enableCodeCopy: true
+  author:
+    name: "Akis Maziotis"
+    headline: "Home automation, solar energy & homelab adventures"
+    links:
+      - github: "https://github.com/phoinixgrr"
+      - linkedin: "https://www.linkedin.com/in/akis-maziotis/"
+
+  header:
+    layout: "basic"
+
+  footer:
+    showMenu: true
+    showCopyright: true
+    showThemeAttribution: false
+    showAppearanceSwitcher: true
+    showScrollToTop: true
+    copyright: "Self-hosted & solar powered ☀️"
+
+  homepage:
+    layout: "profile"
+    showRecent: true
+    showRecentItems: 10
+    showMoreLink: true
+    showMoreLinkDest: "/posts/"
+    cardView: true
+    cardViewScreenWidth: false
+    showSummary: true
+
+  article:
+    showDate: true
+    showAuthor: true
+    showHero: true
+    heroStyle: "background"
+    showBreadcrumbs: true
+    showReadingTime: true
+    showTableOfContents: true
+    showTaxonomies: true
+    showWordCount: false
+    showComments: true
+    showSummary: true
+    showRelatedContent: true
+    relatedContentLimit: 3
+    showProgress: true
+
+  taxonomy:
+    showTermCount: true
+
+menu:
+  main:
+    - identifier: posts
+      name: Posts
+      pageRef: /posts/
+      weight: 10
+    - identifier: tags
+      name: Tags
+      pageRef: /tags/
+      weight: 20
+    - identifier: about
+      name: About
+      pageRef: /about/
+      weight: 40
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+markup:
+  highlight:
+    noClasses: false
+  goldmark:
+    renderer:
+      unsafe: true
+
+services:
+  googleAnalytics:
+    id: G-41T6CT260C

@@ -1,0 +1,11 @@
+/* Widen article content on large screens */
+@layer utilities {
+  .max-w-prose {
+    max-width: 56rem !important;
+  }
+}
+
+/* Make mermaid diagrams use full available width */
+.mermaid {
+  width: 100%;
+}

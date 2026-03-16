@@ -1,0 +1,37 @@
+<style>
+.solar-badge {
+  display: none;
+  font-size: 0.88rem;
+  padding: 6px 14px;
+  border-radius: 12px;
+  letter-spacing: 0.01em;
+}
+.solar-on {
+  background: linear-gradient(135deg, rgba(16,185,129,.18), rgba(16,185,129,.08));
+  border: 1px solid rgba(16,185,129,.35);
+  color: #6ee7b7;
+}
+.solar-off {
+  background: linear-gradient(135deg, rgba(217,119,6,.18), rgba(146,64,14,.08));
+  border: 1px solid rgba(217,119,6,.35);
+  color: #fbbf24;
+}
+.solar-offline {
+  background: rgba(100,100,100,.15);
+  border: 1px solid rgba(100,100,100,.25);
+  color: #9ca3af;
+}
+#solar-live-about {
+  display: none;
+  margin-top: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(16,185,129,.12), rgba(16,185,129,.04));
+  border: 1px solid rgba(16,185,129,.25);
+  font-size: 0.95rem;
+}
+</style>
+<div style="text-align:center; margin-top:12px; margin-bottom:4px;">
+  <span id="solar-badge"></span>
+</div>
+<script src="/js/solar-badge-v2.js"></script>
