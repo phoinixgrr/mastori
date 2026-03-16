@@ -5,6 +5,7 @@ theme: blowfish
 enableRobotsTXT: true
 
 params:
+  description: "Home automation, solar energy & homelab adventures — practical guides for Home Assistant, EcoFlow, heat pumps, and self-hosted infrastructure."
   colorScheme: congo
   defaultAppearance: dark
   autoSwitchAppearance: true
