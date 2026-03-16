@@ -31,12 +31,17 @@ At 25°C and 60% humidity, the dew point is about 16.7°C. At 25°C and 50% humi
 
 The formula is the [**Magnus approximation**](https://gasquip.com/dew-point-calculator-for-moisture/):
 
-```
-γ = ln(RH/100) + (a × T) / (b + T)
-Dew Point = (b × γ) / (a - γ)
+{{< katex >}}
 
-where a = 17.62, b = 243.12, T in °C, RH in %
-```
+$$
+\gamma(T, RH) = \ln\!\left(\frac{RH}{100}\right) + \frac{a \cdot T}{b + T}
+$$
+
+$$
+T_{dew} = \frac{b \cdot \gamma}{a - \gamma}
+$$
+
+where \(a = 17.62\), \(b = 243.12\), \(T\) in °C, \(RH\) in %.
 
 ## The Implementation
 
