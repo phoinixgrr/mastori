@@ -1,0 +1,40 @@
+name: Build & Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.157.0'
+          extended: true
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Check for broken internal links
+        run: |
+          grep -r 'href="/' public/ --include='*.html' -oh | \
+            sed 's/href="//;s/"//' | sort -u | while read link; do
+            path="public${link}"
+            if [ "${link}" = "/" ]; then continue; fi
+            if [ ! -f "${path}" ] && [ ! -f "${path}index.html" ] && [ ! -d "${path}" ]; then
+              echo "BROKEN: ${link}"
+              FOUND_BROKEN=1
+            fi
+          done
+          if [ "${FOUND_BROKEN}" = "1" ]; then
+            echo "::warning::Some internal links may be broken"
+          fi
