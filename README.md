@@ -7,20 +7,6 @@
 
 Source for [mastori.dev](https://www.mastori.dev/) — practical Home Assistant projects, real automations, real hardware.
 
-## Posts
-
-| Post | Topic |
-|------|-------|
-| [PV Surplus EV Charging](https://www.mastori.dev/posts/pv-surplus-ev-charging/) | Forecast-aware EV charging with EcoFlow + go-e + Tesla, zero-export |
-| [Smart Boiler Controller](https://www.mastori.dev/posts/boiler-solar-thermal-esphome-vbus-controller/) | ESP32 reading Resol DeltaSol via VBus, safety-first heater control |
-| [Sigma Alarm Reverse Engineering](https://www.mastori.dev/posts/sigma-alarm-reverse-engineering/) | Cracking a proprietary alarm cipher, building an HA integration |
-| [Heat Pump + Fancoils](https://www.mastori.dev/posts/heat-pump-fancoils-modbus-ir/) | LG Therma V via Modbus, Daikin fancoils via Broadlink IR |
-| [Awning Weather Protection](https://www.mastori.dev/posts/smart-awning-weather-protection/) | Forecast-based retract/deploy with tiered thresholds |
-| [IR Dimmer with Power Feedback](https://www.mastori.dev/posts/ir-dimmer-power-feedback/) | Dumb dimmer → smart light using power consumption as brightness sensor |
-| [Dew Point Protection](https://www.mastori.dev/posts/fancoil-dew-point-condensation-protection/) | Preventing fancoil condensation with per-room dew point monitoring |
-| [Air Quality Index](https://www.mastori.dev/posts/air-quality-health-index/) | Composite health score from CO2 + PM2.5 + VOC with actionable tips |
-| [Tapo PTZ Camera](https://www.mastori.dev/posts/tapo-ptz-home-assistant/) | Tapo PTZ camera integration with Home Assistant |
-
 ## Stack
 
 - **[Hugo](https://gohugo.io/)** static site generator with **[Blowfish](https://blowfish.page/)** theme
@@ -32,7 +18,3 @@ Source for [mastori.dev](https://www.mastori.dev/) — practical Home Assistant 
 ## Deploy
 
 Push to `main` → cron pulls and rebuilds every 2 minutes. CI validates the build on every push.
-
-## Author
-
-[Akis Maziotis](https://www.linkedin.com/in/akis-maziotis/) — SRE, home automation enthusiast.
