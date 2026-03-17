@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,10 +19,10 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: '0.157.0'
-          extended: true
+        run: |
+          wget -q https://github.com/gohugoio/hugo/releases/download/v0.157.0/hugo_extended_0.157.0_linux-amd64.tar.gz
+          tar xzf hugo_extended_0.157.0_linux-amd64.tar.gz
+          sudo mv hugo /usr/local/bin/
 
       - name: Build
         run: hugo --minify
