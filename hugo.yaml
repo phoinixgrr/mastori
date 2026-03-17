@@ -12,7 +12,7 @@ params:
   enableSearch: true
   enableCodeCopy: true
   author:
-    name: "mastori.dev"
+    name: "Akis"
     headline: "Home automation, solar energy & homelab adventures"
     links:
       - github: "https://github.com/phoinixgrr"
