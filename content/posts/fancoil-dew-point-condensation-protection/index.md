@@ -34,7 +34,7 @@ The formula is the [**Magnus approximation**](https://gasquip.com/dew-point-calc
 {{< katex >}}
 
 $$
-\gamma(T, RH) = \ln\!\left(\frac{RH}{100}\right) + \frac{a \cdot T}{b + T}
+\gamma(T, RH) = \ln\left(\frac{RH}{100}\right) + \frac{a \cdot T}{b + T}
 $$
 
 $$
