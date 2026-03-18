@@ -46,7 +46,7 @@ As of March 2026, Greece has **no specific legislation** for balcony solar panel
 - None of this has been implemented
 - "Examining" has been the status for over a year
 - The existing self-consumption framework has no category for plug-in systems
-- Greek stores are already selling balcony solar kits from EcoFlow, Anker, and others — the market exists, the law doesn't
+- Greek stores are already selling balcony solar kits — [BestPrice.gr lists EcoFlow panels](https://www.bestprice.gr/cat/8886/fotovoltaika-panel/f/1_43271/ecoflow.html), [SolarFox.gr](https://www.solarfox.gr/index.php?cPath=1) sells dedicated balcony kits, [fotovoltaika.gr](https://www.fotovoltaika.gr/) offers plug-and-play systems, [eshop.com.gr](https://www.eshop.com.gr/%CF%86%CF%89%CF%84%CE%BF%CE%B2%CE%BF%CE%BB%CF%84%CE%B1%CF%8A%CE%BA%CE%AC-%CE%BC%CF%80%CE%B1%CE%BB%CE%BA%CE%BF%CE%BD%CE%B9%CE%BF%CF%8D-%CF%80%CF%81%CE%AF%CE%B6%CE%B1%CF%82/) has a full balcony solar category, and [Electric Power](https://el-power.gr/product/%CF%86%CF%89%CF%84%CE%BF%CE%B2%CE%BF%CE%BB%CF%84%CE%B1%CF%8A%CE%BA%CE%BF-%CE%BA%CE%B9%CF%84-%CE%BC%CF%80%CE%B1%CE%BB%CE%BA%CE%BF%CE%BD%CE%B9%CE%BF%CF%85/) sells 1000W balcony kits. The market exists, the law doesn't
 
 One of the sunniest countries in Europe, and we're behind Belgium.
 
