@@ -15,6 +15,16 @@ Source for [mastori.dev](https://www.mastori.dev/) — practical Home Assistant 
 - Self-hosted on a local VM behind **Cloudflare**
 - Live solar power status badge in the footer, updated every 5 minutes from Home Assistant
 
+## Contribute
+
+mastori.dev is open to contributions. If you've built something interesting with Home Assistant — an automation, a hardware integration, a clever workaround — and you think it would be a good fit, submit a post.
+
+1. Fork the repo
+2. Add your post under `content/posts/`
+3. Open a Pull Request
+
+No strict format required — just real projects, real hardware, real YAML. If it solves a problem someone else might have, it belongs here.
+
 ## Deploy
 
 Push to `main` → cron pulls and rebuilds every 2 minutes. CI validates the build on every push.
