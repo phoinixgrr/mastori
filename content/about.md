@@ -30,6 +30,17 @@ Documenting real-world home automation projects — not tutorials, but actual sy
 
 <div id="solar-live-about"></div>
 
+### Contribute
+
+mastori.dev is open to contributions. If you've built something interesting with Home Assistant — an automation, a hardware integration, a clever workaround — and you think it would be a good fit, submit a post.
+
+**How:**
+1. Fork the [repo](https://github.com/phoinixgrr/mastori)
+2. Add your post under `content/posts/`
+3. Open a Pull Request
+
+No strict format required — just real projects, real hardware, real YAML. If it solves a problem someone else might have, it belongs here.
+
 ### Find me
 
 - [GitHub](https://github.com/phoinixgrr)
