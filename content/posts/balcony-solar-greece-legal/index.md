@@ -3,7 +3,7 @@ title: "Balcony Solar in Greece — The Legal Grey Zone Nobody Talks About"
 date: 2026-03-18
 tags: ["solar", "ecoflow", "zero-export", "greece", "legislation", "balcony-solar"]
 summary: "The EU is pushing balcony solar as a citizen's right. Germany has over a million installations. Greece? No legislation, no framework, no clarity. Here's what's actually going on — and what it means if you already have panels on your balcony."
-draft: true
+draft: false
 ---
 
 ## The Idea is Simple
