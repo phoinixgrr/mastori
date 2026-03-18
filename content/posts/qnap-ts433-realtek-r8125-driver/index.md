@@ -112,11 +112,11 @@ The workaround exists and it works — but it shouldn't be necessary. A firmware
 
 If you're experiencing similar network issues:
 
-1. **Verify your driver version** via SSH:
+1. **Verify your driver version** via SSH (note: `modinfo` is not available on QTS/BusyBox):
    ```bash
-   modinfo /lib/modules/$(uname -r)/r8125.ko | grep version
+   grep -a "version" /lib/modules/$(uname -r)/r8125.ko | strings | grep NAPI
    ```
-   If it shows `9.007.01-NAPI`, you're affected.
+   If it shows `version=9.007.01-NAPI`, you're affected.
 
 2. **Download the newer Realtek r8125 driver** (version 9.014.01-NAPI). You can download a pre-compiled module for the QNAP aarch64 kernel 5.10.60 here: **[r8125-9.014.01-NAPI-aarch64.ko](/downloads/r8125-9.014.01-NAPI-aarch64.ko)**. Alternatively, download the source from the [Realtek website](https://www.realtek.com/Download/List?cate_id=584) and compile it yourself.
 
