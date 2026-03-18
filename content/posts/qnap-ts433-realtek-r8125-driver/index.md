@@ -1,6 +1,6 @@
 ---
 title: "QNAP TS-433 Network Issues — The Realtek r8125 Driver Nobody Updated"
-date: 2026-03-19
+date: 2026-03-18
 tags: ["qnap", "networking", "realtek", "linux", "driver", "nas", "homelab"]
 summary: "The QNAP TS-433's built-in 2.5GbE port becomes unusable after 1-2 days. The cause: an outdated Realtek r8125 driver shipped with QTS. The fix: sideloading a newer driver on every boot. The frustration: QNAP still hasn't updated it officially."
 draft: false
