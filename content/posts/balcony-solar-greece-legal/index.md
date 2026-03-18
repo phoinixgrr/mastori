@@ -10,7 +10,7 @@ draft: true
 
 Take a solar panel or two, mount them on your balcony, plug a micro-inverter into a wall socket, and start producing your own electricity. No electrician, no permits, no roof access needed. In many EU countries, this is not only legal — it's encouraged and subsidized.
 
-The concept is called **balcony solar** (or plug-in solar, Balkonkraftwerk in German). It's designed for renters, apartment dwellers, and anyone who can't install a full rooftop system. The typical setup is 1-2 panels (600-800W) with a micro-inverter that feeds directly into your home circuit.
+The concept is called **balcony solar** (or plug-in solar, [Balkonkraftwerk](https://de.wikipedia.org/wiki/Balkonkraftwerk) in German). It's designed for renters, apartment dwellers, and anyone who can't install a full rooftop system. The typical setup is 1-2 panels (600-800W) with a micro-inverter that feeds directly into your home circuit.
 
 It's one of the fastest-growing segments in European solar. And Greece — one of the sunniest countries in Europe — is somehow still figuring out if it's allowed.
 
@@ -37,9 +37,9 @@ Nothing. Literally nothing.
 As of March 2026, Greece has **no specific legislation** for balcony solar panels. There's no law that explicitly allows them, and no law that explicitly bans them. It's a regulatory void.
 
 **What's been promised:**
-- The Ministry of Environment and Energy is "examining" the introduction of balcony solar as part of a package with net-billing modifications
-- The Association of Photovoltaic Companies (SEF) has presented a proposal to the ministry, which responded "positively in principle"
-- A plan exists to create a registry at DEDDIE (the grid operator) — registration only, no licensing
+- The Ministry of Environment and Energy is ["examining" the introduction of balcony solar](https://energypress.gr/news/erhontai-kai-stin-ellada-ta-fotoboltaika-mpalkonioy-exetazetai-nomothetiki-rythmisi-paketo-me) as part of a package with net-billing modifications
+- The [Association of Photovoltaic Companies (SEF)](https://energypress.gr/news/fotoboltaika-mpalkonioy-aplos-balto-stin-priza) has presented a proposal to the ministry, which responded "positively in principle"
+- A plan exists to create a registry at [DEDDIE](https://deddie.gr/) (the grid operator) — registration only, no licensing
 - A 3-month adjustment period was planned for DEDDIE to build the platform
 
 **What's actually happened:**
@@ -54,7 +54,7 @@ One of the sunniest countries in Europe, and we're behind Belgium.
 
 I have an [EcoFlow Stream Ultra](https://eu.ecoflow.com/products/stream-ultra-pro) with 4 bifacial panels on my balcony, running in **zero-export mode**. The system never intentionally feeds electricity back to the grid — everything goes to batteries first, then to the house.
 
-But "zero-export" isn't mathematically perfect. The inverter reacts to load changes in milliseconds, but there are brief transients where a tiny amount of power escapes to the grid. The DEDDIE smart meter records everything.
+But "zero-export" isn't mathematically perfect. Here's why: the EcoFlow constantly monitors house consumption via a [Shelly Pro 3EM](https://www.shelly.com/products/shelly-pro-3-em) energy meter and adjusts its output to match. But when a high-draw appliance suddenly stops — say a kettle that was pulling 1000W finishes boiling — there's a brief gap. The kettle stops drawing instantly, but EcoFlow is still injecting those 1000W into the house. It takes a moment for the Shelly to read the new (lower) consumption, report it back to EcoFlow, and for EcoFlow to throttle down its output. During that brief window, some power leaks to the grid. The DEDDIE smart meter records everything.
 
 Here's what the meter's **export register (2.8.0)** has recorded since installation:
 
@@ -82,7 +82,7 @@ The meter is a Sanxing SX5A2-SELS-04 — a modern smart meter that records:
 - **1.8.1 / 1.8.2** — Import by tariff
 - **2.8.0** — Total export (what goes back to the grid)
 
-DEDDIE can read register 2.8.0 remotely. They can see those 4.86 kWh. Whether they care about 1 kWh/month of export from what's clearly a small domestic system — that's another question entirely.
+The meter records these exports in register 2.8.0 whether anyone looks or not. If DEDDIE reads the meter remotely (which smart meters support), they could see those 4.86 kWh. Whether anyone actually checks or cares about 1 kWh/month of export from what's clearly a small domestic system — that's another question entirely.
 
 ## The Practical Reality
 
@@ -91,6 +91,7 @@ From a technical standpoint:
 - **No impact on the grid** — the system is electrically invisible for all practical purposes
 - **No net-metering agreement needed** — I'm not selling or feeding back anything meaningful
 - **I'm consuming my own production** — batteries absorb the surplus, the house uses it
+- **Safe during power outages** — all grid-tied inverters (including EcoFlow) are required to have **anti-islanding protection**. When the grid goes down, the inverter stops injecting immediately. It rides the grid's carrier signal — no grid signal, no injection. This is a hard safety requirement across the EU: electricians and utility workers repairing a power outage will never be exposed to energy being fed back from a balcony solar system. The inverter physically cannot operate without detecting a live grid.
 
 The "risk" is not a fine or disconnection — nobody is policing balcony solar in Greece. The risk is that there's no legal clarity, which means:
 - You can't get insurance coverage that explicitly mentions your solar system
