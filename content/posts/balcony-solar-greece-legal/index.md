@@ -31,6 +31,16 @@ Multiple EU member states have already implemented clear frameworks:
 
 The trend is clear: the EU wants citizens to generate their own electricity with minimal bureaucracy. Germany alone added 435,000 balcony PV systems in 2024.
 
+Here's the EcoFlow app's grid-tied output configuration — it lists every country where balcony solar is officially regulated, with the regulatory power limit. Notice anything missing?
+
+{{< gallery >}}
+  <img src="ecoflow-countries-1.png" class="grid-w33" />
+  <img src="ecoflow-countries-2.png" class="grid-w33" />
+  <img src="ecoflow-countries-3.png" class="grid-w33" />
+{{< /gallery >}}
+
+Germany, France, Austria, Italy, Netherlands, Switzerland, Belgium, UK, Poland, Spain, Ukraine, Czech Republic, Slovenia, Latvia, Bulgaria, Portugal, Norway — and no Greece.
+
 ## What Greece Says
 
 Nothing. Literally nothing.
