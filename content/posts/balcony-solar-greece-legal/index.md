@@ -141,7 +141,7 @@ What Greece needs is what every other EU country has already done:
 3. **Allow zero-export systems without any registration** — they don't affect the grid
 4. **Optionally allow feed-in** with a simple form for systems below the threshold
 
-Germany did this. Austria did this. The Netherlands did this. Belgium did this last year. Even Bulgaria has fully legislated and approved it. It's not complicated legislation. It's a threshold and a registration form.
+Germany did this. Austria did this. The Netherlands did this. Belgium did this last year. Bulgaria has fully legislated and approved it. It's not complicated legislation. It's a threshold and a registration form.
 
 ## The Bottom Line
 
