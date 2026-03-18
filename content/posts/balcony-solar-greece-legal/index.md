@@ -27,6 +27,7 @@ Multiple EU member states have already implemented clear frameworks:
 | **Netherlands** | Legal | Up to 600W, plug-and-play allowed |
 | **Belgium** | Legal (2025) | Synergrid safety certification required |
 | **Italy** | Legal | Various regional incentives |
+| **Bulgaria** | Fully legal | Legislated and approved |
 
 The trend is clear: the EU wants citizens to generate their own electricity with minimal bureaucracy. Germany alone added 435,000 balcony PV systems in 2024.
 
@@ -52,6 +53,8 @@ One of the sunniest countries in Europe, and we're behind Belgium.
 
 ## My Setup — And What the Meter Actually Records
 
+![4 bifacial solar panels on an Athens balcony — this is what balcony solar looks like in practice](balcony-panels.png)
+
 I have an [EcoFlow Stream Ultra](https://eu.ecoflow.com/products/stream-ultra-pro) with 4 bifacial panels on my balcony, running in **zero-export mode**. The system never intentionally feeds electricity back to the grid — everything goes to batteries first, then to the house.
 
 But "zero-export" isn't mathematically perfect. Here's why: the EcoFlow constantly monitors house consumption via a [Shelly Pro 3EM](https://www.shelly.com/products/shelly-pro-3-em) energy meter and adjusts its output to match. But when a high-draw appliance suddenly stops — say a kettle that was pulling 1000W finishes boiling — there's a brief gap. The kettle stops drawing instantly, but EcoFlow is still injecting those 1000W into the house. It takes a moment for the Shelly to read the new (lower) consumption, report it back to EcoFlow, and for EcoFlow to throttle down its output. During that brief window, some power leaks to the grid. The DEDDIE smart meter records everything.
@@ -73,6 +76,37 @@ Here's what the meter's **export register (2.8.0)** has recorded since installat
 | 11/01/2026 | 4.10 |
 | 08/02/2026 | 4.86 |
 
+{{< chart >}}
+type: 'line',
+data: {
+  labels: ['24/09', '25/09', '30/09', '01/10', '02/10', '07/10', '11/10', '20/10', '07/11', '04/12', '11/01', '08/02'],
+  datasets: [{
+    label: 'Total Export (kWh)',
+    data: [0, 0.07, 0.60, 0.72, 0.73, 0.92, 1.33, 1.75, 2.54, 3.34, 4.10, 4.86],
+    borderColor: 'rgba(239,68,68,0.8)',
+    backgroundColor: 'rgba(239,68,68,0.1)',
+    fill: true,
+    tension: 0.3
+  }]
+},
+options: {
+  plugins: {
+    title: {
+      display: true,
+      text: 'Grid Export Leakage Over Time (register 2.8.0)'
+    }
+  },
+  scales: {
+    y: {
+      title: {
+        display: true,
+        text: 'kWh'
+      }
+    }
+  }
+}
+{{< /chart >}}
+
 **4.86 kWh exported in ~5 months** — that's about 1 kWh per month of leakage. For context, that's roughly the energy to run a light bulb for 10 hours. It's practically nothing, but the meter catches every fraction of it.
 
 ![The DEDDIE smart meter — register 2.8.0 records total export active energy, even fractions of a kWh from zero-export transients](deddie-meter.png)
@@ -90,7 +124,7 @@ From a technical standpoint:
 - **DEDDIE sees almost nothing** — 1 kWh/month of export is noise-level
 - **No impact on the grid** — the system is electrically invisible for all practical purposes
 - **No net-metering agreement needed** — I'm not selling or feeding back anything meaningful
-- **I'm consuming my own production** — batteries absorb the surplus, the house uses it
+- **I'm consuming my own production** — batteries absorb the surplus, the house uses it, and when there's enough sun the [EV charges from the excess](/posts/pv-surplus-ev-charging/)
 - **Safe during power outages** — all grid-tied inverters (including EcoFlow) are required to have **anti-islanding protection**. When the grid goes down, the inverter stops injecting immediately. It rides the grid's carrier signal — no grid signal, no injection. This is a hard safety requirement across the EU: electricians and utility workers repairing a power outage will never be exposed to energy being fed back from a balcony solar system. The inverter physically cannot operate without detecting a live grid.
 
 The "risk" is not a fine or disconnection — nobody is policing balcony solar in Greece. The risk is that there's no legal clarity, which means:
@@ -107,7 +141,7 @@ What Greece needs is what every other EU country has already done:
 3. **Allow zero-export systems without any registration** — they don't affect the grid
 4. **Optionally allow feed-in** with a simple form for systems below the threshold
 
-Germany did this. Austria did this. The Netherlands did this. Belgium did this last year. It's not complicated legislation. It's a threshold and a registration form.
+Germany did this. Austria did this. The Netherlands did this. Belgium did this last year. Even Bulgaria has fully legislated and approved it. It's not complicated legislation. It's a threshold and a registration form.
 
 ## The Bottom Line
 
