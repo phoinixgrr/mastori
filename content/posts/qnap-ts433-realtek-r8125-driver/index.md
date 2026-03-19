@@ -20,7 +20,7 @@ The only way to recover is to reboot — which buys you another day or two befor
 
 ## The Cause
 
-The issue is the **Realtek r8125 kernel module** shipped with QTS. QNAP bundles version **9.007.01-NAPI** across their firmware releases, including the latest QTS 5.2.9.3410. This driver version has known stability issues with sustained workloads on the RTL8125 chipset.
+The issue is the **Realtek r8125 kernel module** shipped with QTS. QNAP bundles version **9.007.01-NAPI** across their firmware releases, including the latest [QTS 5.2.9.3410](https://www.qnap.com/en/release-notes/qts/5.2.9.3410/20260214). This driver version has known stability issues with sustained workloads on the RTL8125 chipset.
 
 Realtek has released newer driver versions that fix these issues. Version **9.014.01-NAPI** has been available for months and runs stable on the exact same hardware.
 
@@ -87,7 +87,7 @@ I opened a support ticket in March 2026 (ticket Q-202603-14685). Here's the time
 
 1. **Day 1** — I filed a detailed report with diagnostic logs, driver versions, uname output, and the workaround script
 2. **Day 2** — Support asked me to upgrade to the latest QTS firmware (fair enough)
-3. **Day 3** — I upgraded to QTS 5.2.9.3410. The driver was **still 9.007.01-NAPI**. No change. I reported this back with proof
+3. **Day 3** — I upgraded to [QTS 5.2.9.3410](https://www.qnap.com/en/release-notes/qts/5.2.9.3410/20260214). The driver was **still 9.007.01-NAPI**. No change. I reported this back with proof
 4. **Day 4** — Support escalated to the Dev Team
 5. **Day 5** — I provided links to public forum threads showing multiple users with the same issue
 6. **Day 6** — Dev Team acknowledged and asked for my usage scenario (protocols, clients, network hardware)
