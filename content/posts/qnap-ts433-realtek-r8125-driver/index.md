@@ -118,7 +118,7 @@ If you're experiencing similar network issues:
    ```
    If it shows `version=9.007.01-NAPI`, you're affected.
 
-2. **Download the newer Realtek r8125 driver** (version 9.014.01-NAPI). You can download a pre-compiled module for the QNAP aarch64 kernel 5.10.60 here: **[r8125-9.014.01-NAPI-aarch64.ko](/downloads/r8125-9.014.01-NAPI-aarch64.ko)**. Alternatively, download the source from the [Realtek website](https://www.realtek.com/Download/List?cate_id=584) and compile it yourself.
+2. **Download the newer Realtek r8125 driver** (version 9.014.01-NAPI). I host a pre-compiled module for the QNAP aarch64 kernel 5.10.60 here on mastori.dev: **[r8125-9.014.01-NAPI-aarch64.ko](/downloads/r8125-9.014.01-NAPI-aarch64.ko)** — feel free to grab it, that is if you trust a stranger's kernel module 😄. Otherwise, download the source from the [Realtek website](https://www.realtek.com/Download/List?cate_id=584) and compile it yourself.
 
 3. **Place the driver on persistent storage.** The `/lib/modules/` directory is reset on every QTS update, so the driver must live on a share that survives reboots and firmware upgrades. Copy it via SSH:
    ```bash
