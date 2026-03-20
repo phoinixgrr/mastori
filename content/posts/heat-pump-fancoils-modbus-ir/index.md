@@ -17,9 +17,9 @@ I wanted one system that coordinates everything. No more walking around the hous
 
 ### Layer 1: LG Therma V via Modbus TCP
 
-The Therma V has a Modbus RTU interface on its PCB, but it doesn't speak TCP natively. To bridge it to the network, I use an [Elfin EW11A Modbus RTU to TCP converter](https://www.amazon.de/dp/B09XV6Z96K) — a small box that connects to the heat pump's Modbus port via a UTP cable running from the electrical panel to the outdoor unit, and exposes it as Modbus TCP on port 8899 over WiFi. From there, Home Assistant's built-in [Modbus integration](https://www.home-assistant.io/integrations/modbus/) connects directly — no cloud, no proprietary gateway, pure local control.
+The Therma V has a Modbus port on its PCB, but it doesn't speak TCP natively. To bridge it to the network, I use an [Elfin EW11A converter](https://www.amazon.de/dp/B09XV6Z96K) — a small box that connects to the heat pump's Modbus port via a UTP cable running from the electrical panel to the outdoor unit, and exposes it as Modbus TCP on port 8899 over WiFi. From there, Home Assistant's built-in [Modbus integration](https://www.home-assistant.io/integrations/modbus/) connects directly — no cloud, no proprietary gateway, pure local control.
 
-![The Elfin EW11A Modbus RTU to TCP converter connected to the LG Therma V heat pump](modbus-converter.jpg)
+![The Elfin EW11A converter connected to the LG Therma V heat pump](modbus-converter.jpg)
 
 ![UTP cable connection from the converter to the heat pump's Modbus port on the PCB](modbus-heatpump-connection.jpg)
 
