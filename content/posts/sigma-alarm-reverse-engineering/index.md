@@ -96,7 +96,9 @@ These endpoints exist, they work, they execute the command immediately when hit 
 
 Zone data comes from `/zones.html` — a plain HTML table with zone names, open/closed status, bypass state, battery voltage, and AC power. All in Greek.
 
-The alarm status is a string like `AΦOΠΛIΣMENO` (Disarmed) or `ΠEPIMETPIKH OΠΛIΣH` (Perimeter Armed) — note the mixed Greek and Latin characters, which made regex matching fun. The parser handles both character sets:
+The alarm status is a string like `AΦOΠΛIΣMENO` (Disarmed) or `ΠEPIMETPIKH OΠΛIΣH` (Perimeter Armed) — and here's where it gets fun. These strings mix Greek and Latin characters that look identical but are completely different bytes. In `AΦOΠΛIΣMENO`, the `A`, `O`, `I`, `M` are Latin characters, while `Φ`, `Π`, `Λ`, `Σ` are Greek Unicode. The `P` in `ΠEPIMETPIKH` is Latin (U+0050), not Greek Rho (U+03A1) — they look the same on screen but your regex won't match if you guess wrong.
+
+This is common in older Greek hardware firmware — the developers used whichever character was visually close enough, regardless of the actual codepoint. Made regex matching *very* fun. The parser handles both character sets:
 
 ```python
 # Alarm status
