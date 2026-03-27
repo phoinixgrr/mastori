@@ -98,11 +98,11 @@ In summer, this automation will almost never run. In winter or during extended c
 
 Every Sunday at 20:00, Telegram tells you what happened:
 
-- **Sunny week:** "Δεν χρειάζεται απολύμανση. Ο θερμοσίφωνας έφτασε 72.5°C. Ο ήλιος τα κατάφερε."
-- **Cloudy week:** "Ξεκινάω θερμική απολύμανση. Θερμοκρασία τώρα: 43°C, στόχος 65°C."
-- **Complete:** "Απολύμανση ολοκληρώθηκε. Θερμοκρασία: 65.2°C."
-- **Timeout:** "Δεν έφτασε τους 65°C σε 1:30. Τελική: 58°C."
-- **Safety:** "Θερμοκρασία 76°C — safety cutoff."
+- **Sunny week:** "No disinfection needed. Boiler reached 72.5°C this week. Solar handled it."
+- **Cloudy week:** "Starting thermal disinfection. Current: 43°C, target: 65°C."
+- **Complete:** "Disinfection complete. Final: 65.2°C."
+- **Timeout:** "Timeout. Did not reach 65°C. Final: 58°C."
+- **Safety:** "Safety cutoff at 76°C."
 
 ## The Takeaway
 
