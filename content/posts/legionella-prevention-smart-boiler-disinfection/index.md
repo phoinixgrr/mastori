@@ -3,7 +3,7 @@ title: "Automated Legionella Prevention — Smart Boiler Disinfection with Home 
 date: 2026-03-27
 tags: ["home-assistant", "boiler", "legionella", "safety", "automation", "esphome", "solar-thermal"]
 summary: "Legionella thrives in warm water between 20-45°C — exactly where most boilers sit. Instead of running expensive weekly thermal shocks blindly, this automation checks if solar thermal already heated the water above 65°C. If yes, skip. If no, heat it. Smart, safe, and free when the sun cooperates."
-draft: true
+draft: false
 ---
 
 ## The Problem
