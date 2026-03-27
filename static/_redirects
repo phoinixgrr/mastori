@@ -1,8 +1,0 @@
-# Redirect old blog URLs from previous site to homepage
-/blog/nextjs-four-caching-layers.html /posts/ 301
-/blog/nextjs-four-caching-layers.txt /posts/ 301
-/blog/nestjs-sendgrid-email-service.html /posts/ 301
-/blog/elysia-uniform-response.html /posts/ 301
-/blog/es2022.html /posts/ 301
-/blog /posts/ 301
-/blog/ /posts/ 301
