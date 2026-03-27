@@ -86,6 +86,10 @@ The Legionella check runs **Sunday at 20:00** — during the evening heating win
 
 ## Real-World Data
 
+Here's a 30-day view of the boiler temperature from Home Assistant's history:
+
+![Boiler temperature over 30 days — regular peaks above 65°C from solar thermal, with dips into the 20-40°C range between heating cycles](boiler-temp-30days.png "30-day boiler temperature history from ESP32 sensor")
+
 Here's what the statistics sensor shows for my boiler right now:
 
 - **7-day max: 72.5°C** — solar thermal heated the boiler well above the disinfection threshold
