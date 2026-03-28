@@ -78,7 +78,7 @@ can_start:
   and phase_c_live_ok           # Phase C metrics confirm real surplus
 ```
 
-The last two are the interesting ones.
+The last two are the interesting ones. Note that `forecast_window_ok` also considers **actual PV production** — if the panels are producing >= 900W right now, the forecast gate passes regardless of what Forecast.Solar predicts. This was added after discovering that the forecast can significantly underestimate production on partly cloudy days (e.g., forecast showing 500W while panels produce 2kW).
 
 ### Forecast-Aware Dynamic Thresholds
 
@@ -115,7 +115,12 @@ phase_c_live_ok:
   (forecast_next_hour >= 1100W and pv >= 700W
    and phase_c_grid <= 80W and battery_discharge <= 50W
    and battery_target_ok)
+  or
+  # Path 4: Battery full, EcoFlow throttling PV — forecast confirms sun
+  (battery_soc >= 95% and forecast_now >= 900W and battery_discharge <= 200W)
 ```
+
+Path 4 was added in v7 to handle a subtle EcoFlow behavior: when batteries hit 100%, the inverter throttles MPPT and reports 0W PV production — even though the panels are producing. Without this path, the controller would never start on a sunny afternoon with full batteries, which is exactly when you have the most surplus to give the car. The forecast acts as a sanity check that the sun is actually shining.
 
 The `battery_target_ok` check is a policy gate: **will the batteries still reach ~95% by end of day if I divert surplus to the car now?** It compares the energy needed to fill the batteries against the remaining forecast with a buffer:
 
@@ -137,8 +142,9 @@ must_stop:
   or heat_pump_on or heavy_device_on
   or grid_import_high_for_10min
 
-  # Contextual stops (only in bad conditions)
-  or (phase_c_grid_high_5min AND (battery_draining or low_pv or weak_forecast))
+  # Contextual stops (only in bad conditions + battery NOT charging)
+  or (phase_c_grid_high_5min AND (battery_draining or low_pv or weak_forecast)
+      AND battery_charging < 100W)
   or (battery_draining_5min AND phase_c_grid > 120W)
   or (battery_target_failing AND weak_forecast AND battery_not_charging)
 
@@ -146,7 +152,7 @@ must_stop:
   or (pv_low_10min AND weak_next_hour_forecast)
 ```
 
-Phase C grid draw being high for 5 minutes isn't automatically a stop — only if it's **combined** with battery drain, low PV, or a weak forecast. This prevents unnecessary stops during transient spikes.
+Phase C grid draw being high for 5 minutes isn't automatically a stop — only if it's **combined** with battery drain, low PV, or a weak forecast. The v7 addition `AND battery_charging < 100W` prevents a false stop that occurred in practice: during single-phase EV charging on phase C, the grid draw on that phase can be high simply because the charger load (~1.4kW) exceeds what EcoFlow can deliver on that single phase. But if the battery is still charging (e.g., 260W), that proves there's real surplus overall — the grid draw is just a per-phase distribution artifact. Without this guard, the controller would stop charging on a sunny afternoon when the system is clearly in surplus.
 
 #### Hard Stops: Heat Pump and Heavy Loads
 
@@ -191,7 +197,7 @@ Current           → 6     # Minimum stable current
 
 # On PV surplus stop:
 Charge Mode       → "1"   # Don't charge
-Phase Switch Mode → "2"   # Force 3-phase (restore normal charging)
+Phase Switch Mode → "2"   # Force 3-phase (restore for normal charging)
 ```
 
 This was probably the most important physical change in the entire project. No amount of software logic can fix a phase mismatch.
@@ -203,18 +209,96 @@ Every tick, even while charging, the automation enforces:
 - **Phase mode stays single-phase** — in case of drift
 - **Tesla charge limit bumped to 90%** — if the car's SOC is near its current limit and there's surplus to absorb
 
+## The go-e `frc` Stale State Problem
+
+This one cost me days of debugging. The go-e charger's `frc` (force charge) state — the most critical control entity in this entire system — can be **stale in Home Assistant**.
+
+The [ha-goecharger-api2](https://github.com/marq24/ha-goecharger-api2) integration classifies `frc` as a CONFIG-category API key. In polling mode (LAN, no WebSocket), config values are only refreshed every **24 hours**. Status values like `car` state and power readings are polled every cycle, but `frc` is not.
+
+What this means in practice: you send `frc=1` (Don't charge) via Home Assistant. The charger receives it and stops. Hours later, the charger's internal logic resets `frc` back to `0` (Neutral). HA doesn't know — it still shows `frc=1`. Then the car gets plugged in. The charger, at `frc=0` with logic mode "Default", starts charging immediately at full power. Your automation checks: "is `frc` already 1? Yes. Nothing to do." Meanwhile the car is happily drawing 12kW from the grid.
+
+The `modelStatus` entity tells the real story. When this happens, it shows `15 — Charging because of fallback (default)` — the charger is ignoring `frc=1` because it was never actually `1`.
+
+**The fix:** never trust the cached `frc` state. Always re-send the command. The EV Plug-in Safety automation (below) sends `frc=1` twice with a 3-second gap on every plug-in event, regardless of what HA thinks the current state is.
+
+Key entities for debugging:
+- `sensor.goe_XXXXXX_car_value` — text car state (Idle/Charging/Wait for car/Complete) — STATUS category, polled every cycle
+- `sensor.goe_XXXXXX_modelstatus_value` — exact reason for charging/not charging (41 possible states)
+- `select.goe_XXXXXX_frc` — force state — **CONFIG category, polled every 24h only**
+
+## EV Plug-in Safety Automation
+
+The PV surplus controller decides *when* to charge. But there's a separate problem: the go-e charger with logic mode "Default" will **auto-start charging the moment a car is plugged in** — before any automation has a chance to react.
+
+The safety automation's job: immediately set `frc=1` (Don't charge) on every plug-in event. The PV surplus controller can then decide to override with `frc=2` when conditions are right.
+
+### Trigger Design
+
+Getting this trigger right was harder than expected. Three approaches failed before finding one that works:
+
+1. **`binary_sensor.goe_XXXXXX_car_0` with `to: "on"`** — the binary plug sensor. Failed because the trigger simply didn't fire on some plug-in events (unknown reason, possibly related to polling).
+
+2. **`sensor.goe_XXXXXX_car_value` with `from: "Idle"`** — the text car state. Failed because the sensor goes `unavailable` between Idle and Charging during physical plug-in. So the actual transition is `unavailable → Charging`, not `Idle → Charging`, and the trigger doesn't match.
+
+3. **`sensor.goe_XXXXXX_car_value` with `to: "Charging"` (no `from:`)** — this works but also fires when the PV surplus controller starts charging, causing a conflict.
+
+The working solution uses multiple triggers with conditions to filter:
+
+```yaml
+triggers:
+  - trigger: state
+    entity_id: sensor.goe_XXXXXX_car_value
+    to: "Charging"
+  - trigger: state
+    entity_id: sensor.goe_XXXXXX_car_value
+    to: "Wait for car"
+  - trigger: state
+    entity_id: sensor.goe_XXXXXX_car_value
+    to: "Complete"
+  - trigger: state
+    entity_id: device_tracker.my_tesla_location
+    to: "home"
+
+conditions:
+  # Only act if PV surplus isn't actively managing (frc=2)
+  - "{{ states('select.goe_XXXXXX_frc') != '2' }}"
+  # Time window: only within 2 min of plug-in or 5 min of arriving home
+  - "{{ car_0_age < 120 or tesla_home_age < 300 }}"
+```
+
+The `frc != '2'` condition prevents the safety automation from fighting the PV surplus controller. The time window prevents it from firing on car state changes that happen long after plug-in (e.g., phase switching bouncing the car state).
+
+The Tesla location trigger catches the case where the charger sensor goes `unavailable` during plug-in and misses the transition entirely.
+
+### Actions
+
+Simple: send `frc=1` twice, 3 seconds apart. Never check the current state first (it might be stale).
+
+```yaml
+actions:
+  - action: select.select_option
+    target: { entity_id: select.goe_XXXXXX_frc }
+    data: { option: "1" }
+  - delay: "00:00:03"
+  - action: select.select_option
+    target: { entity_id: select.goe_XXXXXX_frc }
+    data: { option: "1" }
+```
+
 ## The Two-Automation Architecture
 
-The system runs as two separate automations with clean separation of concerns:
+The system runs as three separate automations with clean separation of concerns:
 
-| | PV Surplus Controller | Load Guard |
-|---|---|---|
-| **Runs** | Every 1 min + events | Every 5 seconds |
-| **Owns** | Phase mode, force mode, start/stop policy | Amp adjustment only |
-| **Decides** | Should the car charge? | Are the phases overloaded? |
-| **Condition** | Always | Only when charge mode is neutral (not forced by surplus controller) |
+| | PV Surplus Controller | EV Plug-in Safety | Load Guard |
+|---|---|---|---|
+| **Runs** | Every 1 min + events | On car state change / Tesla arriving home | Every 5 seconds |
+| **Owns** | Phase mode, force mode, start/stop policy | Plug-in protection (frc=1 on connect) | Amp adjustment only |
+| **Decides** | Should the car charge on surplus? | Should auto-charging be blocked? | Are the phases overloaded? |
+| **Condition** | Always | Only when frc != 2 (not managed by surplus) | Only when frc is neutral (not forced) |
 
-The Load Guard is a fast current-throttling loop that protects against phase overload — it drops amps quickly and restores slowly. It runs independently and only when the PV surplus controller isn't in charge.
+The **EV Plug-in Safety** automation was added in v7 to prevent auto-charging on plug-in. The go-e charger in "Default" logic mode starts charging immediately when a car connects — this automation fires first and blocks it. The PV surplus controller can then override when conditions are right.
+
+The **Load Guard** is a fast current-throttling loop that protects against phase overload — it drops amps quickly and restores slowly. It runs independently and only when the PV surplus controller isn't in charge.
 
 ## The Zero-Export Takeaway
 
@@ -234,7 +318,7 @@ The EV is the perfect drain. A heat pump works too. A boiler, maybe. But washing
 
 ## Appendix: The Full Automations
 
-The system consists of two automations, a manual stop script, and two helpers. All YAML below contains placeholder entity IDs — replace them with your own.
+The system consists of three automations, a manual stop script, and two helpers. All YAML below contains placeholder entity IDs — replace them with your own.
 
 > **Note:** You will need to create two helpers before deploying:
 > - `input_boolean.ev_pv_surplus_enabled` — master enable/disable switch
@@ -255,22 +339,22 @@ input_datetime:
     has_time: true
 ```
 
-### Automation 1: PV Surplus Controller v6
+### Automation 1: PV Surplus Controller v7
 
 This is the main brain — evaluates every minute whether to start or stop EV charging, manages phase switching, enforces restart cooldown after stop, and sends Telegram notifications.
 
 <details>
-<summary>Click to expand full YAML — PV Surplus Controller v6</summary>
+<summary>Click to expand full YAML — PV Surplus Controller v7</summary>
 
 ```yaml
-alias: "PV Surplus Controller v6 (EcoFlow phase-C + phase switching + cooldown)"
+alias: "PV Surplus Controller v7 (EcoFlow phase-C + fixed 1ph surplus / fixed 3ph non-surplus)"
 description: >-
   Stable PV surplus EV charging controller using EcoFlow phase-C metrics.
-  Priority stack: (1) EcoFlow first, (2) heavy home devices get priority, (3)
-  car gets only true remaining surplus on the EcoFlow-backed phase. Uses go-e
-  Phase Switch Mode: single-phase during PV-surplus charging, Auto outside
-  PV-surplus. Adds bounded stop retry logic, restart cooldown after stop,
-  and a master enable boolean for manual override.
+  PV surplus mode always uses fixed single-phase. Non-surplus / idle plugged-in
+  mode always uses fixed three-phase. Trusts actual PV production alongside
+  forecast. Battery charging guard prevents false stops. Adds bounded stop
+  retry logic, restart cooldown after stop, and a master enable boolean for
+  manual override.
 
 triggers:
   - id: ha_start
@@ -450,7 +534,7 @@ actions:
               title: "PV Surplus: STOP"
               message: >-
                 go-e Force -> 1 (stop retry applied) ·
-                Phase mode -> {{ psm_non_surplus }} (Auto) ·
+                Phase mode -> {{ psm_non_surplus }} (3-phase) ·
                 Cooldown: {{ cooldown_minutes }} min ·
                 Reason: {{ stop_reason | trim }} ·
                 EcoFlow SOC {{ eco_soc | round(1) }}%
@@ -542,9 +626,9 @@ variables:
   currently_charging: "{{ is_state('select.goe_XXXXXX_frc', '2') }}"
   psm_current: "{{ states('select.goe_XXXXXX_psm') }}"
   psm_single_phase: "1"
-  psm_non_surplus: "0"
+  psm_non_surplus: "2"        # Force 3-phase (not Auto) for non-surplus
   stop_power_threshold_w: 250
-  cooldown_minutes: 15
+  cooldown_minutes: 5
   cooldown_seconds: "{{ cooldown_minutes * 60 }}"
   last_stop_ts: >-
     {% set s = states('input_datetime.ev_pv_last_stop') %}
@@ -602,7 +686,7 @@ variables:
   heavy_device_washing_machine_w: "{{ states('sensor.washing_machine_plug_power') | float(0) }}"
   heavy_device_max_w: "{{ [heavy_device_dishwasher_w, heavy_device_washing_machine_w] | max }}"
   heavy_home_device_on: "{{ heavy_device_max_w >= 850 }}"
-  strong_now_forecast: "{{ forecast_now_w >= 900 or energy_this_hour_kwh >= 0.80 }}"
+  strong_now_forecast: "{{ forecast_now_w >= 900 or energy_this_hour_kwh >= 0.80 or pv_w >= 900 }}"
   strong_next_hour_forecast: "{{ forecast_next_hour_w >= 1100 or energy_next_hour_kwh >= 1.00 }}"
   strong_day_remaining: "{{ energy_remaining_today_kwh >= 5.5 }}"
   forecast_window_ok: >-
@@ -621,7 +705,9 @@ variables:
        or ((pv_w >= 1200) and (battery_charging_w >= 120) and battery_target_ok)
        or ((forecast_next_hour_w >= 1100) and (pv_w >= 700)
            and (phase_c_grid_w <= 80) and (battery_discharging_w <= 50)
-           and battery_target_ok) }}
+           and battery_target_ok)
+       or ((eco_soc >= 95) and (forecast_now_w >= 900)
+           and (battery_discharging_w <= 200)) }}
   low_pv_triggered: "{{ trigger is defined and trigger.id == 'pv_low_10m' }}"
   high_grid_import_triggered: "{{ trigger is defined and trigger.id == 'grid_import_high_10m' }}"
   phase_c_grid_high_triggered: "{{ trigger is defined and trigger.id == 'phase_c_grid_high_5m' }}"
@@ -636,7 +722,8 @@ variables:
        or heat_pump_on or heavy_home_device_on
        or high_grid_import_triggered
        or (phase_c_grid_high_triggered
-           and ((battery_discharging_w > 80) or (pv_w < 900) or (not strong_next_hour_forecast)))
+           and ((battery_discharging_w > 80) or (pv_w < 900) or (not strong_next_hour_forecast))
+           and (battery_charging_w < 100))
        or (battery_discharging_triggered and (phase_c_grid_w > 120))
        or ((not battery_target_ok) and (not strong_next_hour_forecast) and (battery_charging_w < 150))
        or (low_pv_triggered and not strong_next_hour_forecast) }}
@@ -659,7 +746,86 @@ max_exceeded: silent
 
 </details>
 
-### Automation 2: Load Guard
+### Automation 2: EV Plug-in Safety
+
+Prevents auto-charging on plug-in. Fires on car state change or Tesla arriving home. Skips if PV surplus is actively managing (frc=2). Always re-sends `frc=1` twice — never trusts cached state.
+
+<details>
+<summary>Click to expand full YAML — EV Plug-in Safety</summary>
+
+```yaml
+alias: "EV Plug-in Safety (always re-send Don't charge at home)"
+description: >-
+  Fires on charger state change or Tesla arriving home. Time-window prevents PV
+  conflict. Skips if frc=2 (PV Surplus active).
+
+triggers:
+  - trigger: state
+    entity_id: sensor.goe_XXXXXX_car_value
+    to: "Charging"
+    id: charging
+  - trigger: state
+    entity_id: sensor.goe_XXXXXX_car_value
+    to: "Wait for car"
+    id: wait_for_car
+  - trigger: state
+    entity_id: sensor.goe_XXXXXX_car_value
+    to: "Complete"
+    id: complete
+  - trigger: state
+    entity_id: device_tracker.my_tesla_location
+    to: "home"
+    id: tesla_arrived_home
+
+conditions:
+  - condition: state
+    entity_id: device_tracker.my_tesla_location
+    state: "home"
+  - condition: state
+    entity_id: binary_sensor.goe_XXXXXX_car_0
+    state: "on"
+  - condition: template
+    value_template: >
+      {{ states('sensor.goe_XXXXXX_car_value') in ['Charging', 'Wait for car', 'Complete'] }}
+  - condition: template
+    value_template: >
+      {{ states('select.goe_XXXXXX_frc') != '2' }}
+  - condition: template
+    value_template: |
+      {{
+        (as_timestamp(now()) - as_timestamp(states.binary_sensor.goe_XXXXXX_car_0.last_changed)) < 120
+        or (as_timestamp(now()) - as_timestamp(states.device_tracker.my_tesla_location.last_changed)) < 300
+      }}
+
+actions:
+  - action: select.select_option
+    target:
+      entity_id: select.goe_XXXXXX_frc
+    data:
+      option: "1"
+  - delay: "00:00:03"
+  - action: select.select_option
+    target:
+      entity_id: select.goe_XXXXXX_frc
+    data:
+      option: "1"
+  - action: notify.send_message
+    target:
+      entity_id: notify.your_telegram_bot
+    data:
+      title: "EV Plug-in Safety"
+      message: >-
+        Plug-in detected -> frc sent to Don't charge (twice).
+        trigger={{ trigger.id }},
+        car={{ states('sensor.goe_XXXXXX_car_value') }},
+        frc={{ states('select.goe_XXXXXX_frc') }}.
+
+mode: restart
+```
+
+</details>
+
+### Automation 3: Load Guard
 
 A fast 5-second loop that protects against phase overload. It only runs when the PV surplus controller is **not** active (frc != 1 and frc != 2). Drops amps quickly on overload, restores slowly when safe.
 
@@ -847,8 +1013,8 @@ sequence:
     target:
       entity_id: select.goe_XXXXXX_psm
     data:
-      option: "0"
-  - wait_template: "{{ is_state('select.goe_XXXXXX_psm', '0') }}"
+      option: "2"
+  - wait_template: "{{ is_state('select.goe_XXXXXX_psm', '2') }}"
     timeout: "00:00:08"
     continue_on_timeout: true
   - action: notify.send_message
@@ -858,8 +1024,8 @@ sequence:
       title: "PV Surplus: MANUAL STOP"
       message: >-
         Manual stop executed. go-e Force -> 1.
-        Phase mode -> 0 (Auto).
-        Restart cooldown armed (15 min).
+        Phase mode -> 2 (Force 3-phase).
+        Restart cooldown armed (5 min).
 ```
 
 </details>
