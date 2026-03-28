@@ -302,7 +302,7 @@ actions:
     data: { option: "1" }
 ```
 
-## The Two-Automation Architecture
+## The Three-Automation Architecture
 
 The system runs as three separate automations with clean separation of concerns:
 
