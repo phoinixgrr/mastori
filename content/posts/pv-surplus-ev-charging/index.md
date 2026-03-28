@@ -185,9 +185,26 @@ After this rewiring:
 - The controller's phase-C metrics finally match physical reality
 
 The go-e charger exposes three key controls via Home Assistant:
-- **Phase Switch Mode** (`psm`): `0` = Auto, `1` = Force single phase, `2` = Force three phase
-- **Charge Mode** (`frc`): `0` = Neutral, `1` = Don't charge, `2` = Force charge
-- **Current** (`amp`): Charging amps (6A minimum for stable charging)
+
+**Phase Switch Mode** (`psm`):
+
+| Value | Name | Behavior |
+|---|---|---|
+| `0` | Auto | Charger decides phase count automatically |
+| `1` | Force single phase | Always single-phase — draws from L1 only (phase C after rewiring) |
+| `2` | Force three phase | Always three-phase — draws from all three phases |
+
+**Charge Mode** (`frc`):
+
+| Value | Name | Behavior |
+|---|---|---|
+| `0` | Neutral | Charger follows its internal logic mode (e.g., "Default" = charge immediately on plug-in) |
+| `1` | Don't charge | Forces charger to stop/prevent charging |
+| `2` | Charge | Forces charger to charge regardless of internal logic |
+
+> **Warning:** The `frc` entity is a CONFIG-category API key in the [ha-goecharger-api2](https://github.com/marq24/ha-goecharger-api2) integration. In LAN polling mode, config values are only refreshed every **24 hours**. This means Home Assistant can show `frc=1` while the charger has internally reset to `frc=0` and is happily charging. See the [stale state section](#the-go-e-frc-stale-state-problem) below for the full story.
+
+**Current** (`amp`): Charging amps (6A minimum for stable charging)
 
 ```yaml
 # On PV surplus start:
