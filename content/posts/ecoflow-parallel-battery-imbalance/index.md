@@ -58,11 +58,18 @@ Any automation or display relying on this number will make wrong decisions. The 
 
 Here's real data from my system on March 30, 2026. Both batteries started the morning at ~15% and charged together until around 11:00 — that's when EV surplus charging started.
 
-**Top graph:** Battery SOC. Ultra (blue) pulls away sharply from AC Pro (orange) the moment EV charging begins. By 14:00, Ultra is at ~95% while AC Pro is at ~65% — a 30% gap.
+**Left:** Battery SOC. Ultra (green) pulls away sharply from AC Pro (blue) the moment EV charging begins. By 14:00, Ultra is at 95% while AC Pro is stuck at 75% — a 20% gap.
 
-**Bottom graph:** PV power from all 4 strings. Note the production drops to zero around 14:00 when Ultra hits maximum, despite full sunshine. The gaps are solar energy that was **produced by the panels but rejected by the system**.
+**Right:** PV power from all 4 strings. Note the production drops to zero after 14:00 when Ultra hits maximum, despite full sunshine. Those gaps are solar energy that was **produced by the panels but rejected by the system**.
 
-![Top: Battery SOC divergence — Ultra (blue) pulls away from AC Pro (orange) when EV charging starts. Bottom: PV power from all 4 strings drops to zero when Ultra hits max, despite AC Pro still needing charge.](battery-imbalance-graph.png)
+{{< gallery >}}
+  <img src="soc-divergence.png" class="grid-w50" alt="Battery SOC divergence — Ultra (green) at 95% while AC Pro (blue) stuck at 75%" />
+  <img src="pv-throttling.png" class="grid-w50" alt="PV power from all 4 strings drops to zero when Ultra hits max — solar energy wasted" />
+{{< /gallery >}}
+
+And here's the combined view from the HA dashboard — both SOC and PV power on the same timeline:
+
+![Combined view: SOC divergence on top, PV throttling on bottom](battery-imbalance-graph.png)
 
 Home Assistant sensor data at the moment of throttling:
 
