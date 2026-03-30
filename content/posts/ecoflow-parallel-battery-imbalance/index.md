@@ -42,7 +42,7 @@ The SOC gap starts growing immediately. The Ultra climbs steadily while the AC P
 
 Here's a real graph from March 30, 2026. Both batteries started the morning at ~15% and charged together until around 11:00. That's when EV charging started on PV surplus. The Ultra (green) rockets to 91% while the AC Pro (blue) stalls at 50%. A 41% gap — that's 0.8kWh of usable capacity sitting empty while the system clips solar energy.
 
-![Ultra at 91.4%, AC Pro stuck at 49.5% — the divergence happens the moment EV charging starts](battery-imbalance-graph.png)
+![Top: Battery SOC divergence — Ultra (blue) pulls away from AC Pro (orange) when EV charging starts. Bottom: PV power from all 4 strings drops to zero when Ultra hits max, despite AC Pro still needing charge.](battery-imbalance-graph.png)
 
 ### The cliff: Ultra hits 100%
 
