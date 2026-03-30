@@ -34,27 +34,21 @@ This AC coupling adds 20-30% conversion losses. But that's the advertised trade-
 
 When the house load is light and the EV isn't charging, both batteries charge roughly together. The Ultra shares surplus PV with the AC Pro via the parallel cable. Life is good.
 
-![Both batteries charging together during normal operation — SOC tracks closely until the divergence point](battery-balance-normal.png)
-
 ### Under load (EV charging)
 
 The moment a significant load appears on the output — like an EV charger drawing 1.4kW on phase C — the Ultra stops sharing with the AC Pro. All PV goes to: (1) feeding the load, (2) charging the Ultra's own battery. The AC Pro gets nothing.
 
 The SOC gap starts growing immediately. The Ultra climbs steadily while the AC Pro flatlines.
 
+Here's a real graph from March 30, 2026. Both batteries started the morning at ~15% and charged together until around 11:00. That's when EV charging started on PV surplus. The Ultra (green) rockets to 91% while the AC Pro (blue) stalls at 50%. A 41% gap — that's 0.8kWh of usable capacity sitting empty while the system clips solar energy.
+
+![Ultra at 91.4%, AC Pro stuck at 49.5% — the divergence happens the moment EV charging starts](battery-imbalance-graph.png)
+
 ### The cliff: Ultra hits 100%
 
 This is where it gets truly wasteful. When the Ultra's battery reaches 100%, instead of redirecting surplus PV to the AC Pro (which might be sitting at 50%), the inverter **throttles MPPT completely**. PV production drops to 0W. The sun is shining, the panels are capable, but the system is clipping.
 
 Meanwhile the AC Pro is half empty, perfectly capable of absorbing that energy — but it never arrives.
-
-## The Evidence
-
-Here's a real graph from March 30, 2026. Both batteries started the morning at ~15% and charged together until around 11:00. That's when EV charging started on PV surplus.
-
-The Ultra (green) rockets to 91% while the AC Pro (blue) stalls at 50%. A 41% gap — that's 0.8kWh of usable capacity sitting empty while the system clips solar energy.
-
-![Ultra at 91.4%, AC Pro stuck at 49.5% — the divergence happens the moment EV charging starts](battery-imbalance-graph.png)
 
 The Home Assistant debug output at that moment:
 
