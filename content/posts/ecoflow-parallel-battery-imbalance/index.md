@@ -86,13 +86,24 @@ The battery is **discharging** at 316W to cover house load, while the panels sit
 
 ## Quantifying the Waste
 
-On a typical sunny day in Athens (March-September), this behavior wastes approximately:
+On a typical sunny day in Athens (March-September), 4× 520W panels produce **8-10 kWh**. The Ultra's 1.92kWh battery fills by late morning. Once it hits 100%, PV throttles to zero — even if there are 4-5 hours of strong sun left.
 
-- **0.5-1.0 kWh per day** in clipped solar production (Ultra full, AC Pro not full, PV throttled)
-- **Over a 6-month sunny season**, that's roughly **90-180 kWh** — enough to drive a Tesla ~500-1000 km
-- The AC Pro cost ~€400. If 40% of its capacity is regularly unreachable due to this imbalance, the effective cost per usable kWh doubles
+The real losses:
 
-These numbers depend on load patterns, but the fundamental point stands: you're paying for 3.84kWh of storage and reliably getting ~2.5-3.0kWh because the system can't balance itself under load.
+- **3-6 kWh per day** in clipped solar production. If the Ultra fills by noon and PV throttles for 3-4 hours at ~1.5kW average, that energy is gone. The AC Pro could absorb it but never receives it.
+- **Over a 6-month sunny season** (180 days), that's **540-1080 kWh** of wasted production — enough to drive a Tesla **3,000-6,000 km**.
+- **The AC Pro capacity is largely stranded.** On a typical day it reaches 50-70% while the Ultra hits 100%. That's 0.6-1.0 kWh of paid storage capacity sitting empty every day.
+- **The AC Pro cost ~€400.** If half its capacity is regularly unreachable, the effective cost per usable kWh doubles — you're paying for 3.84kWh and reliably getting ~2.5kWh.
+
+### Battery degradation: the hidden cost
+
+The imbalance also hammers the Ultra's battery life. Because the Ultra does all the heavy lifting — deep discharge overnight, full charge during the day, repeated cycling under load — while the AC Pro barely cycles. This uneven wear pattern means:
+
+- The Ultra accumulates **2-3× more charge cycles** than the AC Pro per year
+- LFP batteries are rated for ~3000 cycles to 80% capacity. At 1-2 full cycles per day, the Ultra could degrade noticeably within **3-4 years** while the AC Pro is still essentially new
+- When the Ultra's capacity degrades, the imbalance gets worse — less Ultra capacity means it fills even faster, PV throttles even earlier, and more energy is wasted
+
+You're not just losing energy today. You're accelerating the wear on the more expensive unit (the one with the inverter and MPPT) while the cheaper expansion battery sits underutilized.
 
 ## How to Reproduce
 
