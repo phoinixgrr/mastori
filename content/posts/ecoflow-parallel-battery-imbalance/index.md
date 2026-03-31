@@ -113,51 +113,32 @@ sensor.stream_ac_pro_power_battery_soc      # AC Pro SOC
 sensor.stream_ultra_*_power_pv_sum          # Total PV production
 ```
 
-## The Chicken-and-Egg Trap
+## Why There's No Software Workaround
 
-My first workaround attempt: stop the load periodically to let the AC Pro catch up. This works — but only if the Ultra isn't already at 100%.
+I tried. I built a battery balancing cycle into my [PV surplus EV charging automation](/posts/pv-surplus-ev-charging/) — stop the EV when the SOC gap between Ultra and AC Pro exceeds 20%, let them equalize, resume. It failed for two reasons:
 
-| Ultra SOC | Output load | PV flows? | AC Pro charges? |
-|-----------|-------------|-----------|-----------------|
-| < 95% | Yes (EV) | Yes | **No** — Ultra takes everything |
-| < 95% | No | Yes | **Yes** — surplus shared via AC cable |
-| 100% | No | **No** — MPPT throttled | **No** — nothing flows |
-| 100% | Yes (EV) | Resumes | **No** — goes to load, not AC Pro |
+### Reason 1: They charge at the same rate when idle
 
-The bottom-right cell is the trap: turning the load back on un-throttles PV, but that energy goes to the load — not to the AC Pro. You can't win once Ultra is at 100%.
+When the EV stops, the Ultra doesn't redirect its surplus to the AC Pro. Instead, **both batteries charge at the same rate from PV**. The gap never closes. I watched Ultra go from 43% to 59% while AC Pro went from 24% to 42% — a 19% gap that stayed at 19% the entire time.
 
-## My Automation Workaround
+The AC Pro can only receive energy via the AC parallel cable. When there's no output load and PV is flowing, the system distributes charging current equally. The gap is permanent once established.
 
-Since this can't be fixed from outside the firmware, I built a **battery balancing cycle** into my [PV surplus EV charging automation](/posts/pv-surplus-ev-charging/). The key: **balance early, before the Ultra hits 100%.**
+### Reason 2: Every path leads to the same outcome
 
-```yaml
-# Individual battery tracking
-ultra_soc: "{{ states('sensor.stream_ultra_akis_power_battery_soc') | float(0) }}"
-ac_pro_soc: "{{ states('sensor.stream_ac_pro_power_battery_soc') | float(0) }}"
-battery_gap: "{{ (ultra_soc - ac_pro_soc) | abs }}"
+| Ultra SOC | Output load | PV flows? | AC Pro charges? | Gap closes? |
+|-----------|-------------|-----------|-----------------|-------------|
+| < 95% | Yes (EV) | Yes | **No** — Ultra takes everything | Gap grows |
+| < 95% | No | Yes | **Yes** — but at same rate as Ultra | Gap stays |
+| 100% | No | **No** — MPPT throttled | **No** — nothing flows | Gap stays |
+| 100% | Yes (EV) | Resumes | **No** — goes to load, not AC Pro | Gap stays |
 
-# Start gate: don't charge EV if gap > 10% (unless Ultra >= 95%, then give up)
-battery_balanced: "{{ battery_gap <= 10 or ultra_soc >= 95 }}"
+There is no cell in this table where the gap shrinks. The only option that gets energy into the EV is the top-left — and that's the one that makes the gap worse.
 
-# Stop gate: stop EV if gap > 20% AND Ultra < 95% (still time to fix)
-battery_imbalanced_and_fixable: "{{ battery_gap > 20 and ultra_soc < 95 }}"
-```
+### The practical conclusion
 
-### The cycle
+**Charge the EV as early and as long as possible.** Don't try to balance the batteries — it wastes EV charging time for zero benefit. The EV absorbs energy that would otherwise be clipped when the Ultra inevitably hits 100%. Accept the AC Pro imbalance as a firmware limitation and maximize the energy that goes into the car before the system throttles.
 
-1. **Morning:** Both batteries charge together. Gap is small.
-2. **Surplus detected:** EV charging starts at 6A single-phase (~1.4kW).
-3. **Gap grows to 20%** while Ultra is still at e.g. 60%: automation stops EV.
-4. PV is still flowing (Ultra isn't full). **AC Pro catches up** via the parallel cable.
-5. **Gap drops to 10%:** EV resumes.
-6. Repeat until both batteries are high.
-7. **Ultra hits 95%:** Automation **gives up on balancing** — charges EV regardless. No point pausing; PV will throttle soon anyway and the AC cable can't fill the AC Pro fast enough.
-
-The 10%/20% hysteresis prevents rapid start/stop flapping. The 95% bypass avoids blocking the EV when balancing is physically impossible.
-
-### The cost
-
-Each balance pause takes 20-30 minutes (the AC Pro charges slowly over the AC cable). On a sunny day: 2-3 charge/pause/charge cycles. You trade some EV charging time for actually using the storage capacity you paid for.
+My automation now starts EV charging at 12% combined SOC on strong days and doesn't stop for battery imbalance. The priority is: **use every watt of PV before EcoFlow wastes it.**
 
 ## What EcoFlow Should Fix in Firmware
 
@@ -189,12 +170,14 @@ The more users report this with data, the more likely it gets prioritized in a f
 
 ## Takeaway
 
-The Stream Ultra + AC Pro combo works. The extra capacity is genuinely useful for overnight self-consumption. But **don't expect them to behave as one unified battery under load.** They diverge — and at full charge, you'll lose solar production to unnecessary clipping while your expansion battery sits partially empty.
+The Stream Ultra + AC Pro combo works. The extra capacity is genuinely useful for overnight self-consumption. But **don't expect them to behave as one unified battery under load.** They diverge, the gap is permanent, and at full charge you'll lose solar production to unnecessary clipping while your expansion battery sits partially empty.
 
-The automation workaround helps. But this should be fixed in firmware — the hardware is capable, the energy path exists, and the system is actively wasting solar energy that it could store.
+**There is no software workaround.** I tried battery balancing logic, early stopping, gap-based cycling — none of it works because the firmware charges both batteries at equal rates when idle, so the gap never closes. The only rational strategy is to charge the EV as aggressively as possible before the Ultra hits 100% and PV throttles.
+
+This needs a firmware fix. The hardware is capable, the energy path exists, and the system is actively wasting solar energy that it could store.
 
 ---
 
-*The full PV surplus automation with battery balancing logic is documented in [PV Surplus EV Charging — The Zero-Export Adventure](/posts/pv-surplus-ev-charging/).*
+*The full PV surplus automation is documented in [PV Surplus EV Charging — The Zero-Export Adventure](/posts/pv-surplus-ev-charging/).*
 
 *If you found this useful, share it — especially in EcoFlow-related communities. Visibility drives fixes.*
