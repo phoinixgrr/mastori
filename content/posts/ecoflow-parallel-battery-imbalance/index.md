@@ -95,6 +95,16 @@ The real losses:
 - **The AC Pro capacity is largely stranded.** On a typical day it reaches 50-70% while the Ultra hits 100%. That's 0.6-1.0 kWh of paid storage capacity sitting empty every day.
 - **The AC Pro cost ~€400.** If half its capacity is regularly unreachable, the effective cost per usable kWh doubles — you're paying for 3.84kWh and reliably getting ~2.5kWh.
 
+### In euros
+
+At the average Greek electricity price of **€0.15/kWh**, the clipped energy translates to:
+
+- **€0.45-0.90 per day** in lost self-consumption (energy you produced but couldn't use, so you bought it from the grid instead at night)
+- **€81-162 per sunny season** (180 days)
+- **€160-324 per year** accounting for shoulder months with partial losses
+
+The Stream Ultra + AC Pro combo costs roughly **€1,200-1,400**. At €160-324/year in wasted energy, the imbalance alone extends the system's payback period by **1-2 years** — and that's before accounting for the accelerated Ultra battery degradation.
+
 ### Battery degradation: the hidden cost
 
 The imbalance also hammers the Ultra's battery life. Because the Ultra does all the heavy lifting — deep discharge overnight, full charge during the day, repeated cycling under load — while the AC Pro barely cycles. This uneven wear pattern means:
