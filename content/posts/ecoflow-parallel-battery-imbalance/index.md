@@ -8,18 +8,27 @@ summary: "The Stream Ultra + AC Pro can't balance batteries under load — and i
 keywords: ["ecoflow stream ultra ac pro parallel charging", "ecoflow battery imbalance", "ecoflow mppt throttling", "stream ultra ac pro soc drift", "ecoflow 1200W inverter bottleneck", "ecoflow stream architecture problem"]
 ---
 
-## The Promise vs Reality
+## My Setup
 
-EcoFlow [markets this combo](https://eu.ecoflow.com/pages/stream-series-plug-in-solar-battery) with:
+| Component | Model | Role |
+|-----------|-------|------|
+| **Stream Ultra** | EcoFlow Stream Ultra | Inverter + 1.92 kWh LFP battery + 4 MPPT solar inputs (up to 2000W) |
+| **Stream AC Pro** | EcoFlow Stream AC Pro | Expansion battery — 1.92 kWh LFP, **no solar inputs, no inverter** |
+| **Parallel Cable** | Official EcoFlow AC parallel cable | AC coupling between the two units |
+| **Solar** | 4× 520W bifacial panels | ~2 kW peak, connected to Ultra's 4 MPPTs |
+| **Smart Meter** | Shelly Pro 3EM | Zero-export / feed-in control |
+| **Load** | go-e EV charger | ~1.4 kW at 6A single-phase |
+
+I purchased the AC Pro to expand my system from 1.92 kWh to 3.84 kWh, based on EcoFlow's [product page](https://eu.ecoflow.com/pages/stream-series-plug-in-solar-battery) claims:
 
 > *"Surplus solar energy automatically transfers between batteries"*
 > *"AI-driven load balancing automatically redirects energy from nearby units"*
 
-None of this holds up under any sustained household load. After weeks of data collection, I've found this isn't a firmware bug — it's a **hardware architecture problem**.
+After weeks of data collection, I've found that none of this holds up under any sustained household load. And it's not a firmware bug — it's a **hardware architecture problem**.
 
 ## The Architecture: A 1200W Straw for 2000W of Solar
 
-The AC Pro has **no solar inputs and no DC connection** to the Ultra. The only path for solar energy to reach it is the Ultra's **1200W inverter** through the AC parallel cable.
+The AC Pro has **no solar inputs and no DC connection** to the Ultra. It charges exclusively through the AC parallel cable. The only path for solar energy to reach it is the Ultra's **1200W inverter**.
 
 ```
 Solar (2000W DC) ──► Ultra DC Bus ──┬──► Ultra Battery (DC, ~99% efficient)
