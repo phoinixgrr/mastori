@@ -30,17 +30,43 @@ After weeks of data collection, I've found that none of this holds up under any 
 
 The AC Pro has **no solar inputs and no DC connection** to the Ultra. It charges exclusively through the AC parallel cable. The only path for solar energy to reach it is the Ultra's **1200W inverter**.
 
-```
-Solar (2000W DC) ──► Ultra DC Bus ──┬──► Ultra Battery (DC, ~99% efficient)
-                                    │
-                                    └──► Inverter (1200W MAX) ──► AC Circuit
-                                                                     │
-                                                             ┌───────┴────────┐
-                                                          House Load       AC Pro
-                                                         (e.g. 1400W)   (charges from AC)
-```
+{{< mermaid >}}
+flowchart LR
+    PV["☀️ Solar Panels\n2000W DC"] --> DC["Ultra DC Bus"]
+    DC --> BAT["🔋 Ultra Battery\n1.92 kWh\nDC direct ~99%"]
+    DC --> INV["⚡ Inverter\n1200W MAX"]
+    INV --> AC["AC Circuit\n230V"]
+    AC --> LOAD["🏠 House Load\ne.g. 1400W"]
+    AC --> ACPRO["🔋 AC Pro\n1.92 kWh\nAC coupled"]
 
-When my EV charger draws 1400W, the inverter is **fully consumed serving the load**. The remaining 800W of solar is trapped on the Ultra's DC bus with nowhere to go except the Ultra's battery. The AC Pro receives **0W**.
+    style PV fill:#ca8a04,stroke:#eab308,color:#fff
+    style BAT fill:#166534,stroke:#22c55e,color:#fff
+    style INV fill:#991b1b,stroke:#ef4444,color:#fff
+    style ACPRO fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style LOAD fill:#6b7280,stroke:#9ca3af,color:#fff
+    style DC fill:#374151,stroke:#6b7280,color:#fff
+    style AC fill:#374151,stroke:#6b7280,color:#fff
+{{< /mermaid >}}
+
+When my EV charger draws 1400W, the inverter is **fully consumed serving the load** (1200W max, grid covers the 400W deficit). The remaining 800W of solar is trapped on the Ultra's DC bus with nowhere to go except the Ultra's battery. The AC Pro receives **0W**.
+
+{{< mermaid >}}
+flowchart LR
+    PV["☀️ 2000W"] --> DC["DC Bus"]
+    DC -->|"800W trapped"| BAT["🔋 Ultra\n+800W ✅"]
+    DC -->|"1200W max"| INV["⚡ Inverter"]
+    INV -->|"1200W"| LOAD["🏠 Load 1400W"]
+    GRID["🔌 Grid"] -->|"400W deficit"| LOAD
+    ACPRO["🔋 AC Pro\n0W ❌"]
+
+    style BAT fill:#166534,stroke:#22c55e,color:#fff
+    style INV fill:#991b1b,stroke:#ef4444,color:#fff
+    style ACPRO fill:#991b1b,stroke:#ef4444,color:#fff
+    style LOAD fill:#6b7280,stroke:#9ca3af,color:#fff
+    style PV fill:#ca8a04,stroke:#eab308,color:#fff
+    style GRID fill:#374151,stroke:#6b7280,color:#fff
+    style DC fill:#374151,stroke:#6b7280,color:#fff
+{{< /mermaid >}}
 
 When the Ultra eventually fills to 100%, the MPPT throttles from 2000W to 1200W — cutting 800W of solar permanently. The inverter keeps running to serve the load, but **800Wh per hour of sunshine is wasted** while the AC Pro sits partially empty.
 
