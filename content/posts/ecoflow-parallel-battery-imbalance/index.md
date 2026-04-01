@@ -64,16 +64,24 @@ Real data from March 30, 2026. Both batteries started at ~15%. EV surplus chargi
 
 ## How a Typical Day Unfolds
 
-| Time | Solar | Load | Ultra | AC Pro | Curtailed |
+Solar doesn't jump to 2000W at 10:00 — it ramps up through the day. This matters because the DC surplus to the Ultra is `Solar - 1200W (inverter)`. At 10:00 when the EV starts, solar may only be ~1200W, meaning the inverter takes **all** of it and the Ultra gets **0W** surplus. The 800W surplus only appears when solar reaches peak ~2000W around midday.
+
+| Time | Solar | Load | DC Surplus to Ultra | AC Pro | Curtailed |
 |---|---|---|---|---|---|
-| 08-10:00 | 500-1500W | 200W (base) | Charges | Charges | 0 |
-| 10:00 (EV starts) | 2000W | 1600W | +800W (DC surplus) | **0W** | 0 |
-| ~11:50 (Ultra full) | 2000W | 1600W | **100%** | **~35%** | **800W** |
-| 11:50-16:00 | 2000-1000W | 1600W | Full | **Still ~35%** | 800-0W |
-| 16:00 (EV stops) | 1000W | 200W | Full | Finally charges | 0 |
+| 08-10:00 | 300-1200W | 200W (base) | Charges (~35%) | Charges (~35%) | 0 |
+| 10:00 (EV starts) | ~1200W | 1600W | **~0W** (inverter takes all solar) | **0W** | 0 |
+| 11:00 | ~1600W | 1600W | +400W | **0W** | 0 |
+| 12:00 | ~1800W | 1600W | +600W | **0W** | 0 |
+| 13:00 (peak) | ~2000W | 1600W | +800W, Ultra ~85% | **0W** | 0 |
+| ~13:30 (Ultra full) | 2000W | 1600W | **100%** | **~35%** | **800W** |
+| 13:30-15:00 | 2000-1500W | 1600W | Full | **Still ~35%** | 800-300W |
+| 15:00-16:00 | 1000W | 1600W | Full | **Still ~35%** | 0W |
+| 16:00 (EV stops) | 800W | 200W | Full | Finally charges | 0 |
 | 18:00 | 0W | — | 100% | **~85%** | — |
 
-**Daily waste: ~2 kWh curtailed.** AC Pro stuck at ~35% for 6 hours. Over a 180-day sunny season: **~360 kWh wasted, ~€54 at Greek rates.** The Ultra also accumulates 2-3x more charge cycles, accelerating degradation on the more expensive unit.
+The Ultra starts the EV period at ~35% and needs ~1.25 kWh to fill. With the surplus ramping from 0W→800W, it takes about **3.5 hours** to fill — reaching 100% around 13:30. After that, 800W is curtailed during the remaining peak hours.
+
+**Daily waste: ~1.0-1.5 kWh curtailed** (800W × ~1.5 hours of peak sun while Ultra full). AC Pro stuck at ~35% for 6 hours. Over a 180-day sunny season: **~180-270 kWh wasted, ~€27-40 at Greek rates.** The Ultra also accumulates 2-3x more charge cycles, accelerating degradation on the more expensive unit.
 
 ## It Gets Worse With More Units
 
@@ -85,7 +93,7 @@ EcoFlow markets "expandable to 11.52 kWh" (6 units) and "expandable to 23 kWh" (
 | 1 Ultra + 2 AC Pro | 5.76 kWh | 1.92 kWh | **67%** |
 | 1 Ultra + 5 AC Pro | 11.52 kWh | 1.92 kWh | **83%** |
 
-With 6 units, **5 out of 6 batteries get 0W** under load. The Ultra fills in ~2 hours, then 800W is curtailed while 9.6 kWh of empty storage sits idle. Even with zero load, charging 5 AC Pros through a 1200W inverter at 87% efficiency takes **over 9 hours** — longer than a winter solar day.
+With 6 units, **5 out of 6 batteries get 0W** under load. The Ultra fills in ~3.5 hours (surplus ramps from 0W to 800W as solar peaks), then 800W is curtailed while 9.6 kWh of empty storage sits idle. Even with zero load, charging 5 AC Pros through a 1200W inverter at 87% efficiency takes **over 9 hours** — longer than a winter solar day in Greece.
 
 ## Not Just Stream — Same Problem Across EcoFlow Products
 
@@ -105,12 +113,14 @@ This is normal for battery systems. What's not normal is the firmware doing noth
 
 The 1200W bottleneck can't be fixed with firmware, but its impact can be reduced.
 
-**Charge the AC Pro first during morning low-load hours**, then fall back to Ultra when load kicks in. The Ultra starts the load period at ~15% instead of ~50%, taking 2.7 hours to fill instead of 1.8 — buying 50+ extra minutes before curtailment.
+**Charge the AC Pro first during morning low-load hours**, then fall back to Ultra when load kicks in. The Ultra starts the load period at ~15% instead of ~35%, needing ~1.63 kWh instead of ~1.25 kWh to fill — pushing the point of curtailment later into the afternoon when solar is already declining.
 
 | Metric | Current Firmware | AC Pro First |
 |--------|-----------------|-------------|
+| Ultra SoC at EV start | ~35% | **~15%** |
+| Ultra fills at | ~13:30 | **~14:30** |
 | AC Pro end SoC | ~85% | **100%** |
-| Solar curtailed | ~2.0 kWh | **~1.4 kWh** |
+| Solar curtailed | ~1.0-1.5 kWh | **~0.5 kWh** |
 | Both batteries full | AC Pro never reaches 100% | **Both 100% by 17:00** |
 
 **This is a workaround, not a solution.** The 800W hardware tax remains. But it's the best achievable outcome with current hardware.
