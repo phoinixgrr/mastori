@@ -136,3 +136,83 @@ If you're experiencing similar network issues:
 The QNAP TS-433 has a known, reproducible, community-documented network stability issue caused by an outdated Realtek r8125 driver. The fix is a driver update that Realtek has already released. QNAP's Dev Team is aware. Multiple users have reported it. The workaround is straightforward but shouldn't be needed.
 
 If you're considering a TS-433 — be aware of this issue. If you already own one — sideload the driver and file a ticket. And if you're at QNAP reading this — please just update the driver. It's one file.
+
+---
+
+## Update — 2026-04-01: Why 9.007.01 Fails (Root Cause Analysis)
+
+After digging through public bug trackers, driver source code repositories, and community DKMS packages, I can now piece together **why** the stock 9.007.01-NAPI driver fails on the TS-433 and why the sideloaded 9.014.01-NAPI resolves it.
+
+**Important disclaimer:** Realtek does not publish changelogs for the r8125 driver. The analysis below is based on evidence gathered from source code diffs tracked by community packagers, public GitHub issues, and forum reports across multiple Linux platforms. It has not been confirmed by Realtek or QNAP. That said, the evidence is consistent and points strongly in one direction.
+
+Between version 9.007.01 (November 2021) and 9.014.01 (November 2024), Realtek released **12 intermediate driver versions** over **3 years**. QNAP shipped none of them to the TS-433. Three specific issues stand out.
+
+### 1. No Receive Side Scaling (RSS) — Single Queue Bottleneck
+
+Version 9.007.01-NAPI does not support RSS. All 2.5Gbps of incoming traffic is funneled through a **single RX queue** with a maximum 1024-entry descriptor ring. Under sustained mixed workloads — NFS from Proxmox VMs and SMB from macOS/Windows clients at the same time — this ring overflows. Packets are dropped silently (`rx_missed` / `rx_mac_missed` counters climb), TCP retransmissions create more traffic, and a feedback loop forms that progressively kills throughput.
+
+RSS was introduced in version 9.011.00 — that's why newer driver versions carry the suffix `-NAPI-RSS` instead of just `-NAPI`. The QNAP TS-473 ships with 9.011.01-NAPI-**RSS**. The TS-433 does not.
+
+A community fork at [ewaldc/realtek-r8125-dkms](https://github.com/ewaldc/realtek-r8125-dkms) enables 4 RX queues via RSS and 2 TX queues, achieving stable full-speed 2.5Gbps with roughly 50% less CPU usage than the stock single-queue driver.
+
+### 2. ARM64 Memory Barrier Bugs
+
+This one is critical — and explains why QNAP's own testing on the TS-473 didn't reproduce the problem.
+
+Versions prior to ~9.014 contain **missing memory barriers** (`READ_ONCE` / `WRITE_ONCE` annotations) and incorrectly positioned synchronization primitives in the descriptor ring management code. On **x86_64**, this doesn't matter — x86 has a strong memory ordering model that masks these bugs. But the TS-433 runs **aarch64 (ARM64)**, which has a **weak memory ordering model**. ARM64 CPUs can reorder memory operations in ways x86 cannot, causing race conditions in the descriptor ring that lead to:
+
+- Fragment buffer corruption with small packets
+- Data corruption under stress
+- NIC hangs requiring a full reboot
+
+This exact behavior has been confirmed on another ARM64 platform (RK3588 / Orange Pi 5+) running the same RTL8125B chipset — documented in [GitHub Issue #59](https://github.com/awesometic/realtek-r8125-dkms/issues/59). The symptoms described there match what TS-433 owners experience.
+
+The TS-473 is x86_64. The TS-433 is aarch64. Same chipset, different architecture, completely different failure behavior. This is almost certainly why QNAP support could not reproduce the issue when they tested on the TS-473.
+
+### 3. ASPM (PCIe Power Management) Enabled by Default
+
+PCIe Active State Power Management (ASPM) puts the NIC into low-power states between bursts of traffic. The RTL8125's ASPM implementation has timing issues — the NIC cannot always exit low-power states quickly enough under sustained load. Each failed wake event accumulates error state internally. Over 24–48 hours of continuous operation, this compounds until throughput collapses.
+
+This is the single most widely reported cause of progressive RTL8125 degradation on Linux, documented across multiple platforms and communities:
+
+- [OpenWrt: R8125 fix — RTL8125 instability and weird throughput](https://forum.openwrt.org/t/r8125-fix-rtl8125-instability-and-weird-throughput/230074)
+- [ODROID: Horrible network performance of R8125B when connected to 1GbE switch](https://forum.odroid.com/viewtopic.php?t=40598)
+- [Ubuntu Bug #2139510 — Progressive performance degradation](https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2139510)
+- [Proxmox Forum — RTL8125BG driver issues and TX timeouts](https://forum.proxmox.com/threads/realtek-nic-rtl8125bg-driver-issues.151566/)
+
+### Why the TS-433 is Uniquely Affected
+
+| | TS-433 | TS-473 |
+|---|---|---|
+| **Architecture** | aarch64 (ARM64) | x86_64 |
+| **Memory ordering** | Weak | Strong |
+| **r8125 version** | 9.007.01-NAPI | 9.011.01-NAPI-RSS |
+| **RSS support** | No | Yes |
+| **Affected** | Severely | Not reported |
+
+The TS-433 combines the oldest driver version (no RSS, no memory barrier fixes) with the most vulnerable architecture (ARM64 weak memory ordering). The TS-473 avoids both problems. This is not bad luck — it's a predictable outcome of shipping a 2021 driver on ARM64 hardware in 2026.
+
+### The Version Gap
+
+| Version | Date | Notable Changes |
+|---------|------|-----------------|
+| 9.007.01 | 2021-11 | Shipped with TS-433 |
+| 9.008.00 | 2022-03 | — |
+| 9.009.00 | 2022-04 | DMA API migration |
+| 9.009.01 | 2022-06 | — |
+| 9.009.02 | 2022-07 | — |
+| 9.010.01 | 2022-11 | Kernel 6.1 support |
+| 9.011.00 | 2023-01 | **RSS support added** |
+| 9.011.01 | 2023-04 | Shipped with TS-473 |
+| 9.012.03 | 2023-11 | New chip variants (RTL8125D, RTL8125BP) |
+| 9.012.04 | 2024-01 | — |
+| 9.013.02 | 2024-04 | PTP support |
+| 9.014.01 | 2024-11 | Currently sideloaded on my TS-433 |
+
+Source: version history tracked by [awesometic/realtek-r8125-dkms](https://github.com/awesometic/realtek-r8125-dkms), the most widely used community DKMS package for this driver.
+
+### QNAP Support Update
+
+As of April 1, 2026, QNAP's Dev Team is running functional and performance verification of r8125 **v9.016**, with a testing ETA of **April 8, 2026**. If this results in an official firmware update for the TS-433, I will update this post.
+
+The support ticket (Q-202603-14685) is still open. It has been escalated to the Dev Team. The workaround described in this post continues to work reliably.
