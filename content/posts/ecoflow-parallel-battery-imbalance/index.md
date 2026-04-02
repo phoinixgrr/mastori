@@ -90,24 +90,52 @@ Real data from March 30, 2026. Both batteries started at ~15%. EV surplus chargi
 
 ## How a Typical Day Unfolds
 
-Solar doesn't jump to 2000W at 10:00 — it ramps up through the day. This matters because the DC surplus to the Ultra is `Solar - 1200W (inverter)`. At 10:00 when the EV starts, solar may only be ~1200W, meaning the inverter takes **all** of it and the Ultra gets **0W** surplus. The 800W surplus only appears when solar reaches peak ~2000W around midday.
+Solar doesn't jump to 2000W at 10:00 — it ramps up through the day. The DC surplus to the Ultra is `Solar - 1200W (inverter)`. At 10:00 when the EV starts, solar may only be ~1200W, meaning the inverter takes **all** of it and the Ultra gets **0W** surplus. The full 800W surplus only appears when solar reaches peak ~2000W.
 
-| Time | Solar | Load | DC Surplus to Ultra | AC Pro | Curtailed |
-|---|---|---|---|---|---|
-| 08-10:00 | 300-1200W | 200W (base) | Charges (~35%) | Charges (~35%) | 0 |
-| 10:00 (EV starts) | ~1200W | 1600W | **~0W** (inverter takes all solar) | **0W** | 0 |
-| 11:00 | ~1600W | 1600W | +400W | **0W** | 0 |
-| 12:00 | ~1800W | 1600W | +600W | **0W** | 0 |
-| 13:00 (peak) | ~2000W | 1600W | +800W, Ultra ~85% | **0W** | 0 |
-| ~13:30 (Ultra full) | 2000W | 1600W | **100%** | **~35%** | **800W** |
-| 13:30-15:00 | 2000-1500W | 1600W | Full | **Still ~35%** | 800-300W |
-| 15:00-16:00 | 1000W | 1600W | Full | **Still ~35%** | 0W |
-| 16:00 (EV stops) | 800W | 200W | Full | Finally charges | 0 |
-| 18:00 | 0W | — | 100% | **~85%** | — |
+The critical factor: **season**. In summer, solar peaks earlier and harder — the Ultra fills fast and curtailment lasts hours. In spring, it fills later and curtailment is shorter.
 
-The Ultra starts the EV period at ~35% and needs ~1.25 kWh to fill. With the surplus ramping from 0W→800W, it takes about **3.5 hours** to fill — reaching 100% around 13:30. After that, 800W is curtailed during the remaining peak hours.
+### Spring Day (March, ~13.2 kWh total solar)
 
-**Daily waste: ~1.0-1.5 kWh curtailed** (800W × ~1.5 hours of peak sun while Ultra full). AC Pro stuck at ~35% for 6 hours. Over a 180-day sunny season: **~180-270 kWh wasted, ~€27-40 at Greek rates.** The Ultra also accumulates 2-3x more charge cycles, accelerating degradation on the more expensive unit.
+| Time | Solar | DC Surplus to Ultra | AC Pro | Curtailed |
+|---|---|---|---|---|
+| 08-10:00 | 300-1200W | Both charge from surplus | Both charge | 0 |
+| 10:00 (EV) | ~1200W | **0W** (inverter takes all) | **0W** | 0 |
+| 11:00 | ~1600W | +400W | **0W** | 0 |
+| 12:00 | ~1800W | +600W | **0W** | 0 |
+| 13:00 | ~1900W | +700W, Ultra ~86% | **0W** | 0 |
+| **~13:30** | 1900W | **Ultra 100%** | **~35%** | **700W** |
+| 13:30-15:00 | 1900-1400W | Full | ~35% | 700-200W |
+| 15:00-16:00 | 1000W | Full | ~35% | 0W |
+| 16:00 (EV off) | 900W | Full | Finally charges | 0 |
+| 18:00 | — | 100% | **~76%** | — |
+
+**Spring curtailment: ~1.2 kWh/day.** AC Pro never reaches 100%.
+
+### Summer Day (June-July, ~15.4 kWh total solar)
+
+| Time | Solar | DC Surplus to Ultra | AC Pro | Curtailed |
+|---|---|---|---|---|
+| 08-10:00 | 500-1700W | Both charge. Ultra reaches ~59% | Both charge | 0 |
+| 10:00 (EV) | ~1700W | +500W | **0W** | 0 |
+| 11:00 | ~2000W | +800W, Ultra ~85% | **0W** | 0 |
+| **~11:22** | 2000W | **Ultra 100%** | **~40%** | **800W** |
+| 11:22-13:00 | 2000-2080W | Full | ~40% | 800-880W |
+| 13:00-15:00 | 2000-1600W | Full | ~40% | 800-400W |
+| 15:00-16:00 | 1200W | Full | ~40% | 0W |
+| 16:00 (EV off) | 1200W | Full | Charges fast | 0 |
+| 17:20 | — | 100% | **100%** | — |
+
+**Summer curtailment: ~3.3 kWh/day** over 4.6 hours. AC Pro catches up by 17:20.
+
+### Yearly Impact
+
+| Season | Ultra fills | Curtail hours | Daily waste | AC Pro end |
+|--------|-----------|---------------|-------------|-----------|
+| March/Sept | ~13:30 | ~2.5 hrs | **~1.2 kWh** | ~76% |
+| April/May | ~12:30 | ~3.5 hrs | **~2.0 kWh** | ~90% |
+| June-August | ~11:22 | ~4.6 hrs | **~3.3 kWh** | 100% |
+
+**Yearly total: ~405 kWh wasted** (90 summer days × 3.0 kWh + 90 shoulder days × 1.5 kWh). At €0.15/kWh: **~€60/year** in lost self-consumption. The Ultra also accumulates 2-3x more charge cycles than the AC Pro, accelerating degradation on the more expensive unit.
 
 ## It Gets Worse With More Units
 
