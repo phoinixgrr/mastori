@@ -135,7 +135,15 @@ The critical factor: **season**. In summer, solar peaks earlier and harder — t
 | April/May | ~12:30 | ~3.5 hrs | **~2.0 kWh** | ~90% |
 | June-August | ~11:22 | ~4.6 hrs | **~3.3 kWh** | 100% |
 
-**Yearly total: ~405 kWh wasted** (90 summer days × 3.0 kWh + 90 shoulder days × 1.5 kWh). At €0.15/kWh: **~€60/year** in lost self-consumption. The Ultra also accumulates 2-3x more charge cycles than the AC Pro, accelerating degradation on the more expensive unit.
+On a typical sunny day — and Greece averages **250+ sunny days per year** — the system wastes roughly **3 kWh of solar production**. That adds up:
+
+- **~3 kWh/day × 30 days = ~90 kWh/month**
+- **~90 kWh × 12 months = ~1,080 kWh/year**
+- At the Greek electricity rate of €0.15/kWh: **~€160/year in lost self-consumption**
+
+Over the system's expected 10-year lifespan, that's **~10,800 kWh and ~€1,600** of solar energy produced by your panels but thrown away because the architecture can't deliver it to the expansion battery you paid for.
+
+And that's just the direct energy loss. The Ultra also accumulates **2-3x more charge cycles** than the AC Pro, accelerating degradation on the more expensive unit — the one with the inverter and MPPT that you can't replace with a €620 AC Pro.
 
 ## It Gets Worse With More Units
 
