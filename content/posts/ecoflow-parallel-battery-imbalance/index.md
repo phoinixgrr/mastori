@@ -1,7 +1,7 @@
 ---
 title: "EcoFlow Stream Ultra + AC Pro — The Parallel Battery Imbalance Nobody Warns You About"
 date: 2026-03-30
-lastmod: 2026-04-01
+lastmod: 2026-04-03
 draft: false
 tags: ["ecoflow", "solar", "battery", "zero-export", "home-assistant", "ev-charging", "stream-ultra", "stream-ac-pro", "firmware", "hardware-limitation"]
 summary: "The Stream Ultra + AC Pro can't balance batteries under load — and it's not a firmware bug. A 1200W inverter bottleneck traps 800W of solar on the Ultra's DC bus, permanently starving the AC Pro. Here's the data, the architecture, and why it gets worse with more units."
@@ -208,17 +208,35 @@ sensor.stream_ac_pro_power_battery_soc      # AC Pro SOC
 sensor.stream_ultra_*_power_pv_sum          # Total PV production
 ```
 
+## Update: EcoFlow Support Confirms the Limitation
+
+**April 3, 2026** — After reporting this issue to EcoFlow EU Support with full diagnostic data, screenshots, and a link to this article, I received the following response:
+
+> *"You currently have 1.87kW of solar input and 1.81kW of load. Since the Stream Ultra's inverter capacity is limited to 1200W, your 1.87kW solar input is being inverted to provide 1200W of power to your load. Currently, the Stream Ultra's 1200W inverter capacity is fully utilized. Therefore, after 1870W minus 1200W, the remaining solar power cannot directly charge the Stream AC Pro, but can only charge the Stream Ultra."*
+>
+> — EcoFlow EU Customer Service, April 3, 2026
+
+**EcoFlow has officially confirmed that the AC Pro cannot charge from solar when the household load exceeds the 1200W inverter capacity.** This is not a bug, not a misconfiguration, and not something a firmware update can resolve. It is the system working as designed — a design that directly contradicts the marketed claims of "surplus solar energy automatically transfers between batteries."
+
+The question I've put back to EcoFlow: if this is how the architecture works, how can you advertise "AI-driven load balancing that automatically redirects energy" between units? And how does the "expandable to 11.52 kWh" claim hold up when expansion batteries can't charge under any normal household load?
+
+I have requested either a replacement with a single [EcoFlow STREAM Ultra X](https://eu.ecoflow.com/products/stream-ultra-x) (3.84 kWh, same total capacity, no inter-unit bottleneck) or a full refund, under [EU Directive 2019/771](https://eur-lex.europa.eu/eli/dir/2019/771/oj/eng) — which requires goods to conform to the seller's public advertising.
+
+**I will update this post as the case progresses.**
+
 ## Call to Action
 
 If you observe this behavior:
 
-1. **Report to EcoFlow support** — reference: *"Under load > 1200W, AC Pro receives 0W from solar due to inverter bottleneck"*
+1. **Report to EcoFlow support** — reference: *"Under load > 1200W, AC Pro receives 0W from solar due to inverter bottleneck"*. EcoFlow has confirmed this is how the system works.
 2. **Post data** in the [EcoFlow community forum](https://community.ecoflow.com/)
 3. **Reference EU Directive 2019/771** if you purchased the AC Pro based on the "automatic energy transfer" claims — goods must conform to the seller's advertising
 4. **Consider the [Stream Ultra X](https://eu.ecoflow.com/products/stream-ultra-x)** (3.84 kWh single unit) instead — it eliminates the inter-unit bottleneck
 
 ---
 
-*Updated April 1, 2026: Added root cause architecture analysis, scaling analysis, community reports, BMS details, and "AC Pro First" workaround. Original post: March 30, 2026.*
+*Updated April 3, 2026: EcoFlow support officially confirmed the 1200W inverter bottleneck as the cause. Replacement/refund requested under EU Directive 2019/771.*
+*Updated April 1, 2026: Added root cause architecture analysis, scaling analysis, community reports, BMS details, and "AC Pro First" workaround.*
+*Original post: March 30, 2026.*
 
 *PV surplus automation: [PV Surplus EV Charging — The Zero-Export Adventure](/posts/pv-surplus-ev-charging/). If you found this useful, share it — visibility drives fixes.*
