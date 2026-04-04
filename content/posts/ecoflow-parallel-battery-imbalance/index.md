@@ -1,7 +1,7 @@
 ---
 title: "EcoFlow Stream Ultra + AC Pro — The Parallel Battery Imbalance Nobody Warns You About"
 date: 2026-03-30
-lastmod: 2026-04-03
+lastmod: 2026-04-04
 draft: false
 tags: ["ecoflow", "solar", "battery", "zero-export", "home-assistant", "ev-charging", "stream-ultra", "stream-ac-pro", "firmware", "hardware-limitation"]
 summary: "The Stream Ultra + AC Pro can't balance batteries under load — and it's not a firmware bug. A 1200W inverter bottleneck traps 800W of solar on the Ultra's DC bus, permanently starving the AC Pro. Here's the data, the architecture, and why it gets worse with more units."
@@ -19,12 +19,26 @@ keywords: ["ecoflow stream ultra ac pro parallel charging", "ecoflow battery imb
 | **Smart Meter** | Shelly Pro 3EM | Zero-export / feed-in control |
 | **Load** | go-e EV charger | ~1.4 kW at 6A single-phase |
 
-I purchased the AC Pro to expand my system from 1.92 kWh to 3.84 kWh, based on EcoFlow's [product page](https://eu.ecoflow.com/pages/stream-series-plug-in-solar-battery) claims:
+I purchased the AC Pro to expand my system from 1.92 kWh to 3.84 kWh, based on EcoFlow's [product page](https://www.ecoflow.com/us/stream-ultra-home-solar-system) claims:
 
-> *"Surplus solar energy automatically transfers between batteries"*
-> *"AI-driven load balancing automatically redirects energy from nearby units"*
+> *"Surplus solar energy automatically transfers between batteries across different rooms, maximizing solar utilization, boosting self-sufficiency, and reducing electricity costs."*
 
-After weeks of data collection, I've found that none of this holds up under any sustained household load. And it's not a firmware bug — it's a **hardware architecture problem**.
+> *"AI-driven load balancing automatically redirects energy from nearby units — keeping your fridge running on solar without interruption."*
+
+> *"Zero Solar Energy Waste — This straightforward DIY expansion method allows you to store surplus solar power for both daytime and nighttime household use."*
+
+Here are the actual screenshots from EcoFlow's product page (captured April 4, 2026):
+
+{{< gallery >}}
+  <img src="ecoflow-claim-surplus-transfer.png" class="grid-w50" alt="EcoFlow product page claiming surplus solar energy automatically transfers between batteries" />
+  <img src="ecoflow-claim-zero-waste.png" class="grid-w50" alt="EcoFlow product page claiming zero solar energy waste with expandable storage" />
+  <img src="ecoflow-claim-savings.png" class="grid-w50" alt="EcoFlow product page claiming the system saves money every day" />
+  <img src="ecoflow-claim-pricing.png" class="grid-w50" alt="EcoFlow Stream Ultra pricing page with surplus energy claims" />
+{{< /gallery >}}
+
+*Source: [ecoflow.com/us/stream-ultra-home-solar-system](https://www.ecoflow.com/us/stream-ultra-home-solar-system) — accessed April 4, 2026*
+
+After weeks of data collection, I've found that **none of this holds up under any sustained household load**. And it's not a firmware bug — it's a **hardware architecture problem**.
 
 ## The Architecture: A 1200W Straw for 2000W of Solar
 
