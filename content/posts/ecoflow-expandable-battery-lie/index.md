@@ -125,14 +125,12 @@ If you need more than 1.92 kWh of usable solar storage, look elsewhere. Anker SO
 fetch('/ecoflow-data/april-2026-data.json').then(r=>r.json()).then(DATA=>{
 
 const ann={
-  ev_start:{type:'line',xMin:1775559480000,xMax:1775559480000,borderColor:'rgba(96,165,250,0.6)',borderWidth:2,borderDash:[6,4],label:{display:true,content:'EV charging starts',position:'start',backgroundColor:'rgba(96,165,250,0.8)',font:{size:11}}},
-  bottleneck:{type:'line',xMin:1775558880000,xMax:1775558880000,borderColor:'rgba(234,179,8,0.5)',borderWidth:1.5,borderDash:[4,4],label:{display:true,content:'PV > 1200W',position:'start',backgroundColor:'rgba(234,179,8,0.7)',font:{size:10}}},
-  ultra98:{type:'line',xMin:1775571240000,xMax:1775571240000,borderColor:'rgba(34,197,94,0.6)',borderWidth:2,borderDash:[6,4],label:{display:true,content:'Ultra 98% — AC Pro 15%',position:'start',backgroundColor:'rgba(34,197,94,0.8)',font:{size:11}}},
-  curtail:{type:'line',xMin:1775571780000,xMax:1775571780000,borderColor:'rgba(239,68,68,0.7)',borderWidth:2,borderDash:[6,4],label:{display:true,content:'Panels shut down — AC Pro empty',position:'start',backgroundColor:'rgba(239,68,68,0.85)',font:{size:11}}},
-  ev_end:{type:'line',xMin:1775581800000,xMax:1775581800000,borderColor:'rgba(96,165,250,0.6)',borderWidth:2,borderDash:[6,4],label:{display:true,content:'EV charging ends',position:'start',backgroundColor:'rgba(96,165,250,0.8)',font:{size:11}}}
+  ev_start:{type:'line',xMin:1775550480000,xMax:1775550480000,borderColor:'rgba(96,165,250,0.5)',borderWidth:1.5,borderDash:[6,4],label:{display:true,content:'EV charging starts 11:28',position:'start',backgroundColor:'rgba(96,165,250,0.8)',font:{size:10},yAdjust:-0}},
+  curtail:{type:'line',xMin:1775563380000,xMax:1775563380000,borderColor:'rgba(239,68,68,0.6)',borderWidth:2,borderDash:[6,4],label:{display:true,content:'Panels shut down — AC Pro empty 15:03',position:'start',backgroundColor:'rgba(239,68,68,0.85)',font:{size:10},yAdjust:-0}},
+  ev_end:{type:'line',xMin:1775573400000,xMax:1775573400000,borderColor:'rgba(96,165,250,0.5)',borderWidth:1.5,borderDash:[6,4],label:{display:true,content:'EV charging ends 17:50',position:'start',backgroundColor:'rgba(96,165,250,0.8)',font:{size:10},yAdjust:-0}}
 };
 
-const timeX={type:'time',time:{unit:'hour',displayFormats:{hour:'HH:mm'},tooltipFormat:'HH:mm'},min:1775541600000,max:1775588400000,grid:{color:'rgba(51,65,85,0.5)'},ticks:{color:'#94a3b8'}};
+const timeX={type:'time',time:{unit:'hour',displayFormats:{hour:'HH:mm'},tooltipFormat:'HH:mm'},min:1775538000000,max:1775588400000,grid:{color:'rgba(51,65,85,0.5)'},ticks:{color:'#94a3b8'}};
 const baseY={grid:{color:'rgba(51,65,85,0.5)'},ticks:{color:'#94a3b8'}};
 
 function opts(yUnit,a){return{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#e2e8f0',usePointStyle:true,pointStyle:'circle',padding:16,font:{size:13}}},tooltip:{backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#e2e8f0',borderColor:'#334155',borderWidth:1,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y?.toFixed(c.parsed.y<10?1:0)+(yUnit||'')}},annotation:{annotations:a||{}}},scales:{x:timeX,y:{...baseY,min:0}}};}
