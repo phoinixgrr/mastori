@@ -133,6 +133,8 @@ If you need more than 1.92 kWh of usable solar storage, look elsewhere. Anker SO
 
 *All raw Prometheus data used in this post is available for download: [april-2026-data.json](/ecoflow-data/april-2026-data.json) — 1-minute resolution, verify everything yourself.*
 
+*Prefer a full-page interactive view? [Open the standalone data dashboard](/ecoflow-data/april-2026.html).*
+
 <script>
 fetch('/ecoflow-data/april-2026-data.json').then(r=>r.json()).then(DATA=>{
 
