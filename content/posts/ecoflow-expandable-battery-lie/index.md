@@ -3,8 +3,8 @@ title: "I Paid €620 for an EcoFlow Battery That Never Charges"
 date: 2026-04-07
 draft: true
 tags: ["ecoflow", "solar", "battery", "stream-ultra", "stream-ac-pro", "hardware-limitation", "consumer-rights"]
-summary: "EcoFlow says you can expand to 6 batteries. Here's what actually happens on a sunny day — with real data to prove it."
-keywords: ["ecoflow stream ultra battery imbalance", "ecoflow expandable lie", "ecoflow ac pro not charging", "ecoflow 1200W bottleneck", "ecoflow stream ultra review"]
+summary: "EcoFlow sells 'expandable' battery systems. I bought the expansion. After weeks of monitoring every watt, here's the truth: it doesn't work, they know it, and they don't care."
+keywords: ["ecoflow stream ultra battery imbalance", "ecoflow expandable lie", "ecoflow ac pro not charging", "ecoflow 1200W bottleneck", "ecoflow stream ultra review", "ecoflow stream ultra problems", "ecoflow alternative", "anker solix vs ecoflow", "zendure vs ecoflow"]
 ---
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
@@ -21,9 +21,15 @@ keywords: ["ecoflow stream ultra battery imbalance", "ecoflow expandable lie", "
 .clr-green{color:#22c55e} .clr-red{color:#ef4444} .clr-yellow{color:#eab308} .clr-orange{color:#f97316}
 </style>
 
-## The Promise
+If you're researching the EcoFlow Stream Ultra and considering adding expansion batteries — stop. Read this first. It could save you hundreds of euros and months of frustration.
 
-EcoFlow's website says:
+I bought the Stream AC Pro expansion battery (€620) based on EcoFlow's promises. After weeks of monitoring every watt with professional-grade telemetry, I can tell you: **the expansion doesn't work under normal use, EcoFlow knows it, and they don't care.**
+
+Everything below is backed by real data. No opinions, no guesswork — just measurements.
+
+## What EcoFlow Promises
+
+Their product page, right now, says:
 
 > *"Expandable capacity from 3.84 to 23kWh"*
 
@@ -31,109 +37,130 @@ EcoFlow's website says:
 
 > *"Surplus solar energy automatically transfers between batteries"*
 
-So I bought a Stream AC Pro (€620) to expand my Stream Ultra system. Two batteries, 4 solar panels, one goal: store more sun.
+They sell the Stream Ultra bundled with AC Pro units. They show happy graphics of energy flowing between devices. They take your money.
 
-## The Reality
+## What Actually Happens
 
-April 7, 2026. Perfect sunny day in Greece. Here's what happened:
+April 7, 2026. Clear sky over Athens. 12 kWh of solar energy produced. A textbook perfect day for a solar battery system.
 
 <div class="stat-grid">
   <div class="stat-card"><div class="stat-val clr-yellow">12 kWh</div><div class="stat-lbl">Solar produced</div></div>
   <div class="stat-card"><div class="stat-val clr-green">99.8%</div><div class="stat-lbl">Main battery (Ultra)</div></div>
   <div class="stat-card"><div class="stat-val clr-red">19.3%</div><div class="stat-lbl">Expansion battery (AC Pro)</div></div>
-  <div class="stat-card"><div class="stat-val clr-orange">1200W</div><div class="stat-lbl">Inverter bottleneck</div></div>
+  <div class="stat-card"><div class="stat-val clr-orange">€620</div><div class="stat-lbl">Wasted</div></div>
 </div>
 
-One battery charged to full. The other — the one I paid €620 for — went from 10% to 19% all day.
+The main battery charged to full. The expansion battery — the one I paid €620 for — went from 10% to 19%.
 
-**Same sun. Same system. Same house.**
+**On a perfect sunny day, the expansion battery got 1.3% of the available solar energy.**
 
 <div class="chart-wrap"><canvas id="chart1"></canvas></div>
 
-Both batteries start the day at ~10%. By afternoon, the main battery is at 99.8%. The expansion battery barely moved. Every data point is real, recorded by [Home Assistant](https://www.home-assistant.io/) at 1-minute intervals.
+This isn't a bad day. This isn't a misconfiguration. This is every single day. Both batteries start at the same level. One charges to 100%. The other flatlines. I've been watching this for weeks. The pattern never changes.
 
-## Why This Happens
+## The Hidden Bottleneck EcoFlow Doesn't Tell You About
 
-There's a 1200W inverter bottleneck inside the Stream Ultra. Solar energy can only reach the AC Pro through this inverter. But the inverter is already busy powering your home.
+Inside the Stream Ultra there's a 1200W inverter. It's the only path for solar energy to reach the expansion battery. But it's also the only path to power your home.
 
-It's like trying to fill two swimming pools through a garden hose that's already watering your lawn. The second pool never fills.
+Your home comes first. The inverter spends its entire 1200W capacity on household load. Nothing is left for the expansion battery.
+
+Think of it this way: you have two water tanks and one pipe. The pipe is already fully used watering your garden. The second tank? Bone dry. No matter how much rain falls on your roof.
 
 <div class="chart-wrap"><canvas id="chart2"></canvas></div>
 
-The gap between solar production and inverter output is energy that the panels actually generated — but the system **threw away** because the inverter is maxed out at 1200W.
+The panels produced nearly 2000W at peak. The inverter let through 1200W. The rest — **800W of perfectly good solar energy** — was thrown away. Not stored, not used, not exported. Wasted.
 
-## Where Does the Solar Energy Go?
+## The Expansion Battery Gets Nothing
 
 <div class="chart-wrap"><canvas id="chart3"></canvas></div>
 
-The inverter spends all 1200W powering the home. The main battery absorbs whatever surplus is left. And the expansion battery? Barely visible at the bottom. It received **0.16 kWh out of 12 kWh** produced — just 1.3% of available solar energy.
+The inverter is entirely consumed powering the home. The main battery absorbs whatever trickle of surplus remains. The expansion battery? It received **0.16 kWh out of 12 kWh** produced. That's not a rounding error. That's a product that doesn't do what it's sold to do.
 
-## Solar Panels Shut Down — While the Expansion Battery Sits Empty
+## It Gets Worse: The System Shuts Down Your Solar Panels
+
+This is the part that made me write this post.
 
 <div class="chart-wrap"><canvas id="chart4"></canvas></div>
 
-When the main battery hits 100% and the inverter is maxed, the system has nowhere to put the energy. So it **shuts down your solar panels entirely**. Meanwhile, the expansion battery is at 18% — empty and ready to charge — but the 1200W bottleneck won't let a single watt through.
+When the main battery fills up and the inverter is maxed out, the system has nowhere to put the energy. So instead of charging the expansion battery that's sitting there at 18%, **it shuts down all four solar panels.**
 
-## "Expandable to 6 Batteries" — Let's Do the Math
+Read that again. You paid for solar panels. You paid for an expansion battery. The panels are producing energy. The expansion battery is empty and ready. And the system's solution is to **turn everything off**.
 
-EcoFlow's marketing proudly announces you can expand to 6 batteries. They even sell the Stream Ultra X with "expandable to 23 kWh" in bold letters. Sounds incredible, right?
+This is not a bug. This is how EcoFlow designed it.
 
-Let's see what you're actually buying:
+## "Expandable to 6 Batteries" — The Most Expensive Joke in Solar
 
-| Setup | Cost | Total Storage | Usable From Solar | Dead Weight | Money Wasted |
-|---|---|---|---|---|---|
-| 1 Ultra + 1 AC Pro | ~€2,100 | 3.84 kWh | 1.92 kWh | **50%** | ~€620 |
-| 1 Ultra + 2 AC Pro | ~€2,720 | 5.76 kWh | 1.92 kWh | **67%** | ~€1,240 |
-| 1 Ultra + 5 AC Pro | ~€4,580 | 11.52 kWh | 1.92 kWh | **83%** | ~€3,100 |
+EcoFlow proudly markets "expandable to 6 batteries" and "expandable to 23 kWh" for the Ultra X. Let me show you what you'd actually be buying:
 
-With 6 batteries, you've spent over €4,500 — and **5 out of 6 batteries sit empty while the sun shines**. €3,100 worth of lithium doing absolutely nothing during peak solar hours. That's not an energy system. That's a very expensive shelf decoration.
+| Setup | You Pay | Storage You Get | Storage That Actually Works | Money Thrown Away |
+|---|---|---|---|---|
+| 1 Ultra + 1 AC Pro | ~€2,100 | 3.84 kWh | 1.92 kWh | **€620** |
+| 1 Ultra + 2 AC Pro | ~€2,720 | 5.76 kWh | 1.92 kWh | **€1,240** |
+| 1 Ultra + 5 AC Pro | ~€4,580 | 11.52 kWh | 1.92 kWh | **€3,100** |
 
-But wait — it gets even better. EcoFlow's flagship Stream Ultra X boasts "expandable to 23 kWh." That's 6 units at 3.84 kWh each, all sharing the same 1200W inverter bus with your house. Let's imagine you actually bought that:
+**With 6 batteries, 5 sit empty while the sun shines.** You've spent €3,100 on lithium that does nothing during peak solar hours. Congratulations — you've bought the world's most expensive paperweight collection.
 
-- **23 kWh of storage**, one 1200W straw to fill it
-- Under any household load, **only the first unit charges from solar**
-- Even with zero load, charging 5 empty batteries through a 1200W inverter at ~87% efficiency takes **over 18 hours** — longer than the longest summer solar day in Greece
-- You'd need **two consecutive perfect sunny days with zero home consumption** just to fill the system once
-- Total investment: north of **€8,000** for storage you physically cannot use
+And for the grand finale: the Stream Ultra X advertises **"expandable to 23 kWh."** That's 6 units at 3.84 kWh each, all dependent on one 1200W inverter. Even with **zero home consumption** (so, you've left for vacation), charging 5 empty batteries through that 1200W inverter takes over **18 hours**. That's longer than the longest summer solar day in Greece. You would need two consecutive perfect sunny days in an empty house just to fill the system once.
 
-The "expandable to 23 kWh" claim is technically true in the same way a bicycle is "expandable to highway speed" — the hardware supports it, the physics don't.
+The "expandable to 23 kWh" claim is technically true in the same way a bicycle is "expandable to highway speed." The hardware allows it. The physics make it useless.
 
-## EcoFlow Knows
+## EcoFlow Knows. They Don't Care.
 
-I reported this to EcoFlow EU Support. Their R&D team responded:
+I didn't write an angry tweet. I did the work. I collected weeks of data, built monitoring dashboards, documented every metric, and submitted a detailed technical report to EcoFlow EU Support with screenshots, graphs, and specific sensor readings.
+
+Their R&D team eventually responded:
 
 > *"The inverter limit of the Stream Ultra itself is only 1200W. The transfer of PV power between different devices must go through the inverter for conversion. The remaining solar energy can only be used to charge the Stream Ultra directly."*
 
-Their suggested solution? **"Remove or reduce the load."**
+**They confirmed it. In writing. It's a design limitation.**
 
-That's like telling a car owner to stop driving so the engine lasts longer. The whole point of a solar battery system is to power your home AND store surplus.
+And their suggested fix? I quote:
 
-## Thinking of Buying Into the Stream Platform?
+> **"Remove or reduce the load."**
 
-Don't let the "expandable" marketing fool you. Before you invest, understand what you're actually getting:
+Unplug your appliances so the battery can charge. Turn off your home so the solar system can work. That was their actual, official, R&D-approved answer.
 
-- **The first unit works great.** A single Stream Ultra with solar panels is a solid product. No complaints there.
-- **The moment you expand, the architecture breaks.** Every additional battery you buy depends on that same 1200W inverter to receive solar charge. Under any normal household load, it can't.
-- **You're not buying storage — you're buying dead weight.** An AC Pro can only charge from solar when your home draws almost nothing. That's not how homes work.
-- **The more you expand, the worse it gets.** Two batteries? 50% dead. Three? 67%. Six? 83% of your investment sits idle during peak solar hours.
-- **There is no firmware fix.** This is a hardware architecture limitation. The 1200W inverter is a physical bottleneck. EcoFlow's own R&D team confirmed it.
+I then requested a reasonable resolution — an exchange for a Stream Ultra X (same total capacity in a single unit, no bottleneck). Not a refund. Not a lawsuit. Just a product that works.
 
-If you need more than 1.92 kWh of usable solar storage, look elsewhere. Anker SOLIX, Zendure, Marstek, and others offer balcony solar systems with DC-coupled expansion batteries that don't suffer from this bottleneck. Do your research — and don't trust "expandable" marketing without understanding the architecture behind it.
+**Weeks of silence.** Then a generic reply restating the same technical explanation. No resolution offered. No escalation. No acknowledgment that selling "expandable" storage that can't actually expand might be a problem.
+
+This is not a company that stands behind its products. This is a company that takes your money and reads from a script when you complain.
+
+## What You Should Buy Instead
+
+I'm not going to pretend I have all the answers, but I've done the research. Here's what separates working expansion from EcoFlow's broken architecture:
+
+**The key term is DC-coupled expansion.** That means expansion batteries connect directly to the solar charge controller, not through the inverter. No bottleneck. All batteries charge equally.
+
+Products worth investigating:
+
+- **[Anker SOLIX](https://www.anker.com/solix)** — Their Solarbank 2 series uses DC-coupled battery expansion. Add batteries, they actually charge. Novel concept.
+- **[Zendure](https://www.zendure.com/)** — SolarFlow Hub with direct DC battery expansion. Multiple batteries share the DC bus, not a single inverter bottleneck.
+- **[Marstek](https://www.marstek.com/)** — Jupiter series with DC-coupled expansion packs. Same principle — batteries connect where the energy actually is.
+
+The common thread: these companies understood that "expandable" means the expansion should work. EcoFlow, apparently, did not.
+
+**Do your own research.** Read spec sheets. Ask specifically: *"When I add a second battery, does it charge through the inverter or directly from DC?"* If the answer is "through the inverter" — walk away.
 
 ## If You Already Own This System
 
-1. **Check your data.** Compare the SoC of both batteries during a sunny day with normal household load. The gap tells the story.
-2. **Report to EcoFlow.** Reference the 1200W inverter bottleneck. They've already confirmed it internally.
-3. **Know your rights.** EU consumers have a 2-year legal guarantee. Products must work as advertised.
-4. **Share this.** The more visibility, the more pressure for a fix — firmware or hardware.
+You're not stuck. You have options:
+
+1. **Monitor your data.** If you have Home Assistant, compare both battery SoC values during a sunny day with normal household load. The divergence is immediate and obvious.
+
+2. **File a complaint with EcoFlow** referencing the 1200W inverter bottleneck. They've confirmed it in writing to me. They can't deny it to you.
+
+3. **Exercise your EU consumer rights.** Under [EU Directive 2019/771](https://eur-lex.europa.eu/eli/dir/2019/771/oj/eng), products sold in the EU must conform to the seller's public advertising. "Expandable" and "surplus automatically transfers" are specific, verifiable claims. When the product doesn't deliver, you're entitled to repair, replacement, or refund. The burden of proof is on the seller, not you.
+
+4. **Share this post.** Every person who sees this data before buying is one fewer person learning the hard way. EcoFlow's marketing budget is massive. The only counter is visibility.
 
 ---
 
-*For the full technical deep-dive (architecture diagrams, BMS analysis, firmware workaround proposals): [The Parallel Battery Imbalance Nobody Warns You About](/posts/ecoflow-parallel-battery-imbalance/)*
+*Want the full technical deep-dive with architecture diagrams, BMS chip analysis, and firmware workaround proposals? Read: [The Parallel Battery Imbalance Nobody Warns You About](/posts/ecoflow-parallel-battery-imbalance/)*
 
-*All raw Prometheus data used in this post is available for download: [april-2026-data.json](/ecoflow-data/april-2026-data.json) — 1-minute resolution, verify everything yourself.*
+*All raw data (Prometheus, 1-minute resolution) is available for download — verify everything yourself: [april-2026-data.json](/ecoflow-data/april-2026-data.json)*
 
-*Prefer a full-page interactive view? [Open the standalone data dashboard](/ecoflow-data/april-2026.html).*
+*Prefer a full-page interactive view? [Open the standalone data dashboard](/ecoflow-data/april-2026.html)*
 
 <script>
 fetch('/ecoflow-data/april-2026-data.json').then(r=>r.json()).then(DATA=>{
