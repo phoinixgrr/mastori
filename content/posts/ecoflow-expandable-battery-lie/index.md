@@ -74,17 +74,29 @@ The inverter spends all 1200W powering the home. The main battery absorbs whatev
 
 When the main battery hits 100% and the inverter is maxed, the system has nowhere to put the energy. So it **shuts down your solar panels entirely**. Meanwhile, the expansion battery is at 18% — empty and ready to charge — but the 1200W bottleneck won't let a single watt through.
 
-## What About 6 Batteries?
+## "Expandable to 6 Batteries" — Let's Do the Math
 
-EcoFlow markets "expandable to 6 batteries." Let's do the math:
+EcoFlow's marketing proudly announces you can expand to 6 batteries. They even sell the Stream Ultra X with "expandable to 23 kWh" in bold letters. Sounds incredible, right?
 
-| Setup | Total Storage | Usable From Solar | Dead Weight |
-|---|---|---|---|
-| 1 Ultra + 1 AC Pro | 3.84 kWh | 1.92 kWh | **50%** |
-| 1 Ultra + 2 AC Pro | 5.76 kWh | 1.92 kWh | **67%** |
-| 1 Ultra + 5 AC Pro | 11.52 kWh | 1.92 kWh | **83%** |
+Let's see what you're actually buying:
 
-With 6 batteries, **5 sit empty while the sun shines**. The 1200W inverter is the only path, and it's already taken.
+| Setup | Cost | Total Storage | Usable From Solar | Dead Weight | Money Wasted |
+|---|---|---|---|---|---|
+| 1 Ultra + 1 AC Pro | ~€2,100 | 3.84 kWh | 1.92 kWh | **50%** | ~€620 |
+| 1 Ultra + 2 AC Pro | ~€2,720 | 5.76 kWh | 1.92 kWh | **67%** | ~€1,240 |
+| 1 Ultra + 5 AC Pro | ~€4,580 | 11.52 kWh | 1.92 kWh | **83%** | ~€3,100 |
+
+With 6 batteries, you've spent over €4,500 — and **5 out of 6 batteries sit empty while the sun shines**. €3,100 worth of lithium doing absolutely nothing during peak solar hours. That's not an energy system. That's a very expensive shelf decoration.
+
+But wait — it gets even better. EcoFlow's flagship Stream Ultra X boasts "expandable to 23 kWh." That's 6 units at 3.84 kWh each, all sharing the same 1200W inverter bus with your house. Let's imagine you actually bought that:
+
+- **23 kWh of storage**, one 1200W straw to fill it
+- Under any household load, **only the first unit charges from solar**
+- Even with zero load, charging 5 empty batteries through a 1200W inverter at ~87% efficiency takes **over 18 hours** — longer than the longest summer solar day in Greece
+- You'd need **two consecutive perfect sunny days with zero home consumption** just to fill the system once
+- Total investment: north of **€8,000** for storage you physically cannot use
+
+The "expandable to 23 kWh" claim is technically true in the same way a bicycle is "expandable to highway speed" — the hardware supports it, the physics don't.
 
 ## EcoFlow Knows
 
