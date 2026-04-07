@@ -96,13 +96,19 @@ Their suggested solution? **"Remove or reduce the load."**
 
 That's like telling a car owner to stop driving so the engine lasts longer. The whole point of a solar battery system is to power your home AND store surplus.
 
-## What I'm Asking For
+## Thinking of Buying Into the Stream Platform?
 
-I've requested EcoFlow exchange my Stream Ultra for a **Stream Ultra X** — their newer model with double battery capacity (3.84 kWh in a single unit), eliminating the inter-device bottleneck entirely. A minimal concession for a product that doesn't work as advertised.
+Don't let the "expandable" marketing fool you. Before you invest, understand what you're actually getting:
 
-Under [EU Directive 2019/771](https://eur-lex.europa.eu/eli/dir/2019/771/oj/eng), products must conform to the seller's public advertising. "Expandable" means expandable. "Surplus automatically transfers" means it transfers. If it doesn't — that's non-conformity, and consumers have rights.
+- **The first unit works great.** A single Stream Ultra with solar panels is a solid product. No complaints there.
+- **The moment you expand, the architecture breaks.** Every additional battery you buy depends on that same 1200W inverter to receive solar charge. Under any normal household load, it can't.
+- **You're not buying storage — you're buying dead weight.** An AC Pro can only charge from solar when your home draws almost nothing. That's not how homes work.
+- **The more you expand, the worse it gets.** Two batteries? 50% dead. Three? 67%. Six? 83% of your investment sits idle during peak solar hours.
+- **There is no firmware fix.** This is a hardware architecture limitation. The 1200W inverter is a physical bottleneck. EcoFlow's own R&D team confirmed it.
 
-## If You Own This System
+If you need more than 1.92 kWh of storage, consider a **single larger unit** (like the Stream Ultra X with 3.84 kWh) instead of expanding with AC Pro units. One battery, no bottleneck, no wasted solar. It's more expensive upfront — but at least it works as advertised.
+
+## If You Already Own This System
 
 1. **Check your data.** Compare the SoC of both batteries during a sunny day with normal household load. The gap tells the story.
 2. **Report to EcoFlow.** Reference the 1200W inverter bottleneck. They've already confirmed it internally.
