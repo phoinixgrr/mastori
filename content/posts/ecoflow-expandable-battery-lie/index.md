@@ -1,7 +1,10 @@
 ---
 title: "I Paid €620 for an EcoFlow Battery That Never Charges"
 date: 2026-04-07
-draft: true
+draft: false
+_build:
+  list: never
+  render: always
 tags: ["ecoflow", "solar", "battery", "stream-ultra", "stream-ac-pro", "hardware-limitation", "consumer-rights"]
 summary: "EcoFlow sells 'expandable' battery systems. I bought the expansion. After weeks of monitoring every watt, here's the truth: it doesn't work, they know it, and they don't care."
 keywords: ["ecoflow stream ultra battery imbalance", "ecoflow expandable lie", "ecoflow ac pro not charging", "ecoflow 1200W bottleneck", "ecoflow stream ultra review", "ecoflow stream ultra problems", "ecoflow alternative", "anker solix vs ecoflow", "zendure vs ecoflow"]
@@ -138,9 +141,9 @@ I'm not going to pretend I have all the answers, but I've done the research. Her
 
 Products worth investigating:
 
-- **[Anker SOLIX](https://www.anker.com/solix)** — Their Solarbank 2 series uses DC-coupled battery expansion. Add batteries, they actually charge. Novel concept.
-- **[Zendure](https://www.zendure.com/)** — SolarFlow Hub with direct DC battery expansion. Multiple batteries share the DC bus, not a single inverter bottleneck.
-- **[Marstek](https://www.marstek.com/)** — Jupiter series with DC-coupled expansion packs. Same principle — batteries connect where the energy actually is.
+- **Anker SOLIX** — Their Solarbank 2 series uses DC-coupled battery expansion. Add batteries, they actually charge. Novel concept.
+- **Zendure** — SolarFlow Hub with direct DC battery expansion. Multiple batteries share the DC bus, not a single inverter bottleneck.
+- **Marstek** — Jupiter series with DC-coupled expansion packs. Same principle — batteries connect where the energy actually is.
 
 The common thread: these companies understood that "expandable" means the expansion should work. EcoFlow, apparently, did not.
 
