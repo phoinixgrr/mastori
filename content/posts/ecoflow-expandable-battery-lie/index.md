@@ -60,13 +60,13 @@ It's like trying to fill two swimming pools through a garden hose that's already
 
 <div class="chart-wrap"><canvas id="chart2"></canvas></div>
 
-The yellow area is what your panels produce. The orange line is what the inverter allows through. See that gap? That's solar energy your panels generate but the system **throws away** because the inverter is maxed out at 1200W.
+The gap between solar production and inverter output is energy that the panels actually generated — but the system **threw away** because the inverter is maxed out at 1200W.
 
 ## Where Does the Solar Energy Go?
 
 <div class="chart-wrap"><canvas id="chart3"></canvas></div>
 
-The purple line is the inverter busy powering your home — right at the 1200W limit. Green is charge flowing to the main battery. And the red line? That's the expansion battery. Barely visible. It received **0.16 kWh out of 12 kWh** produced — just 1.3% of available solar energy.
+The inverter spends all 1200W powering the home. The main battery absorbs whatever surplus is left. And the expansion battery? Barely visible at the bottom. It received **0.16 kWh out of 12 kWh** produced — just 1.3% of available solar energy.
 
 ## Solar Panels Shut Down — While the Expansion Battery Sits Empty
 
@@ -119,7 +119,7 @@ If you need more than 1.92 kWh of usable solar storage, look elsewhere. Anker SO
 
 *For the full technical deep-dive (architecture diagrams, BMS analysis, firmware workaround proposals): [The Parallel Battery Imbalance Nobody Warns You About](/posts/ecoflow-parallel-battery-imbalance/)*
 
-*I will update this post as my case with EcoFlow progresses.*
+*All raw Prometheus data used in this post is available for download: [april-2026-data.json](/ecoflow-data/april-2026-data.json) — 1-minute resolution, verify everything yourself.*
 
 <script>
 fetch('/ecoflow-data/april-2026-data.json').then(r=>r.json()).then(DATA=>{
