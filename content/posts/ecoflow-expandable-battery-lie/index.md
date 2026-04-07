@@ -12,8 +12,11 @@ keywords: ["ecoflow stream ultra battery imbalance", "ecoflow expandable lie", "
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
 
 <style>
-.chart-wrap { position:relative; background:var(--color-neutral-800,#1e293b); border-radius:12px; padding:16px; margin:24px 0; height:400px; }
+.chart-wrap { position:relative; background:var(--color-neutral-800,#1e293b); border-radius:12px; padding:16px; margin:24px 0; height:400px; cursor:pointer; transition:all 0.3s ease; }
+.chart-wrap::after { content:'Click to expand'; position:absolute; top:8px; right:12px; font-size:0.7em; opacity:0.4; pointer-events:none; }
 .chart-wrap canvas { max-height:100%; }
+.chart-wrap.fullscreen { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:9999; margin:0; border-radius:0; padding:24px; cursor:zoom-out; }
+.chart-wrap.fullscreen::after { content:'Click to close'; opacity:0.6; }
 .stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin:24px 0; }
 .stat-card { background:var(--color-neutral-800,#1e293b); border-radius:12px; padding:16px; text-align:center; }
 .stat-val { font-size:1.8em; font-weight:700; }
@@ -187,4 +190,12 @@ new Chart('chart3',{type:'line',data:{datasets:[ds(DATA.inverter,'Powering the H
 new Chart('chart4',{type:'line',data:{datasets:[ds(DATA.pv1,'Panel 1','#facc15',false,2),ds(DATA.pv2,'Panel 2','#fb923c',false,2),ds(DATA.pv3,'Panel 3','#f87171',false,2),ds(DATA.pv4,'Panel 4','#a78bfa',false,2)]},options:{...opts('W',ann),scales:{x:timeX,y:{...baseY,min:0}}}});
 
 });
+document.querySelectorAll('.chart-wrap').forEach(w=>{
+  w.addEventListener('click',()=>{
+    w.classList.toggle('fullscreen');
+    const c=Chart.getChart(w.querySelector('canvas'));
+    if(c)setTimeout(()=>c.resize(),50);
+  });
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.chart-wrap.fullscreen').forEach(w=>{w.classList.remove('fullscreen');const c=Chart.getChart(w.querySelector('canvas'));if(c)setTimeout(()=>c.resize(),50);});});
 </script>
