@@ -149,8 +149,7 @@ const baseY={grid:{color:'rgba(51,65,85,0.5)'},ticks:{color:'#94a3b8'}};
 
 function opts(yUnit,a){return{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#e2e8f0',usePointStyle:true,pointStyle:'circle',padding:16,font:{size:13}}},tooltip:{backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#e2e8f0',borderColor:'#334155',borderWidth:1,callbacks:{label:c=>c.dataset.label+': '+c.parsed.y?.toFixed(c.parsed.y<10?1:0)+(yUnit||'')}},annotation:{annotations:a||{}}},scales:{x:timeX,y:{...baseY,min:0}}};}
 
-function clean(d){return d.filter((p,i,a)=>{if(p[1]===0&&i>0&&i<a.length-1&&a[i-1][1]>1&&a[i+1][1]>1)return false;return true;});}
-function ds(d,l,c,fill=false,w=2.5){return{data:clean(d).map(p=>({x:p[0],y:p[1]})),label:l,borderColor:c,backgroundColor:c+'33',borderWidth:w,pointRadius:0,fill:fill,tension:0,spanGaps:true};}
+function ds(d,l,c,fill=false,w=2.5){return{data:d.map(p=>({x:p[0],y:p[1]})),label:l,borderColor:c,backgroundColor:c+'33',borderWidth:w,pointRadius:0,fill:fill,tension:0};}
 
 new Chart('chart1',{type:'line',data:{datasets:[ds(DATA.ultra_soc,'Stream Ultra — Main Battery','#22c55e',true,3),ds(DATA.acpro_soc,'Stream AC Pro — Expansion Battery','#ef4444',true,3)]},options:{...opts('%',ann),scales:{x:timeX,y:{...baseY,min:0,max:100}}}});
 
