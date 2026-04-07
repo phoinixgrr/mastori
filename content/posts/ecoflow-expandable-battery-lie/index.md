@@ -106,7 +106,7 @@ Don't let the "expandable" marketing fool you. Before you invest, understand wha
 - **The more you expand, the worse it gets.** Two batteries? 50% dead. Three? 67%. Six? 83% of your investment sits idle during peak solar hours.
 - **There is no firmware fix.** This is a hardware architecture limitation. The 1200W inverter is a physical bottleneck. EcoFlow's own R&D team confirmed it.
 
-If you need more than 1.92 kWh of storage, consider a **single larger unit** (like the Stream Ultra X with 3.84 kWh) instead of expanding with AC Pro units. One battery, no bottleneck, no wasted solar. It's more expensive upfront — but at least it works as advertised.
+If you need more than 1.92 kWh of usable solar storage, look elsewhere. Anker SOLIX, Zendure, Marstek, and others offer balcony solar systems with DC-coupled expansion batteries that don't suffer from this bottleneck. Do your research — and don't trust "expandable" marketing without understanding the architecture behind it.
 
 ## If You Already Own This System
 
