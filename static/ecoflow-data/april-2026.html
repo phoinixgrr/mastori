@@ -118,9 +118,10 @@ const commonOpts = (yLabel, yUnit, ann) => ({
     title:{display:!!yLabel, text:yLabel, color:'#94a3b8'} }}
 });
 
+function clean(d){return d.filter((p,i,a)=>{if(p[1]===0&&i>0&&i<a.length-1&&a[i-1][1]>1&&a[i+1][1]>1)return false;return true;});}
 function ds(data, label, color, fill=false, bw=2.5) {
-  return { data: data.map(d=>({x:d[0],y:d[1]})), label, borderColor:color, backgroundColor:color+'33',
-    borderWidth:bw, pointRadius:0, fill, tension:0.2 };
+  return { data: clean(data).map(d=>({x:d[0],y:d[1]})), label, borderColor:color, backgroundColor:color+'33',
+    borderWidth:bw, pointRadius:0, fill, tension:0, spanGaps:true };
 }
 
 // Chart 1: Battery SoC
