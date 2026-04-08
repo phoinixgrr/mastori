@@ -32,6 +32,20 @@ If you're considering adding expansion batteries to an EcoFlow Stream Ultra syst
 
 Everything below is backed by real measurements from [Home Assistant](https://www.home-assistant.io/) with Prometheus at 1-minute resolution. The raw data is available for download at the bottom of this post — verify everything yourself.
 
+## My Setup
+
+| Component | Role |
+|---|---|
+| **EcoFlow Stream Ultra** | Main unit — 4 MPPT solar inputs, 1200W inverter, 1.92 kWh LFP battery |
+| **EcoFlow Stream AC Pro** | Expansion battery — 1.92 kWh LFP, no solar inputs, no independent inverter |
+| **EcoFlow Parallel Cable** | Proprietary AC cable connecting Ultra to AC Pro |
+| **4× 520W bifacial panels** | ~2 kWp total, connected to the Ultra's 4 MPPTs |
+| **Shelly Pro 3EM** | Grid meter for zero-export control |
+
+The AC Pro has no solar inputs of its own. It connects to the Ultra via a proprietary AC parallel cable. The **only** path for solar energy to reach the AC Pro is: panels → Ultra's DC bus → Ultra's 1200W inverter → AC cable → AC Pro's inverter → AC Pro's battery. Two conversions (DC→AC→DC), through a shared 1200W inverter.
+
+I purchased the AC Pro (€620) to double my storage from 1.92 kWh to 3.84 kWh, based on EcoFlow's marketing of seamless expansion.
+
 ## What EcoFlow Markets
 
 Their product page says:
