@@ -53,6 +53,12 @@ Real-time data from our EcoFlow battery system, updated every 5 minutes.
   <div id="power-error" class="solar-chart-error" style="display:none;">Could not load power data.</div>
 </div>
 
+<div class="solar-chart-card">
+  <h3>PV String Production</h3>
+  <div class="solar-chart-desc">Individual solar panel string output. Each string connects to a separate MPPT input on the Stream Ultra.</div>
+  <canvas id="chart-pv-strings"></canvas>
+</div>
+
 <p style="text-align:center; color:#9ca3af; font-size:0.82rem; margin-top:16px;">
   Charts refresh every 5 minutes. Data from Prometheus — interactive, no external services, no tracking.
 </p>
@@ -170,6 +176,47 @@ Real-time data from our EcoFlow battery system, updated every 5 minutes.
               pointRadius: 0
             }
           ]
+        },
+        options: {
+          responsive: true,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { labels: { color: '#e2e8f0', usePointStyle: true, pointStyle: 'line' } },
+            tooltip: {
+              mode: 'index', intersect: false,
+              callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + Math.round(ctx.parsed.y) + ' W'; } }
+            }
+          },
+          scales: {
+            x: timeAxis(),
+            y: {
+              min: 0,
+              ticks: { color: tickColor, callback: function(v) { return v + ' W'; } },
+              grid: { color: gridColor }
+            }
+          },
+          spanGaps: true
+        }
+      });
+      // PV Strings chart
+      var pvColors = ['#eab308', '#22c55e', '#3b82f6', '#a855f7'];
+      var pvLabels = ['PV 1', 'PV 2', 'PV 3', 'PV 4'];
+      var pvKeys = ['pv1', 'pv2', 'pv3', 'pv4'];
+      new Chart(document.getElementById('chart-pv-strings'), {
+        type: 'line',
+        data: {
+          datasets: pvKeys.map(function(key, i) {
+            return {
+              label: pvLabels[i],
+              data: toChartData(d[key]),
+              borderColor: pvColors[i],
+              backgroundColor: pvColors[i].replace(')', ',0.08)').replace('rgb', 'rgba'),
+              borderWidth: 2,
+              fill: true,
+              tension: 0.3,
+              pointRadius: 0
+            };
+          })
         },
         options: {
           responsive: true,
