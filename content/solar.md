@@ -60,7 +60,7 @@ This home runs on a balcony solar system in Athens, Greece — 4 x 520W bifacial
 </div>
 
 <p style="text-align:center; color:#9ca3af; font-size:0.82rem; margin-top:16px;">
-  Charts refresh every 5 minutes. Data from Prometheus — interactive, no external services, no tracking.
+  Charts refresh every 5 minutes. Data from Prometheus.
 </p>
 
 <script>
