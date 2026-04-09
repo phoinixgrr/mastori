@@ -75,7 +75,7 @@ This home runs on a balcony solar system in Athens, Greece — 4 x 520W bifacial
   function timeAxis() {
     return {
       type: 'time',
-      time: { unit: 'hour', displayFormats: { hour: 'HH:mm' }, tooltipFormat: 'HH:mm' },
+      time: { unit: 'hour', displayFormats: { hour: 'HH:mm' }, tooltipFormat: 'MMM d, HH:mm' },
       ticks: { color: tickColor, maxTicksLimit: 12 },
       grid: { color: gridColor }
     };
@@ -84,6 +84,12 @@ This home runs on a balcony solar system in Athens, Greece — 4 x 520W bifacial
   fetch('/api/solar-today.json?' + Date.now())
     .then(function(r) { return r.json(); })
     .then(function(d) {
+      // Show timestamp on chart titles
+      var updated = d.ts ? d.ts.replace('T', ' ').slice(0, 16) : '';
+      var badge = updated ? ' <span style="font-weight:400;font-size:0.72em;color:#94a3b8;">— last 24h, updated ' + updated + '</span>' : '';
+      document.querySelectorAll('.solar-chart-card h3').forEach(function(h) {
+        h.innerHTML = h.textContent + badge;
+      });
       // PV Strings — stacked area
       var pvColors = ['#eab308', '#22c55e', '#3b82f6', '#a855f7'];
       var pvBgs = ['rgba(234,179,8,0.6)', 'rgba(34,197,94,0.6)', 'rgba(59,130,246,0.6)', 'rgba(168,85,247,0.6)'];
