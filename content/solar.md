@@ -85,7 +85,12 @@ This home runs on a balcony solar system in Athens, Greece — 4 x 520W bifacial
     .then(function(r) { return r.json(); })
     .then(function(d) {
       // Show timestamp on chart titles
-      var updated = d.ts ? d.ts.replace('T', ' ').slice(0, 16) : '';
+      var updated = '';
+      if (d.ts) {
+        var p = d.ts.split('T');
+        var ymd = p[0].split('-');
+        updated = ymd[2] + '/' + ymd[1] + '/' + ymd[0] + ' ' + p[1].slice(0,5);
+      }
       var badge = updated ? ' <span style="font-weight:400;font-size:0.72em;color:#94a3b8;">— last 24h, updated ' + updated + '</span>' : '';
       document.querySelectorAll('.solar-chart-card h3').forEach(function(h) {
         h.innerHTML = h.textContent + badge;
