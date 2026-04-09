@@ -37,7 +37,7 @@ Everything below is backed by real measurements from [Home Assistant](https://ww
 | Component | Role |
 |---|---|
 | **EcoFlow Stream Ultra** | Main unit — 4 MPPT solar inputs, 1200W inverter, 1.92 kWh LFP battery |
-| **EcoFlow Stream AC Pro** | Expansion battery — 1.92 kWh LFP, 800W inverter, no solar inputs |
+| **EcoFlow Stream AC Pro** | Expansion battery — 1.92 kWh LFP, built-in inverter, no solar inputs |
 | **EcoFlow Parallel Cable** | Proprietary AC cable connecting Ultra to AC Pro |
 | **4× 520W bifacial panels** | ~2 kWp total, connected to the Ultra's 4 MPPTs |
 | **Shelly Pro 3EM** | Grid meter for zero-export control |
