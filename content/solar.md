@@ -4,14 +4,13 @@ layout: "simple"
 sharingLinks: false
 showComments: false
 build:
-  list: never
   render: always
   publishResources: true
 ---
 
 <div id="solar-live-about"></div>
 
-This home runs on a balcony solar system in Athens, Greece — 4 x 520W bifacial panels (~2 kWp) feeding an inverter with 4 MPPT inputs and 1.92 kWh battery, paired with a 1.92 kWh expansion battery for a combined 3.84 kWh storage. A Shelly Pro 3EM monitors grid consumption. Data is collected via Prometheus, and these charts update every 5 minutes.
+This blog is powered by a balcony solar system in Athens, Greece — 4 x 520W bifacial panels (~2 kWp) feeding an inverter with 4 MPPT inputs and 1.92 kWh battery, paired with a 1.92 kWh expansion battery for a combined 3.84 kWh storage. A Shelly Pro 3EM monitors grid consumption. Data is collected via Prometheus, and these charts update every 5 minutes.
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
