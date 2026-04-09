@@ -40,6 +40,12 @@ Real-time data from our EcoFlow battery system, updated every 5 minutes.
 </style>
 
 <div class="solar-chart-card">
+  <h3>PV String Production</h3>
+  <div class="solar-chart-desc">Individual solar panel string output (stacked). Each string connects to a separate MPPT input on the Stream Ultra.</div>
+  <canvas id="chart-pv-strings"></canvas>
+</div>
+
+<div class="solar-chart-card">
   <h3>Battery State of Charge</h3>
   <div class="solar-chart-desc">How the batteries charged and discharged today. <strong>Combined</strong> is the overall system capacity.</div>
   <canvas id="chart-soc"></canvas>
@@ -51,12 +57,6 @@ Real-time data from our EcoFlow battery system, updated every 5 minutes.
   <div class="solar-chart-desc">Where the energy comes from: <strong style="color:#eab308;">PV Production</strong>, <strong style="color:#22c55e;">Battery to Home</strong>, and <strong style="color:#ef4444;">Grid Import</strong>.</div>
   <canvas id="chart-power"></canvas>
   <div id="power-error" class="solar-chart-error" style="display:none;">Could not load power data.</div>
-</div>
-
-<div class="solar-chart-card">
-  <h3>PV String Production</h3>
-  <div class="solar-chart-desc">Individual solar panel string output. Each string connects to a separate MPPT input on the Stream Ultra.</div>
-  <canvas id="chart-pv-strings"></canvas>
 </div>
 
 <p style="text-align:center; color:#9ca3af; font-size:0.82rem; margin-top:16px;">
@@ -84,6 +84,56 @@ Real-time data from our EcoFlow battery system, updated every 5 minutes.
   fetch('/api/solar-today.json?' + Date.now())
     .then(function(r) { return r.json(); })
     .then(function(d) {
+      // PV Strings chart — stacked area
+      var pvColors = ['#eab308', '#22c55e', '#3b82f6', '#a855f7'];
+      var pvBgs = ['rgba(234,179,8,0.6)', 'rgba(34,197,94,0.6)', 'rgba(59,130,246,0.6)', 'rgba(168,85,247,0.6)'];
+      var pvLabels = ['PV 1', 'PV 2', 'PV 3', 'PV 4'];
+      var pvKeys = ['pv1', 'pv2', 'pv3', 'pv4'];
+      new Chart(document.getElementById('chart-pv-strings'), {
+        type: 'line',
+        data: {
+          datasets: pvKeys.map(function(key, i) {
+            return {
+              label: pvLabels[i],
+              data: toChartData(d[key]),
+              borderColor: pvColors[i],
+              backgroundColor: pvBgs[i],
+              borderWidth: 1.5,
+              fill: 'stack',
+              tension: 0.3,
+              pointRadius: 0
+            };
+          })
+        },
+        options: {
+          responsive: true,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { labels: { color: '#e2e8f0', usePointStyle: true, pointStyle: 'rect' } },
+            tooltip: {
+              mode: 'index', intersect: false,
+              callbacks: {
+                label: function(ctx) { return ctx.dataset.label + ': ' + Math.round(ctx.parsed.y) + ' W'; },
+                footer: function(items) {
+                  var sum = items.reduce(function(s, i) { return s + i.parsed.y; }, 0);
+                  return 'Total: ' + Math.round(sum) + ' W';
+                }
+              }
+            }
+          },
+          scales: {
+            x: timeAxis(),
+            y: {
+              stacked: true,
+              min: 0,
+              ticks: { color: tickColor, callback: function(v) { return v + ' W'; } },
+              grid: { color: gridColor }
+            }
+          },
+          spanGaps: true
+        }
+      });
+
       // Battery SOC chart
       new Chart(document.getElementById('chart-soc'), {
         type: 'line',
@@ -176,47 +226,6 @@ Real-time data from our EcoFlow battery system, updated every 5 minutes.
               pointRadius: 0
             }
           ]
-        },
-        options: {
-          responsive: true,
-          interaction: { mode: 'index', intersect: false },
-          plugins: {
-            legend: { labels: { color: '#e2e8f0', usePointStyle: true, pointStyle: 'line' } },
-            tooltip: {
-              mode: 'index', intersect: false,
-              callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + Math.round(ctx.parsed.y) + ' W'; } }
-            }
-          },
-          scales: {
-            x: timeAxis(),
-            y: {
-              min: 0,
-              ticks: { color: tickColor, callback: function(v) { return v + ' W'; } },
-              grid: { color: gridColor }
-            }
-          },
-          spanGaps: true
-        }
-      });
-      // PV Strings chart
-      var pvColors = ['#eab308', '#22c55e', '#3b82f6', '#a855f7'];
-      var pvLabels = ['PV 1', 'PV 2', 'PV 3', 'PV 4'];
-      var pvKeys = ['pv1', 'pv2', 'pv3', 'pv4'];
-      new Chart(document.getElementById('chart-pv-strings'), {
-        type: 'line',
-        data: {
-          datasets: pvKeys.map(function(key, i) {
-            return {
-              label: pvLabels[i],
-              data: toChartData(d[key]),
-              borderColor: pvColors[i],
-              backgroundColor: pvColors[i].replace(')', ',0.08)').replace('rgb', 'rgba'),
-              borderWidth: 2,
-              fill: true,
-              tension: 0.3,
-              pointRadius: 0
-            };
-          })
         },
         options: {
           responsive: true,
