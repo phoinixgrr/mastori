@@ -68,6 +68,10 @@ menu:
       name: Tags
       pageRef: /tags/
       weight: 20
+    - identifier: solar
+      name: Solar
+      pageRef: /solar/
+      weight: 30
     - identifier: about
       name: About
       pageRef: /about/
