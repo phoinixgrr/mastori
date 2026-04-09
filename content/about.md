@@ -30,6 +30,8 @@ Documenting real-world home automation projects — not tutorials, but actual sy
 
 <div id="solar-live-about"></div>
 
+See the full [live solar dashboard](/solar/) with interactive charts — battery state of charge, power flow, and individual PV string production, updated every 5 minutes from Prometheus.
+
 ### Contribute
 
 mastori.dev is open to contributions. If you've built something interesting with Home Assistant — an automation, a hardware integration, a clever workaround — and you think it would be a good fit, submit a post.
