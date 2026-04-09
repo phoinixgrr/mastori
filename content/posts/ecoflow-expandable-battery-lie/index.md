@@ -2,7 +2,7 @@
 title: "I Paid €620 for an EcoFlow Battery That Never Charges"
 date: 2026-04-07
 draft: false
-_build:
+build:
   list: never
   render: always
 tags: ["ecoflow", "solar", "battery", "stream-ultra", "stream-ac-pro", "hardware-limitation", "consumer-rights"]
