@@ -69,7 +69,7 @@ menu:
       pageRef: /tags/
       weight: 20
     - identifier: solar
-      name: Solar
+      name: Live Solar
       pageRef: /solar/
       weight: 30
     - identifier: about
