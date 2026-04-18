@@ -12,7 +12,7 @@ I run Proxmox VE across three nodes in two physical locations:
 
 | Site | Nodes | Guests | Connection |
 |------|-------|--------|------------|
-| Primary (urban) | 2 nodes | 11 VMs/CTs | GbE LAN |
+| Primary (urban) | 2 nodes | 11 VMs/CTs | 2.5GbE LAN |
 | Remote (rural) | 1 node | 2 VMs/CTs | 1Mbit ADSL |
 
 The primary site has a 33TB NAS. Both nodes were already doing daily vzdump backups to it — full `.vma.zst` images every night. It worked, but it was dumb: every backup was a complete copy. The NAS was burning through **4.6 TB** just on backup files, with a retention of 7 daily, 7 weekly, 7 monthly, 7 yearly.
@@ -132,7 +132,7 @@ A small DNS container (2GB disk) took **39 seconds** with 97.3% reuse.
 
 ## The Primary Site — Bonus
 
-While I was at it, I switched the primary site backups from vzdump to PBS too. These run over GbE LAN so speed isn't the issue — but deduplication is:
+While I was at it, I switched the primary site backups from vzdump to PBS too. These run over 2.5GbE LAN so speed isn't the issue — but deduplication is:
 
 | Before (vzdump) | After (PBS) |
 |---|---|
