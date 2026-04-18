@@ -1,8 +1,8 @@
 ---
-title: "QNAP TS-433 Network Issues — The Realtek r8125 Driver Nobody Updated"
+title: "QNAP TS-433 Network Issues — The Realtek r8125 Driver Nobody Updated (Until Now)"
 date: 2026-03-19
 tags: ["qnap", "networking", "realtek", "linux", "driver", "nas", "homelab"]
-summary: "The QNAP TS-433's built-in 2.5GbE port becomes unusable after 1-2 days. The cause: an outdated Realtek r8125 driver shipped with QTS. The fix: sideloading a newer driver on every boot. The frustration: QNAP still hasn't updated it officially."
+summary: "The QNAP TS-433's built-in 2.5GbE port becomes unusable after 1-2 days due to an outdated Realtek r8125 driver. After a 5-week support journey with root cause analysis, QNAP shipped a beta firmware with r8125 v9.016 — and it works."
 draft: false
 ---
 
@@ -216,3 +216,59 @@ Source: version history tracked by [awesometic/realtek-r8125-dkms](https://githu
 As of April 1, 2026, QNAP's Dev Team is running functional and performance verification of r8125 **v9.016**, with a testing ETA of **April 8, 2026**. If this results in an official firmware update for the TS-433, I will update this post.
 
 The support ticket (Q-202603-14685) is still open. It has been escalated to the Dev Team. The workaround described in this post continues to work reliably.
+
+---
+
+## Update — 2026-04-18: QNAP Ships Beta Firmware with r8125 v9.016 — Early Results Positive
+
+After 5 weeks of back-and-forth with QNAP support, there is finally real progress.
+
+### Timeline Since Last Update
+
+| Date | Event |
+|------|-------|
+| Apr 1 | I sent QNAP Dev Team a detailed root cause analysis (RSS, ARM64 memory barriers, ASPM) with links to upstream evidence |
+| Apr 3 | Dev Team acknowledged the references |
+| Apr 8 | Testing ETA reached — no update yet |
+| Apr 10 | **QNAP provided a beta firmware** (TS-X33_216G_20260409-5.2.9.3464.img) with an updated r8125 driver |
+| Apr 15 | I installed the beta firmware and confirmed the driver update |
+| Apr 17 | After 2 days of operation — **no degradation, fully stable** |
+
+### The Fix
+
+The beta firmware updates the r8125 driver from **9.007.01-NAPI** to **9.016.01-NAPI**:
+
+```bash
+grep -a "version" /lib/modules/$(uname -r)/r8125.ko | strings | grep NAPI
+version=9.016.01-NAPI
+```
+
+This is actually **two versions ahead** of what I was sideloading (9.014.01). QNAP went straight to the latest available Realtek release.
+
+### Current Status
+
+After 2+ days of continuous operation with mixed NFS + SMB workloads:
+- No throughput degradation
+- No packet loss
+- No latency spikes
+- No need for the autorun workaround script
+
+This is exactly the behavior I've had with the sideloaded 9.014.01 driver for months — but now it's an official QNAP build.
+
+### What's Still Pending
+
+- **This is a beta firmware.** QNAP explicitly noted that only the r8125 driver has been verified — other functions have not been fully tested.
+- I'm keeping the ticket open for one more week to confirm long-term stability before reporting success.
+- The driver update has **not yet been released in a public QTS firmware**. It needs to ship in an official update for all TS-433 owners to benefit.
+
+### Credit Where It's Due
+
+It took longer than it should have — the TS-433 has shipped with a broken network driver since launch — but QNAP's support team (Gerry Lillo in particular) did ultimately escalate properly, the Dev Team built a beta firmware, and the fix is real.
+
+The root cause analysis I provided (particularly the ARM64 vs x86 memory ordering difference, which explained why Dev couldn't reproduce on the TS-473) appears to have helped move things forward. If you're filing bugs with hardware vendors: detailed technical evidence makes a difference.
+
+### For TS-433 Owners
+
+- If you're currently sideloading the driver: hold tight. An official firmware update should be coming.
+- If you're not sideloading and suffering from network degradation: the [workaround described above](#the-workaround) still works. Or contact QNAP support and reference this issue — the more tickets, the faster the official release.
+- I will update this post again when the fix ships in a public QTS release.
