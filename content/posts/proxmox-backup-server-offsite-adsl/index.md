@@ -97,7 +97,6 @@ The primary site firewall blocks inbound traffic from the remote LAN by default 
   comment="S2S: remote proxmox -> PBS backup (8007)"
 ```
 
-Place this **before** any S2S drop rules, or it'll never match.
 
 ## The First Backup — Pain
 
