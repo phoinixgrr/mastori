@@ -3,7 +3,7 @@ title: "Offsite Proxmox Backups Over 1Mbit ADSL — How PBS Made It Possible"
 date: 2026-04-18
 tags: ["proxmox", "backup", "pbs", "homelab", "nas", "wireguard", "offsite"]
 summary: "Setting up Proxmox Backup Server to protect a remote site's VMs over a 733 Kbit/s ADSL uplink — block-level dedup turned a 9-hour full backup into a 30-minute incremental, and freed 4 TB of NAS storage in the process."
-draft: true
+draft: false
 ---
 
 ## The Problem
