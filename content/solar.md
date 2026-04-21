@@ -49,6 +49,9 @@ This blog is powered by a balcony solar system in Athens, Greece — 4 x 520W bi
   <div class="solar-chart-desc">How the batteries charged and discharged today. <strong>Combined</strong> is the overall system capacity.</div>
   <canvas id="chart-soc"></canvas>
   <div id="soc-error" class="solar-chart-error" style="display:none;">Could not load battery data.</div>
+  <div style="margin-top:12px; padding:10px 14px; background:rgba(239,68,68,0.08); border-left:3px solid #ef4444; border-radius:0 8px 8px 0; font-size:0.85em; line-height:1.5;">
+    Notice the <strong style="color:#f97316;">EcoFlow AC-PRO</strong> barely charging? That's not a bad day — it's a <strong>hardware design limitation</strong>. The 1200W inverter bottleneck prevents expansion batteries from charging under any normal household load. EcoFlow's own R&D team confirmed it. <a href="/posts/ecoflow-expandable-battery-lie/" style="color:#60a5fa;">Read the full investigation →</a>
+  </div>
 </div>
 
 <div class="solar-chart-card">
