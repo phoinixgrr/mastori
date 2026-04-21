@@ -125,8 +125,8 @@ This blog is powered by a balcony solar system in Athens, Greece — 4 x 520W bi
         data: {
           datasets: [
             { label: 'Combined', data: toChartData(d.combined_soc), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', borderWidth: 3, fill: true, tension: 0.3, pointRadius: 0 },
-            { label: 'Main Battery', data: toChartData(d.ultra_soc), borderColor: '#3b82f6', borderWidth: 1.5, borderDash: [6,4], fill: false, tension: 0.3, pointRadius: 0 },
-            { label: 'Expansion Battery', data: toChartData(d.ac_pro_soc), borderColor: '#f97316', borderWidth: 1.5, borderDash: [6,4], fill: false, tension: 0.3, pointRadius: 0 }
+            { label: 'Main Battery', data: toChartData(d.ultra_soc), borderColor: '#3b82f6', borderWidth: 2, fill: false, tension: 0.3, pointRadius: 0 },
+            { label: 'Expansion Battery', data: toChartData(d.ac_pro_soc), borderColor: '#f97316', borderWidth: 2, fill: false, tension: 0.3, pointRadius: 0 }
           ]
         },
         options: {
