@@ -271,7 +271,7 @@ A factual chronology of the support interaction. Dates and counts are accurate; 
 | **April 3** | Case escalated to R&D team | R&D confirmed the 1200W inverter limitation in writing (quoted above) |
 | April 3-10 | Back-and-forth with R&D — workaround suggestions ("reduce load during charging") | Workarounds declined as not matching the advertised behavior |
 | **April 10** | Three resolution options formally requested | (1) Exchange Ultra + AC Pro for Stream Ultra X, (2) Exchange AC Pro for a second Ultra, (3) Full refund of the AC Pro |
-| April 11-18 | Case passed to after-sales team ("Lily") | Received confirmation that after-sales was reviewing |
+| April 11-18 | Case passed to the EcoFlow EU after-sales team | Received confirmation that after-sales was reviewing |
 | **April 20** | After-sales requested order information (invoice, serial numbers) | Order info provided the same day |
 | **April 20 → today** | No further response from EcoFlow | Case open, awaiting resolution |
 
