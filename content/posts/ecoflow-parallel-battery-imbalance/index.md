@@ -5,7 +5,29 @@ lastmod: 2026-04-04
 draft: false
 tags: ["ecoflow", "solar", "battery", "zero-export", "home-assistant", "ev-charging", "stream-ultra", "stream-ac-pro", "firmware", "hardware-limitation"]
 summary: "The Stream Ultra + AC Pro can't balance batteries under load — and it's not a firmware bug. A 1200W inverter bottleneck traps 800W of solar on the Ultra's DC bus, permanently starving the AC Pro. Here's the data, the architecture, and why it gets worse with more units."
-keywords: ["ecoflow stream ultra ac pro parallel charging", "ecoflow battery imbalance", "ecoflow mppt throttling", "stream ultra ac pro soc drift", "ecoflow 1200W inverter bottleneck", "ecoflow stream architecture problem"]
+keywords: [
+  "ecoflow stream ultra ac pro parallel charging",
+  "ecoflow battery imbalance",
+  "ecoflow mppt throttling",
+  "stream ultra ac pro soc drift",
+  "ecoflow 1200W inverter bottleneck",
+  "ecoflow stream architecture problem",
+  "ecoflow stream ultra review reddit",
+  "ecoflow stream ultra problems",
+  "ecoflow stream ultra complaints",
+  "ecoflow ac pro not charging",
+  "ecoflow ac pro problems",
+  "ecoflow expandable battery review",
+  "ecoflow expandable worth it",
+  "ecoflow vs anker solix",
+  "anker solix solarbank 2 review",
+  "zendure solarflow vs ecoflow",
+  "marstek jupiter vs ecoflow",
+  "dc coupled vs ac coupled battery expansion",
+  "balcony solar storage comparison",
+  "eu directive 2019/771 consumer rights battery",
+  "home assistant ecoflow monitoring"
+]
 ---
 
 ## My Setup
@@ -237,6 +259,27 @@ The question I've put back to EcoFlow: if this is how the architecture works, ho
 I have requested either a replacement with a single [EcoFlow STREAM Ultra X](https://eu.ecoflow.com/products/stream-ultra-x) (3.84 kWh, same total capacity, no inter-unit bottleneck) or a full refund, under [EU Directive 2019/771](https://eur-lex.europa.eu/eli/dir/2019/771/oj/eng) — which requires goods to conform to the seller's public advertising.
 
 **I will update this post as the case progresses.**
+
+## Support Case Timeline
+
+A factual chronology of the support interaction. Dates and counts are accurate; the contents of individual emails remain private out of respect for support staff.
+
+| Date | Stage | Outcome |
+|---|---|---|
+| **April 1, 2026** | Initial report to EcoFlow EU Support with monitoring data, screenshots, Home Assistant sensor readings, and a link to this article | Ticket opened |
+| April 1-2 | L1 troubleshooting — suggested restarts, app updates, firmware checks | Standard script, no issue resolution |
+| **April 3** | Case escalated to R&D team | R&D confirmed the 1200W inverter limitation in writing (quoted above) |
+| April 3-10 | Back-and-forth with R&D — workaround suggestions ("reduce load during charging") | Workarounds declined as not matching the advertised behavior |
+| **April 10** | Three resolution options formally requested | (1) Exchange Ultra + AC Pro for Stream Ultra X, (2) Exchange AC Pro for a second Ultra, (3) Full refund of the AC Pro |
+| April 11-18 | Case passed to after-sales team ("Lily") | Received confirmation that after-sales was reviewing |
+| **April 20** | After-sales requested order information (invoice, serial numbers) | Order info provided the same day |
+| **April 20 → today** | No further response from EcoFlow | Case open, awaiting resolution |
+
+Total: **19+ emails over 25 days**, three escalation levels reached (L1 → R&D → After-sales), all three resolution paths requested and none yet actioned.
+
+**April 28, 2026** is the deadline I have communicated to EcoFlow for a substantive response. If no resolution is offered by that date, the case proceeds to the Hellenic Consumer Ombudsman, ECC-Greece, and the EU ODR platform — all within my rights under EU Directive 2019/771.
+
+I am not asking for compensation beyond what the directive already entitles any EU consumer to: a product that conforms to the seller's public advertising, or a remedy (repair, replacement, price reduction, or refund) if it does not.
 
 ## Call to Action
 

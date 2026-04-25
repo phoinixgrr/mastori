@@ -5,9 +5,31 @@ draft: false
 build:
   list: never
   render: always
+aliases:
+  - /posts/ecoflow-expandable-battery-lie/
 tags: ["ecoflow", "solar", "battery", "stream-ultra", "stream-ac-pro", "hardware-limitation", "consumer-rights"]
 summary: "EcoFlow markets 'expandable' battery systems with 'automatic solar energy transfer.' I bought the expansion, monitored it for weeks, and the data shows the 1200W inverter bottleneck prevents expansion batteries from charging under normal household load."
-keywords: ["ecoflow stream ultra battery imbalance", "ecoflow expandable lie", "ecoflow ac pro not charging", "ecoflow 1200W bottleneck", "ecoflow stream ultra review", "ecoflow stream ultra problems", "ecoflow alternative", "anker solix vs ecoflow", "zendure vs ecoflow"]
+keywords: [
+  "ecoflow stream ultra battery imbalance",
+  "ecoflow stream ultra review reddit",
+  "ecoflow ac pro not charging",
+  "ecoflow ac pro problems",
+  "ecoflow ac pro worth it",
+  "ecoflow 1200W bottleneck",
+  "ecoflow stream ultra review",
+  "ecoflow stream ultra problems",
+  "ecoflow stream ultra complaints",
+  "ecoflow expandable battery review",
+  "ecoflow expandable worth it",
+  "ecoflow alternative",
+  "ecoflow vs anker solix",
+  "anker solix solarbank 2 vs ecoflow",
+  "zendure solarflow vs ecoflow",
+  "marstek jupiter vs ecoflow",
+  "dc coupled vs ac coupled battery",
+  "home battery storage greece",
+  "balcony solar storage expansion"
+]
 ---
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
@@ -139,6 +161,51 @@ Products that use DC-coupled expansion include **Anker SOLIX** (Solarbank 2), **
 If you have Home Assistant or any monitoring, compare both battery SoC values during a sunny day with normal household load. If you see the same divergence, it's the same issue.
 
 EU consumers have a 2-year legal guarantee under [Directive 2019/771](https://eur-lex.europa.eu/eli/dir/2019/771/oj/eng). Marketing claims like "surplus solar energy automatically transfers between batteries" form part of the product's conformity requirements. If the product doesn't deliver on those claims, consumers are entitled to remedy.
+
+## Alternatives: What DC-Coupled Expansion Looks Like
+
+The 1200W bottleneck exists because expansion batteries are connected via **AC coupling**. Several competing balcony / plug-in solar systems use **DC coupling** instead — the expansion battery connects directly to the solar charge controller, bypassing the inverter. This eliminates the shared-inverter bottleneck.
+
+I haven't personally tested these. I'm listing them because they represent a different architecture choice. Do your own research before buying anything — specifications and firmware change, and every household's load profile is different.
+
+| System | Architecture | Solar input per unit | Expansion limit | Notes |
+|---|---|---|---|---|
+| **EcoFlow Stream Ultra + AC Pro** | AC-coupled expansion | 2000W (Ultra only) | 6 units | Shared 1200W inverter — expansion can't charge under household load > 1200W |
+| **Anker SOLIX Solarbank 2** | DC-coupled expansion | Up to 2400W | Up to 3 expansion batteries | Each expansion battery receives DC directly from MPPT |
+| **Zendure SolarFlow Hub 2000** | DC-coupled expansion | Up to 2000W | Up to 4 AB2000 batteries | MPPT distributes directly to expansion batteries |
+| **Marstek Jupiter C** | DC-coupled (single-unit) | 2500W | Not modular | Single unit, larger capacity, no expansion bottleneck |
+
+The question to ask any balcony-solar vendor before you buy:
+
+> *"When I add a second battery, does it charge through the inverter or directly from DC?"*
+
+If the answer is "through the inverter" — you have the same architecture problem I'm describing here, regardless of brand.
+
+## FAQ
+
+**"Can't you just reduce the load while the batteries charge?"**
+EcoFlow's own support team suggested this. It reverses the purpose of owning the system. I bought 3.84 kWh of storage to use solar while I live normally — not to power down my home so the batteries can charge. The marketing says "*Automatically transfers*", not "*Transfers if you turn things off*".
+
+**"Why not just charge it from the grid at night?"**
+The product is marketed as a solar storage system, not a grid-charged UPS. Charging from the grid at €0.15/kWh and discharging to offset daytime solar you paid for is a net loss. The entire premise of the expansion battery is to capture **more solar** — not to shift grid consumption.
+
+**"Isn't this just how AC coupling works? Why blame EcoFlow?"**
+AC coupling is a legitimate architecture choice with trade-offs. The problem isn't that EcoFlow uses it. The problem is that EcoFlow markets the system as if the trade-off doesn't exist: "*Surplus solar energy automatically transfers between batteries*" is stated as fact, without the critical qualifier "*only when household load is below 1200W*". Competitors using DC coupling (see table above) don't have this problem.
+
+**"Isn't 1200W a lot? Most homes don't draw that much."**
+A single induction hob, electric kettle, washing machine, or EV charger exceeds 1200W. An oven preheats at ~2000W. A hair dryer is 1800W. "Below 1200W *continuous*" is an atypical load for a European household during the day. The condition under which expansion charging actually works is the exception, not the rule.
+
+**"What if I just need more daytime power and don't care about expansion charging?"**
+Fair — if you only need the additional battery to discharge into your home at night (grid-charged), the AC Pro works. But that's not what the marketing sells. The product page says "*Zero Solar Energy Waste*" and "*Expandable capacity from 3.84 to 23 kWh*" — both claims implicitly promise the expansion capacity will be filled from solar. It won't.
+
+**"Why not just return it?"**
+I'm trying. That's exactly what the ongoing EU consumer-rights case is about.
+
+**"Is this a defective unit?"**
+No. EcoFlow's R&D team confirmed this is how the system is designed to work. Every Stream Ultra + AC Pro pairing has the same 1200W inverter in the Ultra, and the same AC-coupled architecture. The behavior is reproducible on every unit of this product.
+
+**"Firmware update will fix it?"**
+Firmware can change *which* battery charges first (workaround to reduce waste — see the [technical post](/posts/ecoflow-parallel-battery-imbalance/#best-firmware-workaround-ac-pro-first)), but cannot remove the 1200W inverter bottleneck. That's a hardware constraint. `2000W solar − 1200W inverter = 800W that physically cannot pass through the cable to the expansion battery under load.`
 
 ---
 
