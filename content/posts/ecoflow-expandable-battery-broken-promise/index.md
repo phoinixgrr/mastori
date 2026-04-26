@@ -2,8 +2,6 @@
 title: "I Paid €620 for an EcoFlow Battery That Never Charges"
 date: 2026-04-07
 draft: false
-aliases:
-  - /posts/ecoflow-expandable-battery-lie/
 tags: ["ecoflow", "solar", "battery", "stream-ultra", "stream-ac-pro", "hardware-limitation", "consumer-rights"]
 summary: "EcoFlow markets 'expandable' battery systems with 'automatic solar energy transfer.' I bought the expansion, monitored it for weeks, and the data shows the 1200W inverter bottleneck prevents expansion batteries from charging under normal household load."
 keywords: [
