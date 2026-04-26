@@ -1,5 +1,5 @@
 ---
-title: "I Paid €620 for an EcoFlow Battery That Never Charges"
+title: "I Paid €849 for an EcoFlow Battery. It Charged 19% on a Perfect Sunny Day."
 date: 2026-04-07
 draft: false
 tags: ["ecoflow", "solar", "battery", "stream-ultra", "stream-ac-pro", "hardware-limitation", "consumer-rights"]
@@ -61,7 +61,7 @@ Everything below is backed by real measurements from [Home Assistant](https://ww
 
 The AC Pro has no solar inputs of its own. It connects to the Ultra via a proprietary AC parallel cable. The **only** path for solar energy to reach the AC Pro is: panels → Ultra's DC bus → Ultra's 1200W inverter → AC cable → AC Pro's inverter → AC Pro's battery. Two conversions (DC→AC→DC), through a shared 1200W inverter.
 
-I purchased the AC Pro (€620) to double my storage from 1.92 kWh to 3.84 kWh, based on EcoFlow's marketing of seamless expansion.
+I purchased the AC Pro (€849) to double my storage from 1.92 kWh to 3.84 kWh, based on EcoFlow's marketing of seamless expansion.
 
 ## What EcoFlow Markets
 
@@ -121,9 +121,9 @@ The storage capacity scales as advertised — add batteries, get more kWh. But t
 | Setup | Cost | Total Storage | Solar Charging Bottleneck | Effective Solar Charging |
 |---|---|---|---|---|
 | 1 Ultra | ~€1,480 | 1.92 kWh | 1200W (dedicated) | Full |
-| 1 Ultra + 1 AC Pro | ~€2,100 | 3.84 kWh | 1200W (shared with home) | Main battery only under load |
-| 1 Ultra + 2 AC Pro | ~€2,720 | 5.76 kWh | 1200W (shared with home) | Main battery only under load |
-| 1 Ultra + 5 AC Pro | ~€4,580 | 11.52 kWh | 1200W (shared with home) | Main battery only under load |
+| 1 Ultra + 1 AC Pro | ~€2,329 | 3.84 kWh | 1200W (shared with home) | Main battery only under load |
+| 1 Ultra + 2 AC Pro | ~€3,178 | 5.76 kWh | 1200W (shared with home) | Main battery only under load |
+| 1 Ultra + 5 AC Pro | ~€5,725 | 11.52 kWh | 1200W (shared with home) | Main battery only under load |
 
 With 6 batteries under normal household load, only the main battery charges from solar during the day. The other 5 batteries have the capacity but no path to receive solar energy.
 

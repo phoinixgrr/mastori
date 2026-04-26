@@ -179,7 +179,7 @@ On a typical sunny day — and Greece averages **250+ sunny days per year** — 
 
 Over the system's expected 10-year lifespan, that's **~10,800 kWh and ~€1,600** of solar energy produced by your panels but thrown away because the architecture can't deliver it to the expansion battery you paid for.
 
-And that's just the direct energy loss. The Ultra also accumulates **2-3x more charge cycles** than the AC Pro, accelerating degradation on the more expensive unit — the one with the inverter and MPPT that you can't replace with a €620 AC Pro.
+And that's just the direct energy loss. The Ultra also accumulates **2-3x more charge cycles** than the AC Pro, accelerating degradation on the more expensive unit — the one with the inverter and MPPT that you can't replace with a €849 AC Pro.
 
 ## It Gets Worse With More Units
 
