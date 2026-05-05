@@ -154,7 +154,7 @@ This blog is powered by a balcony solar system in Athens, Greece — 6 bifacial 
             legend: { labels: { color: '#e2e8f0', usePointStyle: true, pointStyle: 'line' } },
             tooltip: { mode: 'index', intersect: false, callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + Math.round(ctx.parsed.y) + ' W'; } } }
           },
-          scales: { x: timeAxis(), y: { min: 0, ticks: { color: tickColor, callback: function(v) { return v + ' W'; } }, grid: { color: gridColor } } },
+          scales: { x: timeAxis(), y: { min: 0, max: 3000, ticks: { color: tickColor, callback: function(v) { return v + ' W'; } }, grid: { color: gridColor } } },
           spanGaps: true
         }
       });
