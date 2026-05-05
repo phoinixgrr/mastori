@@ -113,8 +113,12 @@ This blog is powered by a balcony solar system in Athens, Greece — 6 bifacial 
           plugins: {
             legend: { labels: { color: '#e2e8f0', usePointStyle: true, pointStyle: 'rect' } },
             tooltip: { mode: 'index', intersect: false, callbacks: {
-              label: function(ctx) { return ctx.dataset.label + ': ' + Math.round(ctx.parsed.y) + ' W'; },
-              footer: function(items) { return 'Total: ' + Math.round(items.reduce(function(s,i){return s+i.parsed.y;},0)) + ' W'; }
+              label: function() { return null; },
+              title: function(items) {
+                var d = items[0].label;
+                var total = Math.round(items.reduce(function(s,i){return s+i.parsed.y;},0));
+                return d + ' — ' + total + ' W';
+              }
             }}
           },
           scales: { x: timeAxis(), y: { stacked: true, min: 0, ticks: { color: tickColor, callback: function(v) { return v + ' W'; } }, grid: { color: gridColor } } },
