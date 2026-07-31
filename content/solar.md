@@ -143,7 +143,7 @@ This blog is powered by a balcony solar system in Athens, Greece — a mix of bi
         type: 'line',
         data: { datasets: [
           { label: 'PV Production', data: toChartData(d.pv_production), borderColor: '#eab308', backgroundColor: 'rgba(234,179,8,0.1)', borderWidth: 3, fill: true, tension: 0.3, pointRadius: 0 },
-          { label: 'Inverter Output', data: toChartData(d.battery_to_home), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.06)', borderWidth: 2, fill: true, tension: 0.3, pointRadius: 0 },
+          { label: 'Inverter Output to Home', data: toChartData(d.battery_to_home), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.06)', borderWidth: 2, fill: true, tension: 0.3, pointRadius: 0 },
           { label: 'PV to Battery', data: toChartData(d.pv_to_battery), borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,0.06)', borderWidth: 2, fill: true, tension: 0.3, pointRadius: 0 },
           { label: 'Grid Import', data: toChartData(d.grid_import), borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.06)', borderWidth: 2, fill: true, tension: 0.3, pointRadius: 0 }
         ]},
