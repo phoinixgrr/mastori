@@ -1,5 +1,5 @@
 ---
-title: "Winning the Zero-Export Race: Feeding My EcoFlow Stream Ultra Its Own Meter Readings over BLE"
+title: "My Solar Inverter Was Taking Orders from Two Clouds. I Cut Them Out."
 date: 2026-08-24
 # UNLISTED WHILE UNDER REVIEW. The page renders at its own URL so it can be read in
 # situ, but it stays out of RegularPages, so it is absent from RSS (the Slack feed
@@ -12,362 +12,172 @@ build:
   publishResources: true
 excludeFromSearch: true
 robots: "noindex, nofollow"
-tags: ["ecoflow", "solar", "zero-export", "home-assistant", "ble", "modbus", "shelly", "reverse-engineering", "stream-ultra", "python"]
-summary: "My inverter's zero-export loop was steering on meter data that had travelled through two clouds. I found the writable protobuf field, proved I could take the wheel over Bluetooth, then measured the latency budget and discovered the meter itself owns 1000 of the 1120 milliseconds. Here is the whole chase, including the parts that did not pay off."
+tags: ["ecoflow", "solar", "zero-export", "home-assistant", "ble", "modbus", "shelly", "stream-ultra"]
+summary: "My meter and my inverter sit three metres apart, and they were exchanging one number via two different clouds. I took over that conversation with Bluetooth. Then I measured properly and found the real bottleneck was somewhere I had not even looked."
 keywords: [
   "ecoflow stream ultra zero export",
   "ecoflow zero feed in latency",
   "ecoflow cloud meter",
   "cfg_cloud_metter",
-  "ecoflow ble protobuf",
   "shelly pro 3em modbus tcp registers",
   "shelly pro 3em 1 hz update rate",
   "shelly pro 3em modbus register 1064",
   "zero export regulation greece",
-  "home assistant ecoflow ble injection",
-  "ecoflow stream ultra home assistant",
-  "zero feed in accuracy",
-  "shelly em modbus float low word first"
+  "home assistant ecoflow ble",
+  "ecoflow stream ultra home assistant"
 ]
 ---
 
-## Zero Export Is Not a Preference Here
+## Not Exporting Is the Whole Job
 
-In my setup, feeding energy back into the grid is not a thing I would rather avoid. It is a thing I must not do. There is no grid-tie agreement, so every watt my panels produce has to be consumed or stored on my side of the meter. I wrote about the legal side of this in [Balcony Solar in Greece](/posts/balcony-solar-greece-legal/) and about the load-side half of the problem in [PV Surplus EV Charging](/posts/pv-surplus-ev-charging/).
+I have no grid-tie agreement, so I am not allowed to push energy back into the grid. Not "would rather not". Not allowed. Every watt my panels make has to be used or stored on my side of the meter. (More on the legal side in [Balcony Solar in Greece](/posts/balcony-solar-greece-legal/).)
 
-The EcoFlow Stream Ultra does have a zero-feed-in mode, and it works. It reads a Shelly Pro 3EM, sees how much I am importing or exporting on phase C, and adjusts inverter output to hold that number at zero.
+My EcoFlow Stream Ultra handles this well enough. It reads a Shelly energy meter, sees whether I am importing or exporting, and trims its output to hold that number at zero.
 
-The question that started this whole thing was simple: how *old* is the number the inverter is steering on?
+One question started all of this: **how old is the number it is steering on?**
 
-## The Answer: Old Enough to Go Through Two Clouds
+## Old Enough to Have Been Abroad
 
-The Shelly is on my LAN. The Ultra is on my LAN. They do not talk to each other.
+The meter is on my network. The inverter is on my network. They are three metres apart in the same electrical panel.
+
+They do not talk to each other.
 
 {{< mermaid >}}
 flowchart LR
-    S["Shelly Pro 3EM<br/>on my LAN"] -->|"HTTPS"| SC["Shelly Cloud"]
-    SC -->|"partner API"| EC["EcoFlow Cloud"]
-    EC -->|"MQTT"| M["mqtt-e.ecoflow.com"]
-    M -->|"WiFi"| U["Stream Ultra<br/>on my LAN"]
-    U -->|"regulates"| G["Phase C"]
-    S -.->|"the two devices<br/>are 3 metres apart"| U
+    S["Shelly meter<br/>my panel"] --> SC["Shelly Cloud"]
+    SC --> EC["EcoFlow Cloud"]
+    EC --> U["Stream Ultra<br/>my panel"]
+    S -.->|"3 metres"| U
 
     style SC fill:#854d0e,stroke:#eab308,color:#fff
     style EC fill:#854d0e,stroke:#eab308,color:#fff
-    style M fill:#854d0e,stroke:#eab308,color:#fff
 {{< /mermaid >}}
 
-Two devices in the same electrical panel, exchanging a single number via Athens, Frankfurt, or wherever those clouds actually live. I measured the round trip by correlating step changes between the local Shelly sensor and the value the Ultra reports back over Bluetooth: roughly **2 to 3.5 seconds**, end to end.
+I measured the round trip: **2 to 3.5 seconds**. Two devices in the same box, sending one number to each other through the internet.
 
-That is not catastrophic. It is also not something I wanted in the loop that keeps me legally compliant.
+The obvious fix is to point the inverter at the local meter. So I went looking for that setting, and it does not exist. I read through the inverter's entire internal message format looking for anywhere an address, a hostname, or a port could be stored for a meter. There is nothing. The firmware has no way to *name* a device on my network, so there is no toggle to find and no clever DNS trick to play.
 
-### There Is No LAN Mode, and It Is Not a Firmware Toggle
+Which left one option: if I cannot redirect the conversation, I can join it.
 
-The obvious fix is to point the Ultra at the local Shelly. The device even hints at it: the telemetry it broadcasts over BLE contains a field called `use_lan_meter`, and mine reads `false`.
+## Joining the Conversation
 
-So I went looking for the switch. The Stream family speaks a protobuf schema internally (`bk_series`), and I dumped the whole thing looking for anywhere a hostname, an IP address, a port, or a URL could be stored for a meter.
+Buried in the inverter's writable settings is the field the cloud uses to deliver the meter reading. It is writable by **anything that can reach the device**, and the device speaks Bluetooth. Home Assistant already keeps an authenticated Bluetooth session open to it.
 
-There is nothing. Not one field. The firmware has no way to *address* a device on my network, which means:
+So: read the meter locally, then write that number straight into the inverter over Bluetooth, faster than the cloud can overwrite it.
 
-- There is no `cfg_use_lan_meter` to flip. `use_lan_meter` is readable, not writable.
-- DNS interception is pointless. You cannot redirect a request that is never made to a host you can name.
+The first test wrote the *exact same value* the meter already reported, so nothing should change. Nothing did. The inverter accepted it without complaint. The cloud quietly overwrote it a couple of seconds later.
 
-`use_lan_meter` is presumably for a first-party EcoFlow meter on a proprietary link, not for my Shelly. Dead end, and worth knowing it is a dead end rather than guessing.
+I was in.
 
-## The Field That Was Actually Open
+## But Was Anyone Listening?
 
-What I did find, in the writable `ConfigWrite` message, was field **383**: `cfg_cloud_metter` (their spelling), carrying the same `CloudMeter` structure that appears in the telemetry the device pushes out.
+Accepting a number is not the same as acting on it, and my first attempt to prove it was junk.
 
-In other words: the cloud writes the meter reading into the device by writing that field, and the field is writable by anything that can talk to the device.
+I told the inverter it was exporting 800W when it was not. One second later it echoed 800 back at me, which looked like proof. It was not. That field just **mirrors whatever I put in**, and at that exact moment the meter happened to record a real 800W spike from a household load. I had built a test where the answer was a reflection of my own question, and a coincidence made it look meaningful.
 
-I can talk to the device. [ef_ble](https://github.com/rabits/ef_ble) already maintains an authenticated Bluetooth LE session to it from Home Assistant, and it exposes the send path that the integration itself uses for configuration writes.
+So I redesigned it. Eight paired trials, alternating between a lie and the truth, with identical Bluetooth traffic either way. Then I judged the result only from things the inverter cannot fake: the independent meter, and the battery.
 
-So the plan wrote itself: read the Shelly locally, and write that number straight into `cfg_cloud_metter` over Bluetooth, faster than the cloud can overwrite it.
-
-### The First Write
-
-A zero-delta write, injecting exactly the value the meter already reported, so nothing about the device's behaviour should change:
-
-```
-fa1718080110031a0c<meter serial as ascii hex>200028003013
-```
-
-55 samples over 60 seconds. The meter identity stayed intact, `has_meter` stayed true, the phase C value kept moving (the cloud was still overwriting it every couple of seconds), and ef_ble logged no errors. The device accepts the write, and the cloud self-heals it within seconds.
-
-That last part matters, and I will come back to it.
-
-{{< alert >}}
-**Safety invariant, learned the nervous way.** `CloudMeter` has six subfields: `has_meter`, `model`, `sn`, and the three phase powers. Always pin **all six** from live telemetry on every write. A partial block risks writing `has_meter: false`, and a device that thinks it has no meter has no reason to regulate at all.
-{{< /alert >}}
-
-## Proving I Was Actually Driving
-
-Accepting a write is not the same as acting on it. I needed causation, and my first attempt at proving it was garbage.
-
-### The Test That Fooled Me
-
-I injected `phase_c_power = -800W` (telling the inverter it was exporting 800W) while the real meter was quiet. One second later the device echoed `-800`, and its own `pow_get_sys_grid` field read `-805`.
-
-Case closed, surely.
-
-It was not. At that exact moment the independent local Shelly recorded a **real** +779W load spike. The device then echoed `c=779` too. Which revealed the actual lesson:
-
-> `pow_get_sys_grid` is not a measurement. It **mirrors** whatever is currently sitting in `cloud_metter`. It echoes my own input back at me.
-
-I had built a test whose response channel was its own stimulus, and a coincidental load event made the timing look meaningful. The battery telemetry, which *would* have moved if an inverter had been told to stop exporting 800W, sat there charging at -290 to -330W throughout.
-
-### The Test That Held Up
-
-Redesigned as a **paired REAL/SHAM trial**, 8 trials, none discarded:
-
-- **REAL arm:** inject `truth - 600W` for 4 seconds at 2 Hz.
-- **SHAM arm:** inject the truth, identically, at the same rate. Same BLE traffic, same code path, no lie.
-- **Judged only** from the independent Shelly and `pow_get_bp_cms` (battery power). Never from `pow_get_sys_grid`.
-
-| Measure | REAL | SHAM | Difference |
+| | Lie | Truth | Difference |
 |---|---|---|---|
-| Grid, phase C | **+933W** | +29W | **+903W** |
-| Battery power | **+556W** | +15W | **+540W** |
-| Weakest / strongest | +635W | +40W | zero overlap |
+| Grid | **+933W** | +29W | **+903W** |
+| Battery | **+556W** | +15W | +540W |
 
-Every REAL trial cut discharge by 500 to 660W. Not one SHAM trial came close to the weakest REAL trial. I am driving the regulation setpoint.
+Every lie moved the inverter by 500 to 660W. Not one truthful trial came close to the weakest lie. No overlap at all.
+
+I was driving.
 
 {{< alert "circle-info" >}}
-**The precondition that made this testable at all.** Earlier attempts produced nothing, and it was not because the field does not work. `inverter_target_power` was 0. Telling a switched-off inverter "you are exporting, back off" asks it to go below zero, so a null result was guaranteed either way. Also: inject **negative** offsets only. A negative offset commands back-off, which at worst causes a brief import. A positive offset commands ramp-**up**, which manufactures real export, which is the exact thing I am trying to prevent.
+**The reason my earlier attempts found nothing.** The inverter's output target was set to zero. Telling a switched-off inverter "stop exporting" asks it to go below zero, so it was never going to react, whatever I sent. Also: I only ever lie in the *safe* direction. Telling it "you are importing" makes it back off. Telling it "you are exporting" makes it ramp up, which would create the very export I am trying to prevent.
 {{< /alert >}}
 
-## Then I Measured the Budget Before Optimising It
+## Then I Measured Properly, and Felt Silly
 
-At this point I had control and I had an assumption: the cloud path is ~2.5s, my local path is ~130ms, therefore I win by roughly 2 seconds.
+At this point I had a story I liked: the cloud takes 2.5 seconds, my Bluetooth path takes 130 milliseconds, so I win by about two seconds.
 
-Before writing a single optimisation, I characterised the whole chain. Both Shelly Pro 3EMs (I have two, one clamped on the grid feed, one on the solar circuit), polled at **20 Hz for 40 seconds**, 730 paired samples.
+Before optimising anything, I characterised the whole chain. I polled both of my meters 20 times a second for 40 seconds, 730 samples.
 
-The result reframed the entire project:
-
-| Finding | Value |
+| What I found | |
 |---|---|
-| Rate at which each meter's phase C value actually **changes** | **1.00 Hz** (median gap 0.999s and 0.997s) |
-| Offset between the two meters' update instants | **0.412s**, about 0.41 of a period |
-| Agreement between the two meters on phase C | **2.3W**, or 0.29% of reading |
+| How often the meter's reading actually **changes** | **once per second** |
+| Gap between my two meters' updates | **0.41 seconds** |
+| How closely the two meters agree | within **0.3%** |
 
-The Shelly Pro 3EM aggregates internally at 1 Hz. You can poll it at 20 Hz and 19 of every 20 answers are a value you already had.
+The meter averages internally and publishes once a second. You can ask it 20 times a second and 19 of those answers are a number you already had.
 
-So of the roughly 1120ms between reality and my injected write, about **1000ms belongs to the meter**, and none of that is reachable from my side. Transport choices, WiFi versus Ethernet, tighter loops: all of it competes for the remaining ~120ms.
+So of the roughly 1.1 seconds between reality and my write, about **one full second belongs to the meter**, and I cannot touch it. Every clever thing I could do competes for the remaining 120 milliseconds.
 
-This is the finding I would want if I read only one section of this post. Measure the budget before you optimise inside it. My instinct had the dominant term completely wrong, and the WiFi-versus-Ethernet debate I was having with myself (the panel has no Ethernet run, which bothered me) turned out to be worth 20 to 60ms of a 1120ms budget. Under 2%. It does not matter.
+That is the part I would keep if I forgot the rest of this post. I had been quietly annoyed for weeks that there is no Ethernet run to my electrical panel, so the meters are on WiFi. That penalty turns out to be worth under 2% of the total. I was ready to argue about the wrong number entirely.
 
-## Reading the Meter Faster Anyway
+## Squeezing the 120ms I Could Actually Reach
 
-The remaining 120ms was still worth taking, and the Shelly's HTTP RPC endpoint is the slow way to ask.
+Three changes, in ascending order of how much I liked finding them.
 
-Shelly gen-2 devices speak **Modbus TCP**, and the register map is not especially well documented, so here is what I mapped:
+**The meter has a faster door.** Instead of the usual web request, Shelly meters speak Modbus, an industrial protocol. Same reading, **15 milliseconds instead of 79**. (For anyone searching for this later: read *input* registers, phase C power lives at register 1064, and the number arrives with its two halves swapped, which cost me an afternoon.)
 
-| What | Register | Notes |
-|---|---|---|
-| Function code | **FC4** (read input registers) | FC3 returns exception code 2. Only FC4 works. |
-| Phase A block | 1020 | +0 voltage, +2 current, +4 active power |
-| Phase B block | 1040 | phase blocks are 20 registers apart |
-| Phase C block | 1060 | so **1064** is phase C active power |
-| Total active power | 1013 | |
-| Encoding | float32, **low word first** | not the usual big-endian float |
+**My loop was slower than I had configured it.** It waited a fixed pause *after* finishing each cycle, so the real interval was the pause plus the work. I set it to twice a second and measured 1.5. Now it works out when the next cycle is *due* and waits until then, which absorbs the work instead of adding to it. Measured after the fix: 1.99 per second.
 
-Two gotchas cost me time:
+**Two meters are better than one.** This one came straight out of the measurement. Both of my meters publish once a second, and they publish **0.41 seconds apart**. So I read both and use whichever spoke most recently, which nearly halves the effective delay for free. I tested it read-only first: over 20 cycles, the second meter was the fresher one 11 times, worth an average of **489 milliseconds**.
 
-1. **Reading a large span in one request returns nothing at all.** No error, no partial read, just silence. Keep counts small and read what you need.
-2. **Keep the socket persistent.** Connecting per read pushed p95 latency to ~97ms, which is worse than the HTTP call I was trying to replace. But if any protocol error occurs, *drop the socket*, because a desynced reply gets parsed as the answer to the next request. A wrong number in a zero-export loop is worse than no number.
+Combined, the age of the number I am feeding the inverter went from **481 milliseconds to about 145**. I had predicted it would roughly halve. It did better than that, because the fixes compound.
 
-Raw asyncio, no pymodbus, so the integration's `requirements` stays empty:
+Two meters watching the same wire is also free insurance. If one stops answering, regulation carries on with the other instead of stalling.
 
-```python
-req = struct.pack(">HHHBBHH", tid, 0, 6, MODBUS_UNIT, 4, reg, 2)
-...
-head = await reader.readexactly(9)
-if head[7] & 0x80:          # exception response: len is 3, code is in head[8]
-    raise ModbusError(head[8])
-body = await reader.readexactly(4)
-value = struct.unpack(">f", body[2:4] + body[0:2])[0]   # low word first
-```
+Of course, trusting a second meter needs a way to stop trusting it. If someone re-cables the panel, "whichever spoke last" quietly becomes "sometimes the wrong circuit". So it watches for the two meters disagreeing, and if they do it switches itself off permanently until I look at it. Crucially it judges the **average** disagreement, not a single reading, because the 0.41 second offset means they legitimately disagree during any sudden change. Real data made that point for me: three minutes after going live I logged a 195W instantaneous gap on perfectly healthy hardware. A naive check would have shut the whole feature down immediately.
 
-Measured on the Home Assistant host: HTTP RPC median **~79ms** (max 158), Modbus median **~15ms**.
+## Sitting Deliberately on the Safe Side
 
-Everything sits behind a touch file, `/config/ef_inject_modbus`, re-read every cycle, so I can flip transports or roll back without a restart. On a Modbus failure it falls back to HTTP **for that cycle** rather than skipping the cycle. A skipped cycle leaves the last injected value riding, and during a fading surplus that stale value is precisely what leaks export.
+Since the point of this is compliance and not squeezing out the last cent, I want to sit slightly on the **importing** side of zero. Paying for a little margin is fine. Exporting is not.
 
-## Three Fixes That Moved the Number
+The trick is pleasingly simple. The inverter drives what it *sees* to zero. So if I show it a number 150W lower than reality, reality settles 150W on the safe side. It works out to about **115W of deliberate import**.
 
-### 1. The Loop Was Not Running at the Rate I Configured
+I had built this months ago. It barely ever ran, and when I finally looked at the counters I found out why: I had told it to apply the margin "only while the battery is discharging". But during a sunny afternoon the battery is **charging**. The safety margin was switched off during exactly the conditions it existed for.
 
-The pacing was `sleep(period)` after the cycle's work. So the real period was `period + meter read + BLE write`. Configured for 2 Hz, measured live at **1.52 sends/s**.
+Fixed, and confirmed the same morning as the sun came up. Not a magnitude problem, a logic problem. I could have tripled the margin and changed nothing.
 
-Deadline-based pacing instead: compute when the next cycle is *due* and wait until then, so the cycle's own work is absorbed rather than added.
+## Three Ways It Lied to Me
 
-```python
-now = time.time()
-self._deadline = max(now, self._deadline + POLL_PERIOD_SEC)
-if self._deadline - now > POLL_PERIOD_SEC:      # never wait more than one period
-    self._deadline = now + POLL_PERIOD_SEC
-wait = self._deadline - now
-```
+Worth knowing if you ever build something that writes to real hardware:
 
-That clamp is the important half. Without it, a loop that fell 30 seconds behind would try to repay the arrears as 120 back-to-back cycles. Bursting BLE writes at a battery inverter is not a thing I want an off-by-one to be able to do. It resyncs to now instead.
+- **"Connected" is not the same as "listening".** The Bluetooth link can report a healthy connection while separately logging that the device stopped answering pings 90 seconds ago. For a minute and a half, every write reports success and nothing arrives. Now it checks when the device last *said something*, not whether a socket is open.
+- **The object can die under you.** When the Bluetooth link drops and reconnects, the software builds a brand new device object. Anything I saved a reference to at startup still looks perfectly healthy and is permanently dead.
+- **Log what you sent, not what you meant.** My favourite. The margin was applied correctly to the outgoing number, but the log recorded the number from *before* the margin. Everything was working and the logs said it was failing badly. I spent real time debugging a healthy system.
 
-Result after deploying: **1.99 polls/s** against a configured 2 Hz.
-
-### 2. Polling and Writing Do Not Need the Same Clock
-
-Detection latency and write rate were the same knob, so tightening one meant hammering the other. I split them:
-
-- Poll every **250ms**.
-- Write only when the reading actually **moved** (threshold 0.5W), when a **500ms keepalive** falls due, or when a cloud overwrite is pending.
-
-Detection delay drops from ~310ms to ~125ms while the write rate stays at the already-proven ~2/s. The keepalive still fires on a steady reading, which matters because the field must stay contested (see below).
-
-The gate sits **after** every safety check, never before. A skipped write must not be able to skip a gate.
-
-### 3. Two Meters, Publishing 0.412s Apart
-
-This is the one that came from the measurement. My two 3EMs each publish at 1 Hz, they agree to 0.29%, and their update instants are offset by 0.412s. Read both, use whichever published most recently, and the *effective* sample interval halves.
-
-Validated on real hardware before enabling it, read-only, over 20 paired cycles: the second meter was the fresher publisher on **11 of 20** cycles, with an average freshness gain of **489ms**. Agreement over the same window: mean +0.5W, worst transient 17.4W.
-
-Two meters measuring what should be the same conductor is also free redundancy. If one stops answering, regulation continues on the other instead of stalling.
-
-### The Guard on the Interleave
-
-Trusting a second meter needs a way to stop trusting it. If a clamp gets moved, or someone re-cables the panel, "whichever published last" silently becomes "sometimes the wrong circuit".
-
-The guard judges a **rolling mean over 40 samples**, never a single sample, and tripping **latches the feature off** for the rest of the session. Agreement returning does not silently re-enable it.
-
-Judging a mean rather than an instant is not defensive over-engineering, it is forced by the physics. The 0.412s offset means that during any step change one meter has the new value and the other still has the old one, so instantaneous differences are *legitimately* large. Real production data settled it: within three minutes of going live I logged a **195W** instantaneous difference on genuinely healthy hardware. A 100W instant threshold would have false-tripped almost immediately.
-
-## The Import Cushion, and the Gate That Was Backwards
-
-Since the point of the exercise is compliance and not saving the last cent, I want to sit slightly on the *import* side of zero. Paying for a small margin is fine. Exporting is not.
-
-The mechanism is pleasingly direct. The regulator drives what it **sees** to zero, and it sees `truth + bias`. So the real grid position settles at `-bias`. Gain is 1:1, confirmed empirically: a -30W bias moved the local mean from +25.6W to about +29W, and moved time-spent-importing from roughly 50% (hunting back and forth across zero) to 72 to 88%.
-
-Then I found the real bug, and it was not the magnitude.
-
-The cushion was gated on "only apply this while the battery is discharging". But during a PV surplus the battery **charges**. The cushion was disarmed during exactly the window it existed to protect. The counters said it plainly: `biased=232` against `bias_idle=2709`. I could have tripled the bias value and changed nothing.
-
-Replaced with a continuous linear fade, gated on the local grid reading instead of the battery: full cushion at 0W and below, tapering to zero at 500W of import. The fade is continuous on purpose. A hard threshold steps the injected value, and the regulator hunts across the step.
-
-With a -150W bias fading out at 500W, the real grid settles at `-bias * F / (F - bias)`, which is **+115W import**.
-
-Confirmed in production the same morning, as the grid crossed the fade edge:
-
-| True grid reading | Applied bias | Formula check |
-|---|---|---|
-| 360W | -42W | (500-360)/500 × -150 = -42.0 |
-| 326W | -52W | (500-326)/500 × -150 = -52.2 |
-| 315W | -55W | (500-315)/500 × -150 = -55.5 |
-
-And `biased` climbed from 0 to 218 to 398 while `bias_idle` stayed frozen at 1462. The old gate would have slept through all of it.
-
-Hard guard in code: the process refuses to start if the bias is positive or if its magnitude exceeds 200W. A positive bias tells the inverter it is importing when it is not, which commands ramp-up, which manufactures the exact export I am trying to prevent. That is not a knob I want to be able to turn the wrong way at 6am.
-
-## Failure Modes That Report Success
-
-Three of these, and they are the parts I would most want to hand to someone building anything similar.
-
-### `is_connected` is necessary but not sufficient
-
-The BLE library reports the link as connected based on the transport being open. But it can separately log `Ping response not received after 90.0 seconds`. For up to 90 seconds, every write returns success while nothing reaches the device.
-
-In a zero-export loop that is a silent failure with a real-world consequence: the last value the device received keeps riding, the sun keeps rising, and the regulator holds a setpoint for conditions that no longer exist.
-
-Telemetry frame age is the honest liveness signal. If the device has not pushed a frame in 8 seconds, refuse to write and count it separately (`skipped_silent`) so it shows up as its own number and not as a generic error.
-
-### Never cache the device object
-
-When the BLE link drops, the integration reloads its config entry, and the reload constructs a **brand new** device object. Any reference cached at startup is now a perfectly healthy-looking object that is permanently dead. Re-resolve from `entry.runtime_data` on every single send.
-
-### Log the value you actually sent
-
-My favourite bug of the whole project. `last_sent_w` was assigned from the unbiased reading, while the biased value was the one serialised onto the wire.
-
-The bias was always correct on the wire. But the log printed the wrong `c=` value, and the echo classifier (which decides "was that telemetry frame my write or the cloud's?") was comparing against values that were never sent. Ours-share collapsed to 9 to 18% and it looked exactly like a control failure.
-
-Log the bytes you serialised, not the input you serialised them from.
-
-## The Cloud Keeps Overwriting, and That Is Fine
-
-EcoFlow's cloud writes `cfg_cloud_metter` over the device's own MQTT session. That traffic never transits Home Assistant, so there is no software hook to suppress it. The router could block it, but that channel also carries the app, firmware updates, and region configuration, so blocking it is a bad trade.
-
-So I do not fight it, I out-pace it. An echo classifier tags every incoming telemetry frame as mine or the cloud's, and a cloud-authored value wakes the send loop **immediately** instead of waiting out the period. Floored at 150ms, so a cloud burst can never turn into a BLE burst.
-
-Steady state: I own the field about **99%** of the time.
-
-One honest caveat on the reported ~490ms "cloud exposure" figure: it includes *detection* delay, because I only learn of a cloud write on the next telemetry frame, roughly 1 Hz. The correction itself is one BLE round trip, about 130ms.
-
-There is a cleaner fix I have not tried: unlink the Shelly from the EcoFlow account entirely, so the cloud has no meter to push and the field is mine alone. The risk is that the device sets `has_meter: false` and stops regulating altogether, so that is a daylight experiment with eyes on the inverter, not a Friday-night one.
-
-## Testing Something You Cannot Safely Break
-
-This is the part I usually skip in hobby projects, and here I could not.
-
-The thing under test writes to a battery inverter's safety-adjacent regulation setpoint. I am not iterating on that live. So the test suite runs the **real** loop against fakes: a fake Modbus server (low-word-first floats, FC3 exception behaviour, plus modes for wrong transaction IDs, short counts, dropped connections and garbage replies), a fake BLE device that records what was sent and when, and a fake protobuf module so the real lazy import resolves.
-
-**143 checks** across four files. The pacing and write-gate tests drive the actual `run()` loop, deliberately, because a test that re-implements the gate predicate will happily pass while the shipped predicate is wrong.
-
-Then the harness earned its existence. A test asserted that the interleave was picking the second meter for **100% of reads**, which is too good, because the meters are only 0.412s apart and should alternate.
-
-The assertion was right and the code was wrong. `ModbusMeter` read the **module-global** port at connect time instead of a per-instance one. Both meter objects were pointing at the same socket. The second one always timestamped a hair later, so it always "won".
-
-In production that bug would have looked like a spectacular success. The logs would have shown the interleave winning every cycle while it was reading one meter twice and the redundancy did not exist at all.
+Since I could not safely iterate on a live battery inverter, the whole thing runs against fakes in a test suite: a pretend meter and a pretend inverter, 143 checks. That harness immediately caught a bug that would have looked like a **triumph** in production. My two-meter code was accidentally reading the same meter twice, and the logs would have proudly reported the second meter winning every single cycle while the redundancy did not exist at all.
 
 ## What It Adds Up To
 
-Against the stock cloud-only path:
+| | Before | After |
+|---|---|---|
+| Age of the data the inverter steers on | ~2.5s | ~0.3s |
+| Updates reaching the inverter | ~0.4/s | ~2/s |
+| Who controls the setpoint | the cloud | me |
+| Time spent on the safe side of zero | ~50% | 100% |
+| Resting position | around 0W | **115W importing** |
 
-| | Cloud only | With injection | Change |
-|---|---|---|---|
-| Data age at the regulator | ~2500ms | ~275ms | **~9x fresher** |
-| Including the meter's own 1s averaging | ~3500ms | ~1275ms | 2.7x |
-| Updates reaching the device | ~0.4/s | 1.95/s | ~5x |
-| Who owns the field | cloud, 100% | me, 99% | control |
-| Effective fresh publications | 1/s | ~2/s | 2x |
-| Time spent on the import side of zero | ~50% | 100% | no hunting |
-| Equilibrium grid position | ~0W | **+115W import** | deliberate margin |
-| Control authority over the setpoint | none | proven (+903W) | the actual win |
-
-Staleness of the injected value, measured live before and after the interleave went on: **481ms** down to **128 to 162ms**. The write mix flipped from roughly half change-triggered and half keepalive, to about 92% change-triggered, which is what you want: the device hears from me because something happened, not because a timer expired.
-
-I will admit I got the size of this wrong in advance. I predicted the interleave would roughly halve staleness. It cut it by 3.3x, because the two changes compound: faster polling means more polls land on a genuinely new value, which means more change-triggered writes.
+That last row is the real prize. I stopped hunting back and forth across zero and now sit deliberately, measurably, on the side that cannot get me in trouble.
 
 ## What Did Not Improve
 
-The section that makes the rest of the post worth trusting.
+The part that makes the rest worth believing.
 
-**Regulation tightness is unchanged.** I ran alternating 180-second injected and cloud blocks, scored from the independent local Shelly:
+**Accuracy is unchanged.** I ran alternating blocks of my version and the stock cloud version, scored from the independent meter: average error 27.5W mine, 25.6W theirs. That is a rounding error, and if anything it is a hair worse.
 
-| | Injected | Cloud |
-|---|---|---|
-| Average absolute error | 27.5W | 25.6W |
-| RMS | 50.2W | 48.0W |
-| Excursions over 100W | 4.3% | 4.5% |
+That is not a contradiction. The stock loop was *already* holding the line to within about 30W on two-and-a-half-second-old data. There was almost no error left for speed to remove. What I gained was **control and margin**, not precision. Worth being clear about, because "9x faster" reads like it should have made the line straighter, and it did not.
 
-That is within noise, and confounded by an evening quieting trend on top. It is not a contradiction of the causation result. The loop was *already* holding phase C to a 25 to 35W average error on the cloud's 2.5-second data. There was almost no error left for lower latency to remove.
+**The one-second meter averaging is untouched**, and it is now most of what remains. Short of a meter that publishes faster, that is the floor.
 
-The value delivered here is **control and margin**, not accuracy. I can now decide where the equilibrium sits, and I can put a deliberate 115W import cushion under it. That is a compliance guarantee I did not have before. It is not a tighter loop.
+**And the number that actually matters is not in yet.** The honest measure is how many watt-hours I export per day, and my baseline for the previous nine days averaged about 44 Wh. Everything above went live this morning. Until I have a week of daily totals to compare, the export improvement is a well-instrumented hypothesis, not a result, and I am not going to dress it up as one.
 
-**The 1000ms aggregation is untouched**, and it is 80% of the remaining budget. Short of a meter that publishes faster, that is the floor.
-
-**The number that actually matters is not measured yet.** The honest KPI is exported energy per day, and my baseline over Aug 15 to 23 was 69.1, 31.4, 34.9, 38.5, 50.3, 41.8, 47.2, 19.5 and 60.0 Wh, averaging about 43.6 Wh/day. Everything above went live today. Until I have a week of daily totals against that baseline, the export claim is a hypothesis with good instrumentation behind it, and I am not going to write it up as a result.
-
-**It costs something.** A 115W cushion, applied only below 500W of grid import, is about 0.9 kWh/day if the house parks there for eight hours. For a system whose non-negotiable constraint is "do not export", that is a bargain. For someone optimising a feed-in tariff, it is the wrong trade entirely.
+**It costs something, too.** That 115W cushion is roughly 0.9 kWh a day if the house sits there for eight hours. For a system whose hard rule is "do not export", that is a bargain. If you are optimising a feed-in tariff, it is exactly the wrong trade.
 
 ## The Takeaway
 
-Three things I would keep from this if I forgot everything else:
-
-1. **Measure the budget before optimising inside it.** I was ready to argue about WiFi versus Ethernet over a term worth under 2% of the total, while the meter's own 1 Hz averaging quietly owned 89% of it.
-2. **A test whose response channel echoes its stimulus proves nothing.** `pow_get_sys_grid` mirrors the value you inject. My first "proof" was a coincidence with a load spike, and if I had stopped there I would have built the rest of this on a false premise.
-3. **Verify liveness, not connectedness.** Anything that reports success while going nowhere is worse than something that fails loudly, especially when the consequence accumulates in a physical system for 90 seconds.
-
-And one that is specific to this hardware: the Stream Ultra's regulation setpoint is genuinely open to anything holding an authenticated BLE session. That is a capability, and it deserves the same caution as any other writable control on a device that moves kilowatts.
+1. **Measure before you optimise.** I nearly spent a weekend on a WiFi problem worth 2% of the delay, while the meter's own averaging quietly owned 89% of it.
+2. **If your test can be answered by an echo of your own question, it proves nothing.** My first "proof" was a coincidence, and building on it would have wasted weeks.
+3. **Check that things are listening, not just connected.** Anything that reports success while going nowhere is far worse than something that fails loudly, especially when the consequences pile up in the physical world.
 
 {{< alert "triangle-exclamation" >}}
-**On doing this yourself.** This writes to a live battery inverter's regulation setpoint on my own hardware, and it is a controlled path: pin every subfield, negative bias only, magnitude capped, refuse to write on a stale reading or a silent link, and prove liveness rather than assuming it. Do not probe unknown command IDs to see what happens. I have already learned that lesson on this device family in a way I did not enjoy: one blind probe reset a safety power limit to zero. And if you are in a jurisdiction where export is regulated, the compliant configuration is the one your grid operator agreed to, not the one you can reach over Bluetooth.
+**If you are thinking of trying this.** This writes to a live battery inverter's control setpoint, on my own hardware, down a deliberately narrow path: lie only in the safe direction, cap how big the lie can be, refuse to write on a stale reading or a silent link. Do not go poking at unknown commands to see what happens. I learned that one the hard way on this hardware: a single blind probe reset a safety power limit to zero. And if you are somewhere export is regulated, the correct setup is the one your grid operator signed off on, not the one you can reach over Bluetooth.
 {{< /alert >}}
 
-Related reading on the same system: [the parallel battery imbalance](/posts/ecoflow-parallel-battery-imbalance/) that started my interest in what these devices report internally, and [the 19% charge day](/posts/ecoflow-expandable-battery-broken-promise/) that came out of it.
+More on this system: [the parallel battery imbalance](/posts/ecoflow-parallel-battery-imbalance/) that got me curious about what these devices report internally, and [the 19% charge day](/posts/ecoflow-expandable-battery-broken-promise/) that came out of it.
