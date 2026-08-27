@@ -252,7 +252,7 @@ That is the whole idea. The rest is not breaking anything.
 mindmap
   root((zero export))
     read path
-      Modbus TCP, FC4
+      Modbus TCP, input registers
       two meters interleaved
       no write on stale data
     control
@@ -280,8 +280,9 @@ mindmap
 
 ### 1. Read it locally
 
-Write this down if you ever do the same. Input registers, function code 4; function code 3
-returns exception 2. Phase blocks sit 20 registers apart, A at 1020, B at 1040, C at 1060,
+Write this down if you ever do the same. Read *input registers*, Modbus function code 4.
+Function code 3, read holding registers, is the one every example uses and it returns
+exception 2 here. Phase blocks sit 20 registers apart, A at 1020, B at 1040, C at 1060,
 with voltage at +0, current at +2 and active power at +4. Phase C active power is register
 1064. Values are float32 with the two 16-bit halves swapped, low word first. Wide spans
 return nothing, so read one block at a time.
@@ -529,7 +530,7 @@ No overlap between the two sets.
 
 {{< mermaid >}}
 flowchart TD
-    A["read both meters, Modbus FC4"] --> B{"fresh and plausible?"}
+    A["read both meters over Modbus"] --> B{"fresh and plausible?"}
     B -->|no| Z["no write this cycle"]
     B -->|yes| C["take the fresher sample"]
     C --> D{"plant quiescent?"}
