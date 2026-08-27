@@ -57,30 +57,18 @@ the inverter's entire job is to leave it with nothing to report.
 
 {{< mermaid >}}
 sequenceDiagram
-    actor H as 🏠 The House
-    participant M as 🔎 The Meter, the grid's detective
+    actor H as 🏠 House
+    participant M as 🔎 The Meter
     participant I as ⚡ The Inverter
-    participant B as 🔋 The Battery
 
-    H->>M: kettle on, 2000 W
-    M->>I: I see 2000 W crossing my clamp. Account for it.
-    I->>B: 2000 W, quickly
-    B-->>I: 2000 W
-    I->>M: try reading it again
+    H->>M: kettle on
+    M->>I: I see 2000 W crossing my clamp
+    I->>M: and now
     M->>I: nothing. zero crossed.
-    Note over M,I: no evidence, no bill, no export
-
-    loop every second, forever
-        M->>I: I see 340 W
-        I->>M: and now
-        M->>I: I see 12 W
-        I->>M: I will take that
-    end
-
     H->>M: kettle off
-    M->>I: I see minus 1900 W. You are pushing into me.
+    M->>I: I see minus 1900 W. you are pushing into me.
     I->>M: since when
-    M->>I: hard to say. my last report was 2.5 seconds old.
+    M->>I: my report was 2.5 seconds old
 {{< /mermaid >}}
 
 ## The hotel shower
@@ -138,18 +126,7 @@ anywhere. `use_lan_meter` appears in telemetry and is read-only.
 
 The Pro 3EM aggregates internally at 1 Hz and that second is not yours. Swapping HTTP RPC for
 Modbus on the same device buys 75 ms of a 1200 ms budget: 8%, not the 4x the transport numbers
-suggest alone.
-
-{{< mermaid >}}
-xychart-beta
-    title "Age of the reading the inverter steers on, ms"
-    x-axis ["stock, two clouds", "local, HTTP RPC", "local, Modbus", "Modbus + 2 meters"]
-    y-axis "milliseconds" 0 --> 2600
-    bar [2500, 1240, 1155, 655]
-{{< /mermaid >}}
-
-The third bar is the change everyone reaches for. The fourth is worth five times as much and
-comes up later.
+suggest alone. Reading faster is not where the win is. Not going through two clouds is.
 
 ## The field is writable
 
@@ -664,14 +641,25 @@ About 90% down. On the trend of a full year of prior data, roughly 20 kWh/yr bec
 
 | | before | after |
 |---|---|---|
-| age of the data the inverter steers on | ~2.5 s | **~0.3 s** |
+| age of the data the inverter steers on | ~2.5 s | **~0.65 s** |
 | updates reaching the inverter | ~0.4/s | **~2/s** |
 | age of the injected reading | 481 ms | **~142 ms** |
 | who owns the setpoint | the cloud | me |
 
-Three fixes produced that latency figure: the Modbus read, the two-meter interleave, and a pacing
-bug where the loop waited a fixed pause after each cycle instead of working out when the next one
-was due, so a loop configured for 2 Hz ran at 1.5.
+{{< mermaid >}}
+xychart-beta
+    title "Age of the reading the inverter steers on, ms"
+    x-axis ["stock, two clouds", "local, HTTP RPC", "local, Modbus", "Modbus + 2 meters"]
+    y-axis "milliseconds" 0 --> 2600
+    bar [2500, 1240, 1155, 655]
+{{< /mermaid >}}
+
+Bar two is the whole point: leaving the building costs more than everything else combined. Bar
+three is the change everyone reaches for, 85 ms of transport. Bar four is the second meter,
+500 ms, for an afternoon's work and no new hardware.
+
+There was also a pacing bug behind those figures. The loop waited a fixed pause after each cycle
+instead of working out when the next one was due, so a loop configured for 2 Hz ran at 1.5.
 
 The shower still has dead time. It is a third of a second now instead of two and a half, and the
 plumbing no longer goes through two data centres.
@@ -683,9 +671,10 @@ independent meter: average error 27.5 W mine, 25.6 W stock. Within noise, and if
 worse. The stock loop already held about 30 W on 2.5 second old data, so there was almost no
 error left for speed to remove. What this bought is control, margin and a fallback I understand.
 
-**The meter's averaging is the floor.** A full second of the delay belongs to the meter.
-Everything else competes for the remaining 150 ms, which is also why the WiFi versus Ethernet
-question I worried about is worth under 2% of the total.
+**The meter's averaging is the floor.** Of the 655 ms left, about 500 belongs to the meter's own
+1 Hz aggregation, and that is already the halved figure the interleave buys. Everything else
+competes for the remaining 150 ms, which is why the WiFi versus Ethernet question I worried about
+is worth under 2% of the total.
 
 **Inrush is out of reach.** The largest single riser of one day, 0.45 Wh, was a heat pump
 starting: one negative power sample while current was rising and power factor collapsed. You do
@@ -697,7 +686,7 @@ not export" that is a bargain. For anyone optimising a feed-in tariff it is the 
 ## If you try this
 
 - **Measure the budget first.** I nearly spent a week on transport latency worth 8%, while a
-  second meter I already owned was worth twice as much for an afternoon.
+  second meter I already owned was worth five times as much for an afternoon.
 - **Find the asymmetry.** Export and import are not symmetric failures here. Once that is
   explicit, half the design decisions make themselves.
 - **A guard comparing two sensors needs a quiescence gate, from both sensors.**
