@@ -130,7 +130,7 @@ classDiagram
         +int32 phase_c_power = 6
     }
     class METER_MODEL {
-        <<enumeration>>
+        &lt;&lt;enumeration&gt;&gt;
         NONE = 0
         CT_EF_01 = 1
         CT_SHELLY_3EM = 2
@@ -217,11 +217,11 @@ That message then gets wrapped:
 
 {{< mermaid >}}
 flowchart TB
-    A["phase_c_power = 180<br/>one int32"] --> B["CloudMeter<br/>25 bytes, all six fields set"]
-    B --> C["ConfigWrite.cfg_cloud_metter = 383<br/>28 bytes"]
-    C --> D["EcoFlow Packet v19<br/>src 0x20, dst 0x02, cmd_set 0xFE, cmd_id 0x11"]
+    A["phase_c_power = 180&lt;br/&gt;one int32"] --> B["CloudMeter&lt;br/&gt;25 bytes, all six fields set"]
+    B --> C["ConfigWrite.cfg_cloud_metter = 383&lt;br/&gt;28 bytes"]
+    C --> D["EcoFlow Packet v19&lt;br/&gt;src 0x20, dst 0x02, cmd_set 0xFE, cmd_id 0x11"]
     D --> E["AES, session key from the handshake"]
-    E --> F["BLE GATT write<br/>~130 ms round trip"]
+    E --> F["BLE GATT write&lt;br/&gt;~130 ms round trip"]
 
     style A fill:#1e3a8a,stroke:#3b82f6,color:#fff
     style F fill:#14532d,stroke:#22c55e,color:#fff
@@ -234,11 +234,11 @@ there. They lose the race.
 
 {{< mermaid >}}
 flowchart LR
-    S1["Shelly A<br/>Modbus TCP"] --> R["regulator<br/>4 Hz read, 2 Hz write"]
-    S2["Shelly B<br/>Modbus TCP"] --> R
-    R -->|"CloudMeter over BLE<br/>~0.3 s old"| U["Stream Ultra"]
-    SC["Shelly + EcoFlow clouds"] -.->|"2.5 s, still writing,<br/>now too slow to matter"| U
-    U --> G["grid, held on<br/>the import side"]
+    S1["Shelly A&lt;br/&gt;Modbus TCP"] --> R["regulator&lt;br/&gt;4 Hz read, 2 Hz write"]
+    S2["Shelly B&lt;br/&gt;Modbus TCP"] --> R
+    R -->|"CloudMeter over BLE&lt;br/&gt;~0.3 s old"| U["Stream Ultra"]
+    SC["Shelly + EcoFlow clouds"] -.->|"2.5 s, still writing,&lt;br/&gt;now too slow to matter"| U
+    U --> G["grid, held on&lt;br/&gt;the import side"]
 
     style SC fill:#854d0e,stroke:#eab308,color:#fff
     style G fill:#14532d,stroke:#22c55e,color:#fff
@@ -318,11 +318,11 @@ standing margin, not the speed of the loop, is what actually holds export at zer
 
 {{< mermaid >}}
 flowchart LR
-    T["real grid<br/>+180 W"] --> A(("+"))
-    B["BIAS<br/>-68 W, faded"] --> A
-    A --> I["injected<br/>+112 W"]
-    I --> R["inverter drives<br/>injected to 0"]
-    R --> S["real grid settles<br/>at +60 W import"]
+    T["real grid&lt;br/&gt;+180 W"] --> A(("+"))
+    B["BIAS&lt;br/&gt;-68 W, faded"] --> A
+    A --> I["injected&lt;br/&gt;+112 W"]
+    I --> R["inverter drives&lt;br/&gt;injected to 0"]
+    R --> S["real grid settles&lt;br/&gt;at +60 W import"]
 
     style B fill:#1e3a8a,stroke:#3b82f6,color:#fff
     style S fill:#14532d,stroke:#22c55e,color:#fff
@@ -334,7 +334,7 @@ thing exists to prevent. So every path that can set it applies the same four che
 
 {{< mermaid >}}
 flowchart TD
-    F["/config/ef_inject_bias<br/>re-read every 2 s"] --> P{"parses as a number?"}
+    F["/config/ef_inject_bias&lt;br/&gt;re-read every 2 s"] --> P{"parses as a number?"}
     P -->|no| K["keep the last good value"]
     P -->|yes| N{"NaN?"}
     N -->|yes| K
@@ -405,8 +405,8 @@ telemetry, replaces the one phase being regulated, and writes the whole message 
 flowchart LR
     A["write phase_c only"] --> B["has_meter defaults false"]
     B --> C["meter unbound from the plant"]
-    C --> D["zero-feed disabled<br/>unbounded export"]
-    E["read all six, replace one,<br/>write all six"] --> F["binding preserved"]
+    C --> D["zero-feed disabled&lt;br/&gt;unbounded export"]
+    E["read all six, replace one,&lt;br/&gt;write all six"] --> F["binding preserved"]
 
     style D fill:#7f1d1d,stroke:#ef4444,color:#fff
     style F fill:#14532d,stroke:#22c55e,color:#fff
@@ -645,11 +645,11 @@ switch and rejected writes.
 
 {{< mermaid >}}
 flowchart LR
-    W["BLE write counter<br/>+2 per second"] --> D["delta over 10 s<br/>expect 20"]
+    W["BLE write counter&lt;br/&gt;+2 per second"] --> D["delta over 10 s&lt;br/&gt;expect 20"]
     D -->|"18 to 21"| H["send heartbeat"]
     D -->|"below 10"| X["stay silent"]
-    H --> M["dead-man holds<br/>cloud stays off"]
-    X --> F["20 s of silence<br/>cloud comes back"]
+    H --> M["dead-man holds&lt;br/&gt;cloud stays off"]
+    X --> F["20 s of silence&lt;br/&gt;cloud comes back"]
 
     style F fill:#854d0e,stroke:#eab308,color:#fff
     style M fill:#14532d,stroke:#22c55e,color:#fff
