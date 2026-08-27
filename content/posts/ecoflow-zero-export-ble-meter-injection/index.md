@@ -568,9 +568,15 @@ of long-term statistics rather than off a graph.
 | 12 days before, daily mean | **41.0 Wh/day** |
 | day 1 after | 3.7 Wh |
 | day 2 after | 4.3 Wh |
-| day 3 after, to 16:22 | 1.8 Wh |
+| day 3 after | 4.1 Wh |
 
 About 90% down. On the trend of a full year of prior data, roughly 20 kWh/yr becomes 2 kWh/yr.
+
+What remains is concentrated, not spread. On day 3, 2.2 of the 4.1 Wh landed in a single twenty
+minute window where a multi-kilowatt load cycled on and off, seven single samples of around -540 W,
+both meters agreeing, injection healthy at full rate throughout. A load that leaves in one mains
+cycle is out of reach of a loop running at 250 ms, and the last of the export is going to be made
+of those.
 
 | | before | after |
 |---|---|---|
