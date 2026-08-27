@@ -133,10 +133,15 @@ Reading faster is not the win. Not leaving the building is.
 
 ## The field is writable
 
-The Ultra speaks protobuf inside an encrypted BLE session.
-[ha-ef-ble](https://github.com/rabits/ha-ef-ble) already implements the handshake and framing
-under Apache 2.0, so none of that was my work. The meter reading lives in a `CloudMeter` message,
-and anything that can open a session can write it.
+The Ultra speaks protobuf inside an encrypted BLE session, and none of that was my work.
+[ef-ble-reverse](https://github.com/rabits/ef-ble-reverse) is the reverse engineering of EcoFlow's
+BLE protocol V2, and [ha-ef-ble](https://github.com/rabits/ha-ef-ble) is the Home Assistant
+integration built on top of it, both by rabits under Apache 2.0. That first repository is the hard
+part of this whole story: without somebody else having worked out the handshake, the session key
+and the framing, none of what follows would be reachable.
+
+The meter reading lives in a `CloudMeter` message, and anything that can open a session can write
+it.
 
 {{< mermaid >}}
 classDiagram
