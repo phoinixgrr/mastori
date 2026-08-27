@@ -31,19 +31,42 @@ keywords: [
 ]
 ---
 
-I have no export agreement. Every watt the panels make has to be used or stored on my side
-of the meter, and the number that matters is zero, not small. (Legal background:
+I have no export agreement. Every watt the panels make has to be used or stored on my side of
+the meter, and the number that matters is zero, not small. (Legal background:
 [Balcony Solar in Greece](/posts/balcony-solar-greece-legal/).)
 
-EcoFlow sells zero-feed-in regulation and it works, in the sense that the number is small.
-My meter and my inverter are three metres apart in the same panel. Until last week they
-exchanged one number via two data centres.
+EcoFlow sells zero-feed-in regulation and it works, in the sense that the number is small. My
+meter and my inverter are three metres apart in the same panel. Until last week they exchanged
+one number via two data centres.
+
+## How zero feed-in works
+
+The whole feature is one number and a loop.
+
+A meter clamped on the incoming cable reads what the house is drawing. That reading is handed to
+the inverter. The inverter pushes out power to make the reading zero: house wants 400 W, inverter
+gives 400 W, the meter reads nothing, and no energy crosses the boundary in either direction. The
+kettle goes on, the reading jumps, the inverter pushes harder. The kettle goes off, the reading
+drops, the inverter backs off.
+
+Nobody tells the inverter how much the house wants. It only ever sees one number and tries to
+cancel it. Which makes the whole feature exactly as good as that number is.
+
+## The hotel shower
+
+You already know this control loop. You turn the tap, nothing happens, so you turn it further.
+Three seconds later it scalds you. You back off hard, and three seconds after that it goes cold.
+
+Your hand is fine. Your judgement is fine. You are regulating a shower that stopped existing three
+seconds ago. The dead time between the tap and your skin is the entire problem, and no amount of
+attention fixes it: the more carefully you chase the temperature, the more you oscillate.
+
+An inverter cancelling a stale meter reading is that hand. The scalding is export.
 
 ## The number takes the long way round
 
-Regulation needs a grid reading. Mine comes from a Shelly Pro 3EM on the incoming phase.
-The inverter cannot ask it anything. The reading goes up to Shelly's cloud, across to
-EcoFlow's cloud, and back down over MQTT.
+Regulation needs the grid reading. Mine comes from a Shelly Pro 3EM on the incoming phase. The
+inverter cannot ask it anything.
 
 {{< mermaid >}}
 flowchart LR
@@ -59,23 +82,20 @@ flowchart LR
     style EC fill:#854d0e,stroke:#eab308,color:#fff
 {{< /mermaid >}}
 
-The inverter's copy of that number gets rewritten about every 2.5 seconds. It regulates
-against a house that existed two and a half seconds ago.
+The inverter's copy of that number gets rewritten about every 2.5 seconds. Two and a half seconds
+of dead time, in a loop three metres wide.
 
-That is fine while nothing changes. A compressor start, an EV charger stepping its current,
-an oven element: any of those move the grid by several hundred watts inside one mains cycle.
-While the new reading is in flight the inverter holds a setpoint chosen for the old house.
-If the step was a load switching off, the difference leaves through the meter.
+That is fine while nothing changes, which is most of the time. A compressor start, an EV charger
+stepping its current, an oven element: any of those move the grid by several hundred watts inside
+one mains cycle. While the new reading is in flight the inverter holds a setpoint chosen for the
+old house. If the step was a load switching off, the difference leaves through the meter.
 
-So the export is not a leak. It is latency, and it bills once per load event.
+The export is not a leak. It is latency, and it bills once per load event.
 
 There is no setting for this. The firmware has no field for a meter address, host or port
-anywhere. `use_lan_meter` appears in telemetry and is read-only. You cannot configure your
-way out of it.
+anywhere. `use_lan_meter` appears in telemetry and is read-only.
 
-## Where the time actually goes
-
-Measure before optimising, because the intuition is wrong.
+## Where the time goes
 
 | stage | time |
 |---|---|
@@ -85,11 +105,9 @@ Measure before optimising, because the intuition is wrong.
 | BLE write round trip | ~130 ms |
 | the cloud path, for comparison | 2000 to 3500 ms |
 
-The Pro 3EM aggregates internally at 1 Hz and that second is not yours. Swapping HTTP RPC
-for Modbus TCP on the same device buys 75 ms of a 1200 ms budget. Real, and worth 8%, not
-the 4x the two transport numbers suggest on their own.
-
-Those components summed, for the four configurations I ran:
+The Pro 3EM aggregates internally at 1 Hz and that second is not yours. Swapping HTTP RPC for
+Modbus on the same device buys 75 ms of a 1200 ms budget: 8%, not the 4x the transport numbers
+suggest alone.
 
 {{< mermaid >}}
 xychart-beta
@@ -99,15 +117,15 @@ xychart-beta
     bar [2500, 1240, 1155, 655]
 {{< /mermaid >}}
 
-The third bar is the change everyone reaches for first. The fourth is the one nobody thinks
-of, and it is worth five times as much.
+The third bar is the change everyone reaches for. The fourth is worth five times as much and
+comes up later.
 
 ## The field is writable
 
 The Ultra speaks protobuf inside an encrypted BLE session.
-[ha-ef-ble](https://github.com/rabits/ha-ef-ble) already implements the handshake, the
-session key and the framing under Apache 2.0, so none of that was my work. The meter reading
-lives in a message called `CloudMeter`, and anything that can open a session can write it.
+[ha-ef-ble](https://github.com/rabits/ha-ef-ble) already implements the handshake, the session
+key and the framing under Apache 2.0, so none of that was my work. The meter reading lives in a
+message called `CloudMeter`, and anything that can open a session can write it.
 
 {{< mermaid >}}
 classDiagram
@@ -144,11 +162,10 @@ classDiagram
     CloudMeter --> METER_MODEL
 {{< /mermaid >}}
 
-The same message appears in both directions. That symmetry is what makes everything after
-this verifiable: you can read back what the device took, and you can see when somebody else
-has written to it.
+The same message appears in both directions, which is what makes the rest verifiable. You can
+read back what the device took, and you can see when somebody else has written to it.
 
-At an injected +180 W the whole thing is 28 bytes. The ruler below counts bytes, not bits.
+At an injected +180 W the whole thing is 28 bytes. The ruler counts bytes, not bits.
 
 {{< mermaid >}}
 ---
@@ -171,8 +188,6 @@ packet-beta
 25-27: "30 b4 01 phase C"
 {{< /mermaid >}}
 
-Decoded:
-
 ```
 fa 17                    field 383, wire type 2 (embedded message)
 19                       length = 25 bytes
@@ -184,9 +199,8 @@ fa 17                    field 383, wire type 2 (embedded message)
    30 b4 01              phase_c_power = 180
 ```
 
-`phase_c_power` is `int32`, not `sint32`. Negative numbers sign-extend to a full ten-byte
-varint, so telling the inverter you are exporting costs eight bytes more than telling it you
-are importing. The same message at -180 W is 36 bytes:
+`phase_c_power` is `int32`, not `sint32`. Negative numbers sign-extend to a ten-byte varint, so
+telling the inverter you are exporting costs eight bytes more than telling it you are importing:
 
 {{< mermaid >}}
 ---
@@ -210,8 +224,8 @@ packet-beta
 10: "01"
 {{< /mermaid >}}
 
-Eleven bytes to say minus one hundred and eighty. Positive is importing, negative is
-exporting, confirmed by experiment rather than assumption.
+Eleven bytes to say minus one hundred and eighty. Positive is importing, negative is exporting,
+confirmed by experiment rather than assumption.
 
 That message then gets wrapped:
 
@@ -229,304 +243,27 @@ flowchart TB
 
 ## What replaced it
 
-Four reads a second over Modbus, one write every 500 ms over BLE. Both clouds are still
-there. They lose the race.
+Four reads a second over Modbus, one write every 500 ms over BLE. Nothing leaves the building.
 
 {{< mermaid >}}
 flowchart LR
-    S1["Shelly A&lt;br/&gt;Modbus TCP"] --> R["regulator&lt;br/&gt;4 Hz read, 2 Hz write"]
-    S2["Shelly B&lt;br/&gt;Modbus TCP"] --> R
-    R -->|"CloudMeter over BLE&lt;br/&gt;~0.3 s old"| U["Stream Ultra"]
-    SC["Shelly + EcoFlow clouds"] -.->|"2.5 s, still writing,&lt;br/&gt;now too slow to matter"| U
-    U --> G["grid, held on&lt;br/&gt;the import side"]
+    subgraph panel["one electrical panel, 3 metres wide"]
+        direction LR
+        S1["Shelly Pro 3EM&lt;br/&gt;solar"]
+        S2["Shelly Pro 3EM&lt;br/&gt;mains"]
+        U["Stream Ultra x2"]
+    end
+    S1 -->|"Modbus TCP, 4 Hz"| R["ef_inject&lt;br/&gt;Home Assistant"]
+    S2 -->|"Modbus TCP, 4 Hz"| R
+    R -->|"BLE, 2 Hz"| U
+    R -.->|"heartbeat, every 10 s"| D["dead-man script,&lt;br/&gt;runs on S1"]
+    D -.->|"silence re-enables&lt;br/&gt;the vendor path"| S1
 
-    style SC fill:#854d0e,stroke:#eab308,color:#fff
-    style G fill:#14532d,stroke:#22c55e,color:#fff
+    style R fill:#1e3a8a,stroke:#3b82f6,color:#fff
+    style D fill:#14532d,stroke:#22c55e,color:#fff
 {{< /mermaid >}}
 
-That is the whole idea. The rest is not breaking anything.
-
-## Thirteen mechanisms
-
-{{< mermaid >}}
-mindmap
-  root((zero export))
-    read path
-      Modbus TCP, input registers
-      two meters interleaved
-      no write on stale data
-    control
-      BIAS, deliberate import margin
-      rise-only rate limit
-      all six subfields set
-      re-assert every 500 ms
-    guards
-      bound-meter serial check
-      plausibility clamp
-      two-meter divergence
-      nine kill switches
-    cloud contention
-      echo classifier
-      immediate re-assert
-      counter-kick, rate limited
-    failsafe
-      dead-man on the meter
-      heartbeat gated on writes
-      ordered before the hard stop
-    proof
-      paired causation trials
-      A/B against stock
-{{< /mermaid >}}
-
-### 1. Read it locally
-
-Write this down if you ever do the same. Read *input registers*, Modbus function code 4.
-Function code 3, read holding registers, is the one every example uses and it returns
-exception 2 here. Phase blocks sit 20 registers apart, A at 1020, B at 1040, C at 1060,
-with voltage at +0, current at +2 and active power at +4. Phase C active power is register
-1064. Values are float32 with the two 16-bit halves swapped, low word first. Wide spans
-return nothing, so read one block at a time.
-
-### 2. Two meters beat one
-
-There is a second Pro 3EM on the same conductor. I added it as a cross-check. It turned out
-to be the largest latency win in the project.
-
-730 paired samples over 40 seconds: each meter updates at exactly 1.00 Hz, their update
-instants are 0.412 s apart, and they agree on the regulated phase to 2.3 W of about 780 W.
-
-Two 1 Hz sources with a fixed sub-second offset are not two copies of one reading. Take
-whichever is fresher and worst-case age halves.
-
-```
-time, s   0.0   0.4   1.0   1.4   2.0   2.4   3.0
-meter A   |-----------|-----------|-----------|      1.00 Hz
-meter B         |-----------|-----------|-----------  1.00 Hz, +0.412 s
-use       A     B     A     B     A     B     A      worst-case age ~0.5 s
-```
-
-The per-sample disagreement between them, 5th percentile -21 W and 95th percentile +29 W, is
-the offset showing up during load changes. What reads as sensor noise is the thing being
-exploited. It is also free redundancy: if one meter stops answering, regulation carries on
-with the other.
-
-### 3. BIAS, a deliberate import margin
-
-**BIAS** is a negative offset added to the reading before it is injected. The inverter drives
-what it sees to zero, so a negative BIAS parks the house slightly on the import side. That
-standing margin, not the speed of the loop, is what actually holds export at zero.
-
-{{< mermaid >}}
-flowchart LR
-    T["real grid&lt;br/&gt;+180 W"] --> A(("+"))
-    B["BIAS&lt;br/&gt;-68 W, faded"] --> A
-    A --> I["injected&lt;br/&gt;+112 W"]
-    I --> R["inverter drives&lt;br/&gt;injected to 0"]
-    R --> S["real grid settles&lt;br/&gt;at +60 W import"]
-
-    style B fill:#1e3a8a,stroke:#3b82f6,color:#fff
-    style S fill:#14532d,stroke:#22c55e,color:#fff
-{{< /mermaid >}}
-
-The sign is a safety property, not a preference. A positive BIAS tells the inverter it is
-importing when it is not, which commands a ramp up and manufactures the export the whole
-thing exists to prevent. So every path that can set it applies the same four checks.
-
-{{< mermaid >}}
-flowchart TD
-    F["/config/ef_inject_bias&lt;br/&gt;re-read every 2 s"] --> P{"parses as a number?"}
-    P -->|no| K["keep the last good value"]
-    P -->|yes| N{"NaN?"}
-    N -->|yes| K
-    N -->|no| G{"positive?"}
-    G -->|"yes, commands a ramp up"| K
-    G -->|no| M{"within the hard cap?"}
-    M -->|no| K
-    M -->|yes| OK["accept as live BIAS"]
-
-    style OK fill:#14532d,stroke:#22c55e,color:#fff
-    style K fill:#854d0e,stroke:#eab308,color:#fff
-{{< /mermaid >}}
-
-Three details that matter more than the number itself:
-
-- **The runtime path is validated exactly like the startup path.** A knob that skips the
-  safety check is worse than no knob. An unsafe value at startup refuses to start; an unsafe
-  value at runtime is discarded and the last good one stays in force. A typo must not be able
-  to command export.
-- **The file is re-read in an executor, not inline.** Reading it on the event loop at 4 Hz
-  was enough for Home Assistant's own loop-blocking detector to complain.
-- **BIAS fades on real grid, not on time.** Export risk is a function of how close grid sits
-  to zero, so BIAS is at full strength at 0 W and below and fades linearly to nothing at
-  500 W of import, where there is no export to prevent and a margin only buys grid.
-
-{{< mermaid >}}
-xychart-beta
-    title "BIAS applied, W, against real grid, W"
-    x-axis "real grid, W of import" [0, 125, 250, 375, 500, 625]
-    y-axis "BIAS applied, W" 0 --> 80
-    line [68, 51, 34, 17, 0, 0]
-    line [68, 68, 68, 68, 0, 0]
-{{< /mermaid >}}
-
-The smooth line runs in production. The stepped line is the version I did not build: a hard
-threshold moves the injected value by the whole of BIAS in one sample as it crosses, and the
-regulator hunts across that step instead of settling.
-
-Because BIAS fades, the steady state is a fixed point, not the BIAS value. The loop drives
-`w + BIAS` to zero while BIAS itself shrinks as `w` rises, so grid settles where the two
-agree:
-
-```
-w = -B * F / (F - B)          B = BIAS (negative), F = fade width (500 W)
-```
-
-A BIAS of -150 W gives about +115 W of real import margin, and -68 W gives about +60 W. Worth
-knowing before you wonder why -150 does not produce 150 W of import.
-
-**The gate was wrong for weeks.** BIAS originally armed on "battery is discharging". During a
-PV surplus the battery charges, so the margin was suppressed for exactly the window it exists
-for. One morning's data: 232 samples with BIAS applied against 2709 with it idle, battery
-power pinned near +80 W throughout. Turning the number up would have changed nothing, because
-the number was not being used. It now arms on proximity to export.
-
-**BIAS shrank as the loop got faster.** The margin covers export during the loop's response
-time, so it is priced in latency. Response time fell from 481 ms to about 142 ms and the
-default came down from -150 W to -68 W. That is the only part of this project that pays back
-in kWh every hour of every day.
-
-### 4. Set all six subfields, every time
-
-`CloudMeter` is not a scalar. A partial write risks landing `has_meter = false`, which unbinds
-the meter and disables zero-feed altogether. So every write reads all six subfields from live
-telemetry, replaces the one phase being regulated, and writes the whole message back.
-
-{{< mermaid >}}
-flowchart LR
-    A["write phase_c only"] --> B["has_meter defaults false"]
-    B --> C["meter unbound from the plant"]
-    C --> D["zero-feed disabled&lt;br/&gt;unbounded export"]
-    E["read all six, replace one,&lt;br/&gt;write all six"] --> F["binding preserved"]
-
-    style D fill:#7f1d1d,stroke:#ef4444,color:#fff
-    style F fill:#14532d,stroke:#22c55e,color:#fff
-{{< /mermaid >}}
-
-### 5. Know what you are talking to
-
-The loop observes for 15 seconds before its first write, then waits until it has seen
-`has_meter = true` and the serial it expects. A wrong serial is a hard stop. A missing one is
-a wait, because BLE flaps and "no telemetry yet" is not the same as "wrong device".
-
-### 6. Every clamp fails toward import
-
-A rise in the commanded setpoint that overshoots lands on the grid as export. A fall that
-undershoots lands as import. Only one of those is a compliance event.
-
-So the rate limiter is one-sided on purpose: rises are rationed, falls are not. Same rule runs
-through every guard. If a clamp misfires it has to misfire toward drawing from the grid.
-
-### 7. Stale data means no write
-
-A failed or stale read stops the write rather than letting the last value ride. There is a
-plausibility clamp for absurd readings and a short timeout so a slow meter cannot stall the
-loop.
-
-### 8. Answer the cloud, then let go slowly
-
-EcoFlow's server still writes the field over MQTT and that link cannot be intercepted. What
-can be shortened is how long its value survives.
-
-An echo classifier compares every inbound frame against what was last sent, within 2 W. A
-foreign value is therefore recognisable, and the loop re-asserts on sight instead of waiting
-out the poll period, which cuts exposure from a whole period to about one BLE round trip.
-There is a minimum gap between writes so a burst of cloud frames cannot hammer the link.
-
-It also answers with a value deliberately below target for two cycles, to cancel the ramp the
-server just commanded. The first version released that correction in a single write, and that
-made export measurably worse, because the release is itself a rising step, the exact thing the
-rate limiter exists to prevent. The release is rate limited too. Worst case, if every
-correction ran at full size, the mechanism costs about 90 Wh a day of import.
-
-{{< mermaid >}}
-sequenceDiagram
-    participant M as Shelly (LAN)
-    participant R as regulator
-    participant U as Stream Ultra
-    participant C as EcoFlow cloud
-
-    R->>M: Modbus read, 4 Hz, two meters interleaved
-    M-->>R: phase C = +180 W
-    Note over R: apply BIAS, apply rise-only limit
-    R->>U: ConfigWrite CloudMeter, phase_c = 112
-    U-->>R: DisplayPropertyUpload, cloud_metter = 112
-    Note over R: matches within 2 W, that was us
-    C->>U: cloud writes its own stale value
-    U-->>R: DisplayPropertyUpload, cloud_metter = 940
-    Note over R: no match, that was not us
-    R->>U: re-assert immediately, deliberately low
-    R->>U: hold low 2 cycles, then ramp back under the limiter
-{{< /mermaid >}}
-
-### 9. Re-assert when nothing changed
-
-The loop rewrites the value every 500 ms whether it moved or not. This costs nothing and buys
-a liveness signal: a cumulative write counter that advances at a steady 2 Hz whenever
-regulation is happening. That counter turns out to be load bearing later.
-
-### 10. Never cache the device handle
-
-Writes go through a dedicated lock, because the BLE library has no send lock and other things
-in the house talk to the same device.
-
-Worse: the library replaces its device object whenever its config entry reloads, and a
-disconnect schedules a reload. A reference captured once at startup goes permanently dead
-while the live object is healthy. That produced **74,928 consecutive write failures** at loop
-rate before I found it, with two other integrations writing to the same physical device
-without trouble the whole time. The device is now re-resolved every cycle.
-
-### 11. Kill switches that default to safe
-
-Nine flag files, each toggled by touching or deleting it, no restart: global stop, transport
-choice, interleave, shadow mode, quiet logging, A/B mode, the causation test, and the two
-protections.
-
-For the two protections, **presence of the file disables**. Forgetting to clean up leaves the
-protection on. The default state of a system nobody is watching should be the safe one.
-
-### 12. The divergence guard, wrong twice
-
-Two meters that agree to 0.29% make a good sanity check: if they diverge, stand down rather
-than trust a number you cannot verify. Getting it right took two production false trips, both
-the same mistake.
-
-**First.** The guard judged divergence on a mean of 40 samples, which is correct. But 40
-samples at 250 ms is 10 seconds, and during a ramp the grid moves at something like 270 W/s. A
-0.412 s offset between two meters watching a 270 W/s ramp produces a 112 W mean disagreement
-that is not disagreement at all. It is the offset doing its job. Fix: only judge divergence
-while the plant is quiescent.
-
-**Second.** The quiescence gate tested one of the two meters for flatness. A resistive load
-switching instantaneously is flat on the meter you are watching and not flat on the other one.
-Another confident wrong verdict. Fix: test both series.
-
-Any guard comparing two sensors has to establish that the world was holding still, and has to
-establish it from both sensors.
-
-### 13. Prove it controls something
-
-The device echoes your write back in telemetry, so "the number changed" proves nothing.
-
-The test that works is paired pulses judged only from measurements the device cannot fake: the
-independent meter and battery power. Eight alternating trials, half injecting a false reading,
-half injecting the truth with identical Bluetooth traffic. The false offset is negative on
-purpose, so it commands the inverter to back off; the other sign would command a ramp up and
-could cause real export during a test.
-
-False readings moved the inverter by **+903 W** on average against **+29 W** for the true ones.
-No overlap between the two sets.
-
-## One cycle, end to end
+Both clouds are still there and still writing. They lose the race.
 
 {{< mermaid >}}
 flowchart TD
@@ -551,31 +288,236 @@ flowchart TD
     style M fill:#14532d,stroke:#22c55e,color:#fff
 {{< /mermaid >}}
 
+## Reading it locally
+
+Write this down if you ever do the same. Read *input registers*, Modbus function code 4.
+Function code 3, read holding registers, is what every example uses and it returns exception 2
+here. Phase blocks sit 20 registers apart, A at 1020, B at 1040, C at 1060, with voltage at +0,
+current at +2 and active power at +4. Phase C active power is register 1064. Values are float32
+with the two 16-bit halves swapped, low word first. Wide spans return nothing, so read one block
+at a time.
+
+Then the part I did not expect. There is a second Pro 3EM on the same conductor, added as a
+cross-check, and it turned out to be the largest latency win in the project. Over 730 paired
+samples: each meter updates at exactly 1.00 Hz, their update instants are 0.412 s apart, and
+they agree on the regulated phase to 2.3 W of about 780 W.
+
+Two 1 Hz sources with a fixed sub-second offset are not two copies of one reading. Take
+whichever is fresher and worst-case age halves.
+
+```
+time, s   0.0   0.4   1.0   1.4   2.0   2.4   3.0
+meter A   |-----------|-----------|-----------|      1.00 Hz
+meter B         |-----------|-----------|-----------  1.00 Hz, +0.412 s
+use       A     B     A     B     A     B     A      worst-case age ~0.5 s
+```
+
+Their per-sample disagreement, 5th percentile -21 W and 95th percentile +29 W, is that offset
+showing up during load changes. What reads as sensor noise is the thing being exploited. It is
+also free redundancy: if one meter stops answering, regulation carries on with the other.
+
+## BIAS, a deliberate import margin
+
+**BIAS** is a negative offset added to the reading before it is injected. The inverter drives
+what it sees to zero, so a negative BIAS parks the house slightly on the import side. That
+standing margin, not the speed of the loop, is what holds export at zero.
+
+{{< mermaid >}}
+flowchart LR
+    T["real grid&lt;br/&gt;+180 W"] --> A(("+"))
+    B["BIAS&lt;br/&gt;-68 W, faded"] --> A
+    A --> I["injected&lt;br/&gt;+112 W"]
+    I --> R["inverter drives&lt;br/&gt;injected to 0"]
+    R --> S["real grid settles&lt;br/&gt;at +60 W import"]
+
+    style B fill:#1e3a8a,stroke:#3b82f6,color:#fff
+    style S fill:#14532d,stroke:#22c55e,color:#fff
+{{< /mermaid >}}
+
+The sign is a safety property, not a preference. A positive BIAS tells the inverter it is
+importing when it is not, which commands a ramp up and manufactures the export the whole thing
+exists to prevent. So the value is validated on every read, startup and runtime alike:
+
+{{< mermaid >}}
+flowchart TD
+    F["/config/ef_inject_bias&lt;br/&gt;re-read every 2 s"] --> P{"parses as a number?"}
+    P -->|no| K["keep the last good value"]
+    P -->|yes| N{"NaN?"}
+    N -->|yes| K
+    N -->|no| G{"positive?"}
+    G -->|"yes, commands a ramp up"| K
+    G -->|no| M{"within the hard cap?"}
+    M -->|no| K
+    M -->|yes| OK["accept as live BIAS"]
+
+    style OK fill:#14532d,stroke:#22c55e,color:#fff
+    style K fill:#854d0e,stroke:#eab308,color:#fff
+{{< /mermaid >}}
+
+Unsafe at startup refuses to start. Unsafe at runtime is discarded and the last good value stays
+in force. A typo must not be able to command export. The file is re-read in an executor rather
+than inline: reading it on the event loop at 4 Hz was enough for Home Assistant's own
+loop-blocking detector to complain.
+
+BIAS fades on real grid, not on time. Export risk is a function of how close grid sits to zero,
+so it runs at full strength at 0 W and below and fades to nothing at 500 W of import, where there
+is no export to prevent and a margin only buys grid.
+
+{{< mermaid >}}
+xychart-beta
+    title "BIAS applied, W, against real grid, W"
+    x-axis "real grid, W of import" [0, 125, 250, 375, 500, 625]
+    y-axis "BIAS applied, W" 0 --> 80
+    line [68, 51, 34, 17, 0, 0]
+    line [68, 68, 68, 68, 0, 0]
+{{< /mermaid >}}
+
+The smooth line runs in production. The stepped line is the version I did not build: a hard
+threshold moves the injected value by the whole of BIAS in one sample as it crosses, and the
+regulator hunts across that step instead of settling.
+
+Because BIAS fades, the steady state is a fixed point, not the BIAS value. The loop drives
+`w + BIAS` to zero while BIAS shrinks as `w` rises, so grid settles where the two agree:
+
+```
+w = -B * F / (F - B)          B = BIAS (negative), F = fade width (500 W)
+```
+
+which is why -150 W gives about +115 W of real import margin and -68 W gives about +60 W.
+
+Two things about it were wrong for a while. BIAS originally armed on "battery is discharging",
+and during a PV surplus the battery charges, so the margin was suppressed for exactly the window
+it exists for. One morning: 232 samples with BIAS applied against 2709 with it idle, battery
+power pinned near +80 W throughout. Turning the number up would have changed nothing, because
+the number was not being used. It arms on proximity to export now.
+
+The other is that BIAS was too big. The margin covers export during the loop's response time, so
+it is priced in latency. Response time fell from 481 ms to about 142 ms, and the default came
+down from -150 W to -68 W. Every millisecond removed from the loop is grid you stop buying.
+
+## Everything fails toward import
+
+A rise in the commanded setpoint that overshoots lands on the grid as export. A fall that
+undershoots lands as import. Only one of those is a compliance event, so the rate limiter is
+one-sided: rises are rationed, falls are not. Every guard follows the same rule. If a clamp
+misfires it has to misfire toward drawing from the grid.
+
+The same thinking covers the boring cases. A failed or stale read stops the write rather than
+letting the last value ride. There is a plausibility clamp for absurd readings and a short
+timeout so a slow meter cannot stall the loop.
+
+`CloudMeter` is not a scalar, and that one bites harder than it looks:
+
+{{< mermaid >}}
+flowchart LR
+    A["write phase_c only"] --> B["has_meter defaults false"]
+    B --> C["meter unbound from the plant"]
+    C --> D["zero-feed disabled&lt;br/&gt;unbounded export"]
+    E["read all six, replace one,&lt;br/&gt;write all six"] --> F["binding preserved"]
+
+    style D fill:#7f1d1d,stroke:#ef4444,color:#fff
+    style F fill:#14532d,stroke:#22c55e,color:#fff
+{{< /mermaid >}}
+
+So does not knowing what you are connected to. The loop observes for 15 seconds before its first
+write, then waits for `has_meter = true` and the serial it expects. A wrong serial is a hard
+stop. A missing one is a wait, because BLE flaps and "no telemetry yet" is not "wrong device".
+
+Nine flag files can disable pieces of this at runtime, no restart. For the two protections,
+presence of the file disables, so forgetting to clean up leaves the protection on. The default
+state of a system nobody is watching should be the safe one.
+
+## Racing the cloud
+
+EcoFlow's server still writes the field over MQTT and that link cannot be intercepted. What can
+be shortened is how long its value survives.
+
+An echo classifier compares every inbound frame against what was last sent, within 2 W, so a
+foreign value is recognisable. The loop re-asserts on sight instead of waiting out the poll
+period, cutting exposure from a whole period to about one BLE round trip. A minimum gap between
+writes stops a burst of cloud frames hammering the link.
+
+{{< mermaid >}}
+sequenceDiagram
+    participant M as Shelly (LAN)
+    participant R as regulator
+    participant U as Stream Ultra
+    participant C as EcoFlow cloud
+
+    R->>M: Modbus read, 4 Hz, two meters interleaved
+    M-->>R: phase C = +180 W
+    Note over R: apply BIAS, apply rise-only limit
+    R->>U: ConfigWrite CloudMeter, phase_c = 112
+    U-->>R: DisplayPropertyUpload, cloud_metter = 112
+    Note over R: matches within 2 W, that was us
+    C->>U: cloud writes its own stale value
+    U-->>R: DisplayPropertyUpload, cloud_metter = 940
+    Note over R: no match, that was not us
+    R->>U: re-assert immediately, deliberately low
+    R->>U: hold low 2 cycles, then ramp back under the limiter
+{{< /mermaid >}}
+
+Answering low for two cycles cancels the ramp the server just commanded. The first version
+released that correction in a single write and made export measurably worse, because the release
+is itself a rising step, the exact thing the rate limiter exists to prevent. The release is rate
+limited too. Worst case, if every correction ran at full size, the mechanism costs about 90 Wh a
+day of import.
+
+The loop also rewrites the value every 500 ms whether it moved or not. That buys a liveness
+signal: a counter that advances at a steady 2 Hz whenever regulation is happening. It becomes
+load bearing later.
+
+## Three things that were confidently wrong
+
+**The device handle.** The BLE library replaces its device object whenever its config entry
+reloads, and a disconnect schedules a reload. A reference captured once at startup goes
+permanently dead while the live object is healthy. That produced **74,928 consecutive write
+failures** at loop rate, with two other integrations writing to the same physical device
+throughout. The device is re-resolved every cycle now.
+
+**The divergence guard, twice.** Two meters agreeing to 0.29% make a good sanity check: if they
+diverge, stand down. It judged divergence on a mean of 40 samples, which is right. But 40 samples
+at 250 ms is 10 seconds, and during a ramp the grid moves at something like 270 W/s. A 0.412 s
+offset between two meters watching a 270 W/s ramp produces a 112 W mean disagreement that is not
+disagreement at all. It is the offset doing its job.
+
+So I gated it on the plant being quiescent, and tested one of the two meters for flatness. A
+resistive load switching instantaneously is flat on the meter you are watching and not flat on
+the other one. Another confident wrong verdict, same week. Any guard comparing two sensors has to
+establish that the world was holding still, and has to establish it from both sensors.
+
+**Proof that it controls anything.** The device echoes your write back in telemetry, so "the
+number changed" proves nothing. The test that works is paired pulses judged only from
+measurements the device cannot fake: the independent meter and battery power. Eight alternating
+trials, half injecting a false reading, half injecting the truth with identical Bluetooth
+traffic. The false offset is negative on purpose, so it commands the inverter to back off; the
+other sign would command a ramp up and could cause real export during a test. False readings
+moved the inverter by **+903 W** on average against **+29 W** for the true ones, no overlap.
+
 ## Cutting the cloud removed the safety net
 
-Once local injection worked, EcoFlow's writes were pure interference. The clean way to stop
-them is not to block EcoFlow, it is to stop feeding them: disable Shelly Cloud on the bound
-meter. EcoFlow's server then has no grid reading to push. The phone app still works, firmware
-updates still work, local Modbus is untouched.
+Once local injection worked, EcoFlow's writes were interference. The clean way to stop them is
+not to block EcoFlow, it is to stop feeding them: disable Shelly Cloud on the bound meter.
+EcoFlow's server then has no grid reading to push. The phone app still works, firmware updates
+still work, local Modbus is untouched.
 
-It worked, and it quietly deleted the entire fallback story.
+It worked, and it deleted the fallback story.
 
-The original design said, in a comment I wrote myself: *if the local read fails or goes stale,
-we stop injecting and let the cloud take over.* True while the cloud had a reading. After the
-change, if my regulator stopped on a sunny afternoon, nothing regulated at all. The inverters
-would hold their last setpoint and export without bound. I turned a redundant system into a
-single point of failure and then congratulated myself on the export numbers.
+The original design said, in a comment I wrote myself: *if the local read fails or goes stale, we
+stop injecting and let the cloud take over.* True while the cloud had a reading. After the change,
+if my regulator stopped on a sunny afternoon nothing regulated at all, and the inverters would
+hold their last setpoint and export without bound. I turned a redundant system into a single
+point of failure and then congratulated myself on the export numbers.
 
-### The watchdog cannot live on the host
-
-The obvious fix is a Home Assistant automation that spots injection stopping and re-enables
-the cloud. It does not work. The single most common way injection stops is Home Assistant
-restarting, and during a restart no automation runs.
+The obvious fix is an automation that spots injection stopping and re-enables the cloud. It does
+not work. The single most common way injection stops is Home Assistant restarting, and during a
+restart no automation runs.
 
 ### So it lives on the meter
 
-Shelly Gen2 devices run scripts in an embedded JavaScript engine inside the firmware event
-loop. Sixty lines does it.
+Shelly Gen2 devices run scripts in an embedded JavaScript engine inside the firmware event loop.
+Sixty lines does it. Home Assistant pokes an HTTP endpoint on the meter every 10 seconds; twenty
+seconds of silence and the script re-enables Shelly Cloud, restoring EcoFlow's own regulation.
 
 {{< mermaid >}}
 stateDiagram-v2
@@ -603,31 +545,21 @@ stateDiagram-v2
     end note
 {{< /mermaid >}}
 
-Home Assistant pokes an HTTP endpoint on the meter every 10 seconds. Twenty seconds of silence
-and the script re-enables Shelly Cloud, restoring EcoFlow's own regulation. When the pokes come
-back and stay healthy for 120 seconds it disables the cloud again.
-
 Details that decide whether it works:
 
-- **The heartbeat is an HTTP endpoint, not a stored key.** Shelly's key-value store lives in
-  the flash partition. At a 10 second cadence that is roughly three million flash writes a year
-  for a value whose entire lifetime is one comparison. The endpoint keeps it in RAM.
-- **It does not poll Home Assistant.** An outbound poll means storing a long-lived API token on
-  a device whose own authentication is disabled. Inverting the direction removes the credential.
-- **Every uncertain state resolves to cloud enabled.** Boot, unreadable config, a heartbeat
-  never seen: all mean "let the vendor regulate". The only state that disables the cloud is a
-  heartbeat proven healthy for two minutes. The failsafe's own failure mode is degraded
-  regulation, never none.
-- **It seeds from live config on start.** An earlier version started with "want cloud on",
-  enabled the cloud on a healthy system, and put it back two minutes later. Two flash writes for
-  nothing.
-- **The timeout is 20 seconds and the number is measured.** Beat jitter over 14 samples was
-  9.80 s minimum, 10.00 s median, 10.20 s maximum, and the device's uptime counter has one
-  second resolution. A 10 second timeout on a 10 second cadence tolerates zero late beats. Twenty
-  absorbs one missed beat plus jitter.
-- **The cost asymmetry points the same way.** A real outage during a 1880 W surplus costs about
-  10 Wh per 20 seconds. A spurious engagement costs about 0.1 Wh of extra leak. Trading detection
-  latency for no false trips is cheap in both directions.
+- **The heartbeat is an HTTP endpoint, not a stored key.** Shelly's key-value store lives in the
+  flash partition. At a 10 second cadence that is roughly three million flash writes a year for a
+  value whose entire lifetime is one comparison. The endpoint keeps it in RAM.
+- **It does not poll Home Assistant.** An outbound poll means storing a long-lived API token on a
+  device whose own authentication is disabled. Inverting the direction removes the credential.
+- **Every uncertain state resolves to cloud enabled.** Boot, unreadable config, a heartbeat never
+  seen: all of them mean "let the vendor regulate". The only state that disables the cloud is a
+  heartbeat proven healthy for two minutes.
+- **The timeout is 20 seconds and the number is measured.** Beat jitter over 14 samples ran 9.80
+  to 10.20 s and the device's uptime counter has one second resolution, so a 10 second timeout
+  tolerates zero late beats. A real outage during a 1880 W surplus costs about 10 Wh per 20
+  seconds; a spurious engagement costs about 0.1 Wh of extra leak. The asymmetry pays for the
+  wait.
 
 ### The heartbeat has to measure work, not health
 
@@ -638,10 +570,9 @@ Consider the Modbus link dying. State stays `running`. BLE frames stay fresh, be
 fine. The bound meter is still bound. The write-failure counter never moves. Every health
 indicator says healthy and nothing is being regulated.
 
-The only signal that catches it is the write counter not advancing. That is why the loop
-re-asserts every 500 ms even when nothing changed: it makes a frozen counter mean exactly one
-thing, and that one thing covers BLE loss, a dead control loop, a dead meter link, a manual kill
-switch and rejected writes.
+Only the write counter catches that. Which is why the loop re-asserts every 500 ms even when
+nothing changed: it makes a frozen counter mean exactly one thing, and that one thing covers BLE
+loss, a dead control loop, a dead meter link, a manual kill switch and rejected writes.
 
 {{< mermaid >}}
 flowchart LR
@@ -671,13 +602,11 @@ timeline
     60 s : hard stop would have cut the supply
 {{< /mermaid >}}
 
-Both cloud figures are measured, not assumed: 4 seconds to Shelly Cloud, 8 more before EcoFlow
-writes the field. Twenty-seven seconds of margin. Push the timeout past about 45 s and the order
-inverts.
+Both cloud figures are measured: 4 seconds to reach Shelly Cloud, 8 more before EcoFlow writes
+the field. Twenty-seven seconds of margin. Push the timeout past about 45 s and the order inverts.
 
-### Tested in both directions
-
-Heartbeat stopped while the regulator stayed healthy, so the plant was regulated throughout:
+Tested by stopping the heartbeat while the regulator stayed healthy, so the plant was regulated
+throughout:
 
 ```
 asserted after heartbeat loss : 32 s   (expected 30 to 40)
@@ -708,62 +637,53 @@ About 90% down. On the trend of a full year of prior data, roughly 20 kWh/yr bec
 | updates reaching the inverter | ~0.4/s | **~2/s** |
 | age of the injected reading | 481 ms | **~142 ms** |
 | who owns the setpoint | the cloud | me |
-| time on the safe side of zero | ~50% | **~100%** |
 
-Three separate fixes produced the latency figure: the Modbus read, the two-meter interleave, and
-a pacing bug where the loop waited a fixed pause after each cycle instead of working out when the
-next one was due, so a loop configured for 2 Hz ran at 1.5.
+Three fixes produced that latency figure: the Modbus read, the two-meter interleave, and a pacing
+bug where the loop waited a fixed pause after each cycle instead of working out when the next one
+was due, so a loop configured for 2 Hz ran at 1.5.
+
+The shower still has dead time. It is a third of a second now instead of two and a half, and the
+plumbing no longer goes through two data centres.
 
 ## What did not improve
 
 **Accuracy.** Alternating blocks of my version against the stock cloud version, scored from the
 independent meter: average error 27.5 W mine, 25.6 W stock. Within noise, and if anything a hair
-worse.
+worse. The stock loop already held about 30 W on 2.5 second old data, so there was almost no
+error left for speed to remove. What this bought is control, margin and a fallback I understand.
 
-That is not a contradiction. The stock loop already held about 30 W on 2.5 second old data, so
-there was almost no error left for speed to remove. What this bought is control, margin and a
-fallback I understand, not precision.
+**The meter's averaging is the floor.** A full second of the delay belongs to the meter.
+Everything else competes for the remaining 150 ms, which is also why the WiFi versus Ethernet
+question I worried about is worth under 2% of the total.
 
-**The meter's averaging is the floor.** A full second of the delay belongs to the meter. Everything
-else competes for the remaining 150 ms, which is also why the WiFi versus Ethernet question I
-worried about is worth under 2% of the total.
-
-**Inrush is out of reach.** The largest single riser of one day, 0.45 Wh, was a heat pump starting:
-one negative power sample while current was rising and power factor collapsed. You do not regulate
-your way out of an inrush with a 250 ms loop.
+**Inrush is out of reach.** The largest single riser of one day, 0.45 Wh, was a heat pump
+starting: one negative power sample while current was rising and power factor collapsed. You do
+not regulate your way out of an inrush with a 250 ms loop.
 
 **It costs money.** BIAS is real energy bought to avoid exporting. For a system whose rule is "do
-not export", that is a bargain. For anyone optimising a feed-in tariff it is the wrong trade.
+not export" that is a bargain. For anyone optimising a feed-in tariff it is the wrong trade.
 
 ## If you try this
 
-- **Measure the budget first.** I nearly spent a week on transport latency worth 8%, while a second
-  meter I already owned was worth twice as much for an afternoon.
-- **Find the asymmetry.** Export and import are not symmetric failures here. Once that is explicit,
-  half the design decisions make themselves.
-- **A guard comparing two sensors needs a quiescence gate, from both sensors.** Two production false
-  trips in one week.
+- **Measure the budget first.** I nearly spent a week on transport latency worth 8%, while a
+  second meter I already owned was worth twice as much for an afternoon.
+- **Find the asymmetry.** Export and import are not symmetric failures here. Once that is
+  explicit, half the design decisions make themselves.
+- **A guard comparing two sensors needs a quiescence gate, from both sensors.**
 - **A watchdog cannot live inside what it watches.** If your most likely failure is "the host
   restarted", the watchdog cannot be on the host.
-- **Instrument work done, not health reported.** Health said `running` for the entire duration of a
-  dead link.
+- **Instrument work done, not health reported.** Health said `running` for the entire duration of
+  a dead link.
 - **Check what your safety net depends on before you cut a wire.** Mine was a comment describing a
   mechanism I had disabled a week earlier.
 - **Never blind-probe unknown commands.** One blind probe on this hardware reset a safety power
   limit to zero.
 
-## Two parts worth stealing
-
-Most of this is specific: one inverter family, one meter, one phase, thresholds calibrated to my
-roof. Two parts are not.
-
-The **dead-man script** is generic. Any setup where a local controller owns a device setpoint and a
-vendor cloud is the fallback has this problem. A RAM-only heartbeat endpoint on a third device, with
-every uncertain state resolving to the fallback, transfers directly.
-
-The **interleave** transfers too. Two independent sensors sampling the same quantity at the same
-rate: check whether their update instants are offset. If they are, you own a faster sensor than
-either of them.
+Two parts of this are not specific to my roof. The dead-man script is generic: any setup where a
+local controller owns a device setpoint and a vendor cloud is the fallback has this problem, and a
+RAM-only heartbeat endpoint on a third device transfers directly. So does the interleave. If you
+have two independent sensors sampling the same quantity at the same rate, check whether their
+update instants are offset. If they are, you own a faster sensor than either of them.
 
 {{< alert "triangle-exclamation" >}}
 **If you are considering this.** It writes a live battery inverter's control setpoint, on my own
@@ -773,5 +693,5 @@ unknown commands to see what happens. And if you are somewhere export is regulat
 configuration is the one your grid operator agreed to, not the one you can reach over Bluetooth.
 {{< /alert >}}
 
-More on this system: [the parallel battery imbalance](/posts/ecoflow-parallel-battery-imbalance/) and
-[the 19% charge day](/posts/ecoflow-expandable-battery-broken-promise/).
+More on this system: [the parallel battery imbalance](/posts/ecoflow-parallel-battery-imbalance/)
+and [the 19% charge day](/posts/ecoflow-expandable-battery-broken-promise/).
