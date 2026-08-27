@@ -56,16 +56,16 @@ sequenceDiagram
 
     Note over H,I: house 100 W · injecting 0 W · grid 100 W in
     H->>M: kettle on, 1900 W
-    M->>I: you are importing 2000 W from the grid
-    I->>M: understood, I will inject 2000 W to cancel your import
+    M->>I: the house is importing 2000 W from the grid
+    I->>M: roger, injecting 2000 W so that import stops. target is zero.
     Note over H,I: house 2000 W · injecting 2000 W · grid 0 W
-    M->>I: now I read 0 W, nothing is crossing me
+    M->>I: import is 0 W now, nothing is crossing me
     H->>M: kettle off
     Note over H,I: house 100 W · injecting 2000 W · grid 1900 W OUT
-    M->>I: the kettle stopped, and 1900 W of your injection has nowhere else to go
-    I->>M: stopping the 2000 W injection now
+    M->>I: the house is only taking 100 W, so 1900 W of your injection is going back to the grid
+    I->>M: roger, stopping the 2000 W injection
     Note over H,I: house 100 W · injecting 100 W · grid 0 W
-    M->>I: agreed, but you exported for 2.5 seconds first
+    M->>I: import is 0 W again, but you exported for 2.5 seconds
     M->>I: that is how old my report was when it reached you
 {{< /mermaid >}}
 
