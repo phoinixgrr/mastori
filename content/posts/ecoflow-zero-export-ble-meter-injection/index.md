@@ -305,16 +305,25 @@ also free redundancy: if one meter stops answering, regulation carries on with t
 
 ## BIAS, a deliberate import margin
 
-**BIAS** is a negative offset added to the reading before injection. The inverter drives what it
-sees to zero, so it parks the house slightly on the import side. That standing margin, not loop
-speed, is what holds export at zero.
+The target does not have to be zero. Aiming at a small standing import instead gives the loop
+somewhere to be wrong in the harmless direction, and that margin, not loop speed, is what actually
+holds export at zero.
+
+Most zero-feed inverters expose this as a setting: a grid setpoint, a feed-in offset, regulate to
++50 W rather than to 0. It is a standard thing to want. EcoFlow does not offer it. There is no
+field, no slider, and no way to ask for one.
+
+Owning the number gets it anyway. **BIAS** is a negative offset added to the meter reading before
+that reading is written into the device. The inverter drives what it sees to zero exactly as it
+always did, and it has no idea it is seeing anything other than the grid. Zero on its side of the
+lie is a slight import on the real one.
 
 {{< mermaid >}}
 flowchart LR
     T["real grid&lt;br/&gt;+180 W"] --> A(("+"))
     B["BIAS&lt;br/&gt;-68 W, faded"] --> A
-    A --> I["injected&lt;br/&gt;+112 W"]
-    I --> R["inverter drives&lt;br/&gt;injected to 0"]
+    A --> I["what the inverter&lt;br/&gt;is told: +112 W"]
+    I --> R["it drives that&lt;br/&gt;number to 0"]
     R --> S["real grid settles&lt;br/&gt;at +60 W import"]
 
     style B fill:#1e3a8a,stroke:#3b82f6,color:#fff
