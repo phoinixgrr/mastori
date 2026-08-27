@@ -52,6 +52,37 @@ drops, the inverter backs off.
 Nobody tells the inverter how much the house wants. It only ever sees one number and tries to
 cancel it. Which makes the whole feature exactly as good as that number is.
 
+The meter is the grid's detective. It stands at the boundary, reports everything that crosses, and
+the inverter's entire job is to leave it with nothing to report.
+
+{{< mermaid >}}
+sequenceDiagram
+    actor H as 🏠 The House
+    participant M as 🔎 The Meter, the grid's detective
+    participant I as ⚡ The Inverter
+    participant B as 🔋 The Battery
+
+    H->>M: kettle on, 2000 W
+    M->>I: I see 2000 W crossing my clamp. Account for it.
+    I->>B: 2000 W, quickly
+    B-->>I: 2000 W
+    I->>M: try reading it again
+    M->>I: nothing. zero crossed.
+    Note over M,I: no evidence, no bill, no export
+
+    loop every second, forever
+        M->>I: I see 340 W
+        I->>M: and now
+        M->>I: I see 12 W
+        I->>M: I will take that
+    end
+
+    H->>M: kettle off
+    M->>I: I see minus 1900 W. You are pushing into me.
+    I->>M: since when
+    M->>I: hard to say. my last report was 2.5 seconds old.
+{{< /mermaid >}}
+
 ## The hotel shower
 
 You already know this control loop. You turn the tap, nothing happens, so you turn it further.
