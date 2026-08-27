@@ -54,38 +54,38 @@ sequenceDiagram
     participant M as 🔎 The Meter
     participant I as ⚡ The Inverter
 
-    Note over H,I: house 100 W · injecting 0 W · grid 100 W in
-    H->>M: kettle on, 1900 W
+    Note over H,I: house 0 W · injecting 0 W · grid 0 W
+    H->>M: kettle on, 2000 W
     M->>I: the house is importing 2000 W from the grid
     I->>M: roger, injecting 2000 W so that import stops. target is zero.
     Note over H,I: house 2000 W · injecting 2000 W · grid 0 W
     M->>I: import is 0 W now, nothing is crossing me
     H->>M: kettle off
-    Note over H,I: house 100 W · injecting 2000 W · grid 1900 W OUT
-    M->>I: the house is only taking 100 W, so 1900 W of your injection is going back to the grid
-    I->>M: roger, stopping the 2000 W injection
-    Note over H,I: house 100 W · injecting 100 W · grid 0 W
+    Note over H,I: house 0 W · injecting 2000 W · grid 2000 W OUT
+    M->>I: the house is taking nothing, so all 2000 W is going back to the grid
+    I->>M: roger, stopping the injection
+    Note over H,I: house 0 W · injecting 0 W · grid 0 W
     M->>I: import is 0 W again, but you exported for 2.5 seconds
     M->>I: that is how old my report was when it reached you
 {{< /mermaid >}}
 
-The 100 W is the house baseline, and it is where the arithmetic lives. Injecting 2000 W into a
-house consuming 100 W leaves 1900 W over, and current does not queue. If the inverter pushes out
-more than the house is using, the surplus has exactly one path available: back through the meter
-and into the grid.
+The third note is where the arithmetic lives. The kettle is off, the house is back to idle, and
+2000 W is still coming out of the inverter. Current does not queue. Whatever is injected has to be
+consumed by something, and with nothing in the house consuming it there is exactly one path left:
+back through the meter and into the grid.
 
 {{< mermaid >}}
 flowchart LR
     I["inverter injects&lt;br/&gt;2000 W"] --> B{"the busbar"}
-    B -->|"100 W consumed"| H["house load"]
-    B -->|"1900 W, the only other way out"| G["the grid"]
+    B -->|"0 W consumed"| H["house load,&lt;br/&gt;idle"]
+    B -->|"2000 W, the only other way out"| G["the grid"]
 
     style G fill:#7f1d1d,stroke:#ef4444,color:#fff
     style H fill:#14532d,stroke:#22c55e,color:#fff
 {{< /mermaid >}}
 
-That surplus is the export, and stopping it is the entire feature. Which makes the feature exactly
-as good as the meter's number is.
+That is the export, and stopping it is the entire feature. Which makes the feature exactly as good
+as the meter's number is.
 
 ## The hotel shower
 
