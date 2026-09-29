@@ -1,6 +1,7 @@
 ---
 title: "macOS 27 Broke My Brother Printer. An Open-Source Driver Fixed It for Good"
 date: 2026-09-24
+lastmod: 2026-09-29
 tags: ["macos", "printer", "brother", "cups", "apple-silicon", "rosetta", "homelab"]
 summary: "After the macOS 27 update my Brother HL-1210W stopped printing with a vague 'not compatible' error. The real cause was an Intel-only driver with no Rosetta left to run it. Reinstalling Rosetta fixed it for the day; building brlaser natively for arm64 fixed it for good."
 keywords: [
@@ -307,3 +308,27 @@ rastertobrlaser              arm64
 rastertobrother1210          x86_64
 ...
 ```
+
+## Update, 2026-09-29: Brother has a date for native drivers
+
+[@ThomasDBosboom](https://github.com/ThomasDBosboom) pointed out in the comments that Brother
+does plan native Apple Silicon software. Their FAQ
+["I get notifications about Intel-based apps on my Mac with Apple silicon"](https://support.brother.com/g/b/faqend.aspx?c=ph&lang=en&prod=hl1210w_eu_as&faqid=faq00100873_000),
+dated 17 September 2026, says Apple Silicon-compatible software is planned for every model in
+their macOS Support Statement. The HL-1210W is on the list.
+
+For printers and MFCs, the scheduled release dates are:
+
+| Software | Scheduled release |
+|---|---|
+| Printer driver | September 2027 |
+| Full Software Package | September 2027 |
+| iPrint&Scan Push Scan Tool | September 2027 |
+
+The FAQ also explains the download page. "Download" next to a macOS version only means software
+is available for it, and "Checking" means Brother is still reviewing the latest release. Neither
+says anything about Apple Silicon. That's why the macOS 26.x package is still the Intel-only
+filter from 2019.
+
+So Brother's own driver will need Rosetta for about another year. Until it ships, brlaser is the
+way to print natively on Apple Silicon. Thanks, Thomas.
