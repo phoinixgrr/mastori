@@ -1,0 +1,3 @@
+{{ if and .IsPage (.Params.showComments | default (site.Params.article.showComments | default false)) }}
+  <link rel="preconnect" href="https://giscus.app" crossorigin>
+{{ end }}
