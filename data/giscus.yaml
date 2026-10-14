@@ -1,0 +1,9 @@
+# Page path -> mastori-comments discussion number.
+# Pinned pages load their thread by number instead of GitHub search, which
+# has dropped this repo's discussions from its index (October 2026).
+# Pages not listed here fall back to pathname mapping.
+/posts/pv-surplus-ev-charging/: 1
+/posts/ir-dimmer-power-feedback/: 2
+/posts/ecoflow-expandable-battery-broken-promise/: 3
+/posts/qnap-ts433-realtek-r8125-driver/: 4
+/posts/brother-hl-1210w-macos-27-brlaser/: 5

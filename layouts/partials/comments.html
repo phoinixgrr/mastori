@@ -1,9 +1,15 @@
+{{ $discussion := index (site.Data.giscus | default dict) .RelPermalink }}
 <script src="https://giscus.app/client.js"
         data-repo="phoinixgrr/mastori-comments"
         data-repo-id="R_kgDORnZ6Jw"
         data-category="General"
         data-category-id="DIC_kwDORnZ6J84C4bIr"
+        {{- if $discussion }}
+        data-mapping="number"
+        data-term="{{ $discussion }}"
+        {{- else }}
         data-mapping="pathname"
+        {{- end }}
         data-strict="0"
         data-reactions-enabled="1"
         data-emit-metadata="0"
