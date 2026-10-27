@@ -85,10 +85,14 @@ An alert when the meat is done:
 
 - The thermometer accepts one Bluetooth connection at a time, so Home Assistant and the phone app
   cannot be connected together. Disable the integration entry when you want the app.
-- Only the AT-02 is supported. Alarms and target temperatures from the app are not implemented.
+- Only the AT-02 is tested. Your mileage will vary on other models and devices.
 
 ## Where to find it
 
 Source, docs and releases: **[github.com/phoinixgrr/thermogatz_ha](https://github.com/phoinixgrr/thermogatz_ha)**
 
 This is an independent project, not affiliated with Thermogatz.
+
+![Dinner, grilled](grilled-chop.jpg)
+
+Happy Home Assistant grilling! 🥩🔥
