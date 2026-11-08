@@ -7,6 +7,8 @@ summary: "The EU is pushing balcony solar as a citizen's right. Germany has over
 draft: false
 ---
 
+> **Update — November 2026:** The rules have now been published, and they are less simple than expected. I wrote them up in a separate article: [Greece Legalised Balcony Solar. Now Find an Electrician.](/posts/balcony-solar-greece-rulebook/)
+
 > **Update — April 2026:** After more than a year of "examining", Greece is finally legislating balcony solar. On 21 April 2026, YPEN submitted a new RES bill to Parliament that explicitly opens the door for plug-in solar systems. A ministerial decision — expected in May — will set the framework: up to 800W, notification-only registration at DEDDIE via a new digital platform. [Read the full update below.](#april-2026-update--greece-is-finally-moving)
 
 ## The Idea is Simple
