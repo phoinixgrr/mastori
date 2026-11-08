@@ -10,11 +10,11 @@ summary: "Building a forecast-aware PV surplus EV charging controller with EcoFl
 
 Imagine your solar system as a water tap filling buckets.
 
-The **sun tap** produces water (energy) during the day. You have a small **battery bucket** (3kWh usable) that fills up first. Then there's a **house bucket** that constantly leaks — lights, fridge, networking gear, about 300W dripping out all day. Occasionally someone turns on a **heavy faucet** — the dishwasher or washing machine — and 850W+ gushes out.
+The **sun tap** produces water (energy) during the day. You have a small **battery bucket** that fills up first. Then there's a **house bucket** that constantly leaks — lights, fridge, networking gear, about 300W dripping out all day. Occasionally someone turns on a **heavy faucet** — the dishwasher or washing machine — and 850W+ gushes out.
 
 Then there's the **car bucket**. It's massive — an EV battery is like a swimming pool compared to your other buckets (the Tesla Model 3 Long Range has a 78 kWh battery — that's 25x the home battery). It can absorb energy for hours at a steady ~1.4kW at 6A.
 
-The problem? Your tap has a **nozzle limit** — the inverter caps output at 1200W, and it can only aim at **one specific bucket** (phase C). Once the battery bucket overflows and there's no other bucket under the tap, the water just... spills on the floor. That's clipping. Energy produced but never used.
+The problem? Your tap has a **nozzle limit** — the inverter caps its output, and it can only aim at **one specific bucket** (phase C). Once the battery bucket overflows and there's no other bucket under the tap, the water just... spills on the floor. That's clipping. Energy produced but never used.
 
 The controller I built is basically an **automated bucket manager**: it watches the tap pressure (PV), checks all bucket levels (battery SOC, forecast), and decides when to slide the car bucket under the tap — and when to pull it away so the battery bucket can fill up first.
 
@@ -22,21 +22,18 @@ The controller I built is basically an **automated bucket manager**: it watches 
 
 | Component | Role |
 |-----------|------|
-| **[EcoFlow Stream Ultra](https://eu.ecoflow.com/products/stream-ultra-pro?variant=50510963016023)** | Inverter + 1.92kWh battery + 4 PV strings |
-| **[EcoFlow AC Pro](https://eu.ecoflow.com/products/stream-ultra-pro?variant=50510963016023)** | Additional 1.92kWh battery |
+| **[EcoFlow Stream Ultra](https://eu.ecoflow.com/products/stream-ultra-pro?variant=50510963016023)** | Inverter + battery storage + PV inputs |
 | **[go-e charger](https://go-e.com/)** | EV charging control (force mode, phase switching, amp control) |
 | **[Tesla](https://www.tesla.com/)** | The big bucket (EV) |
-| **[EcoFlow 520W Bifacial Panels](https://eu.ecoflow.com/products/520w-rigid-solar-panel?variant=51572272202071)** | 4x 520W rigid bifacial solar panels |
+| **Solar panels** | Rigid bifacial panels on the balcony |
 | **[Shelly 3EM](https://www.shelly.com/en/products/shelly-3em)** | Per-phase current/power monitoring |
 | **[Home Assistant](https://www.home-assistant.io/)** | The brain — runs the controller automation |
-
-![The bifacial solar panels mounted on the balcony — urban solar at its finest](solar-panels-balcony.jpg)
 
 **Key constraints:**
 - **Zero-export** — the inverter is configured to never feed energy back to the grid. This is common in setups without a grid-tie agreement or where regulations don't allow it. Every watt produced must be consumed or stored locally
 - **3-phase house** — EcoFlow injects only on **phase C**
-- **Inverter cap: 1200W** to the house side
-- **Combined usable battery: 3.072kWh** (2×1.92kWh, 15%-95% window)
+- **Inverter output cap** — the inverter limits how much it can push to the house side
+- **Limited usable battery** — only a 15%-95% window of the battery is used
 
 ## What the Controller Actually Does
 
@@ -84,8 +81,6 @@ The last two are the interesting ones. Note that `forecast_window_ok` also consi
 
 The forecast data comes from **[Forecast.Solar](https://forecast.solar/)** — a free, public API that estimates solar production based on your panel location, orientation, and capacity. It integrates directly into Home Assistant via the built-in [Forecast.Solar integration](https://www.home-assistant.io/integrations/forecast_solar/), providing sensors for current estimated power, next-hour energy, and remaining production for the day.
 
-![Forecast.Solar integration in Home Assistant — showing estimated energy/power sensors and peak time predictions](forecast-solar.png)
-
 The controller doesn't use fixed thresholds. Instead, it adjusts based on the **remaining solar forecast for today**:
 
 | Remaining forecast | Start SOC | Reserve | Hard stop SOC |
@@ -125,7 +120,7 @@ Path 4 was added in v7 to handle a subtle EcoFlow behavior: when batteries hit 1
 The `battery_target_ok` check is a policy gate: **will the batteries still reach ~95% by end of day if I divert surplus to the car now?** It compares the energy needed to fill the batteries against the remaining forecast with a buffer:
 
 ```
-battery_kwh_needed = max(0, ((95 - current_soc) / 80) * 3.072)
+battery_kwh_needed = max(0, ((95 - current_soc) / 80) * usable_battery_kwh)
 battery_target_ok  = forecast_remaining >= (battery_kwh_needed + buffer)
 ```
 
@@ -180,7 +175,7 @@ The obvious fix: switch to single-phase charging during PV surplus, so the car o
 
 After this rewiring:
 - Single-phase charging at 6A draws ~1.4kW **on phase C**
-- EcoFlow provides up to 1200W on that same phase
+- EcoFlow provides power on that same phase
 - Grid only needs to cover the ~200W difference
 - The controller's phase-C metrics finally match physical reality
 
@@ -321,7 +316,7 @@ The **Load Guard** is a fast current-throttling loop that protects against phase
 
 In a zero-export setup — where the inverter is configured to never push energy back to the grid — **having solar production doesn't mean it will be used 100%.** Unlike grid-tied systems where excess power earns you credits, here every watt must be consumed or stored in the moment. If there's no load to absorb it and the batteries are full or constrained by inverter limits, that energy is simply clipped — wasted.
 
-Think of it this way: you have a tap that only runs during daylight, a small bucket (battery), and a nozzle that limits flow to 1200W. Once the bucket is full, you need a **big, steady, controllable drain** — or the tap just overflows.
+Think of it this way: you have a tap that only runs during daylight, a small bucket (battery), and a nozzle that limits the flow. Once the bucket is full, you need a **big, steady, controllable drain** — or the tap just overflows.
 
 The EV is the perfect drain. A heat pump works too. A boiler, maybe. But washing machines and random loads throughout the day? You're chasing surplus with a mop.
 
@@ -663,7 +658,7 @@ variables:
   battery_charging_w: "{{ [battery_power_w, 0] | max }}"
   battery_discharging_w: "{{ [0 - battery_power_w, 0] | max }}"
   eco_soc: "{{ states('sensor.combined_battery_soc') | float(0) }}"
-  battery_usable_from_15_to_95_kwh: 3.072
+  battery_usable_from_15_to_95_kwh: X.XX  # your battery's usable kWh
   battery_floor_soc: 15
   usable_soc_span: 80
   usable_soc_above_floor: "{{ [eco_soc - battery_floor_soc, 0] | max }}"

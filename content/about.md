@@ -30,7 +30,7 @@ Documenting real-world home automation projects — not tutorials, but actual sy
 
 <div id="solar-live-about"></div>
 
-See the full [live solar dashboard](/solar/) with interactive charts — battery state of charge, power flow, and individual PV string production, updated every 5 minutes from Prometheus.
+See the full [live solar dashboard](/solar/) with interactive charts — battery state of charge, and power flow, updated every 5 minutes from Prometheus.
 
 ### Contribute
 

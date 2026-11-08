@@ -1,7 +1,7 @@
 ---
 title: "I Paid €849 for an EcoFlow Battery. It Charged 19% on a Perfect Sunny Day."
 date: 2026-04-07
-draft: false
+draft: true
 tags: ["ecoflow", "solar", "battery", "stream-ultra", "stream-ac-pro", "hardware-limitation", "consumer-rights"]
 summary: "EcoFlow markets expandable battery systems with automatic solar energy transfer between units. I bought the expansion, monitored it for weeks, and the data shows the 1200W inverter bottleneck prevents expansion batteries from charging under normal household load."
 keywords: [

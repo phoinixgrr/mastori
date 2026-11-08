@@ -239,7 +239,7 @@ flowchart LR
         direction LR
         S1["Shelly Pro 3EM&lt;br/&gt;solar"]
         S2["Shelly Pro 3EM&lt;br/&gt;mains"]
-        U["Stream Ultra x2"]
+        U["Stream Ultra"]
     end
     S1 -->|"Modbus TCP, 4 Hz"| R["ef_inject&lt;br/&gt;Home Assistant"]
     S2 -->|"Modbus TCP, 4 Hz"| R
@@ -475,8 +475,8 @@ local Modbus is untouched.
 
 It also deleted the fallback. The original design said, in a comment I wrote myself, *if the local
 read fails we stop injecting and let the cloud take over*, which was true while the cloud had a
-reading. After the change, if my regulator stopped on a sunny afternoon the inverters would hold
-their last setpoint and export without bound.
+reading. After the change, if my regulator stopped on a sunny afternoon the inverter would hold
+its last setpoint and export without bound.
 
 An automation that notices and re-enables the cloud does not work either, because the most common
 way injection stops is Home Assistant restarting, and during a restart no automation runs.
@@ -612,6 +612,3 @@ no write on a stale reading or a silent link, and a fallback that engages by its
 unknown commands to see what happens. And if you are somewhere export is regulated, the correct
 configuration is the one your grid operator agreed to, not the one you can reach over Bluetooth.
 {{< /alert >}}
-
-More on this system: [the parallel battery imbalance](/posts/ecoflow-parallel-battery-imbalance/)
-and [the 19% charge day](/posts/ecoflow-expandable-battery-broken-promise/).

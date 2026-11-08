@@ -2,7 +2,7 @@
 title: "EcoFlow Stream Ultra + AC Pro — The Parallel Battery Imbalance Nobody Warns You About"
 date: 2026-03-30
 lastmod: 2026-04-04
-draft: false
+draft: true
 tags: ["ecoflow", "solar", "battery", "zero-export", "home-assistant", "ev-charging", "stream-ultra", "stream-ac-pro", "firmware", "hardware-limitation"]
 summary: "The Stream Ultra + AC Pro can't balance batteries under load — and it's not a firmware bug. A 1200W inverter bottleneck traps 800W of solar on the Ultra's DC bus, permanently starving the AC Pro. Here's the data, the architecture, and why it gets worse with more units."
 keywords: [
