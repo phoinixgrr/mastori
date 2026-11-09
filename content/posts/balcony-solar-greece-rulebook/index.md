@@ -39,9 +39,9 @@ If you own a bigger one, you can't use it as it is.
 
 ## The electrician
 
-"Plug-in" turns out to be a figure of speech. The decision itself (paragraph 3Β, [full text](https://www.taxheaven.gr/circulars/55367/ypen-dapeek-102876-1958-14-09-2026) or [Government Gazette pages 63726 to 63727](https://nomotelia.gr/photos/File/5573b-26.pdf)) says that to install and connect one of these systems you need two things: a ΥΔΕ (the installer's declaration) in force, **and** a declaration from the responsible installer or engineer that the specifications are met (*Υπεύθυνη Δήλωση του υπεύθυνου εγκαταστάτη ή μηχανικού κατάλληλης ειδικότητας*). It makes no difference whether you touch your panel. Someone with a licence has to sign. The installer's tax number, name and address are among the fields you must fill in, and I found no "I installed it myself" option anywhere in the text.
+"Plug-in" turns out to be a figure of speech. The decision itself (paragraph 3Β, [full text](https://www.taxheaven.gr/circulars/55367/ypen-dapeek-102876-1958-14-09-2026) or [Government Gazette pages 63726 to 63727](https://nomotelia.gr/photos/File/5573b-26.pdf)) says that to install and connect one of these systems you need two things: a ΥΔΕ (the installer's declaration) in force, **and** a declaration from the responsible installer or engineer that the specifications are met (*Υπεύθυνη Δήλωση του υπεύθυνου εγκαταστάτη ή μηχανικού κατάλληλης ειδικότητας*). It doesn't matter whether anything in your fuse box changes. Someone with a licence has to sign. The installer's tax number, name and address are among the fields you must fill in, and I found no "I installed it myself" option anywhere in the text.
 
-Then DEDDIE's rulebook adds the work. Section 4.2.2 wants an RCD of 30 mA or less, type A, bidirectional, and old two-pin sockets replaced, all checked and done "only" by a licensed electrician, with a new ΥΔΕ if anything in the panel changes. The rulebook's own example swaps a 16 A breaker for a 10 A one. Electrician again, new ΥΔΕ again. So the first step of installing a device for "non-specialists" is calling a specialist.
+Then DEDDIE's rulebook adds the work. Section 4.2.2 wants an RCD of 30 mA or less, type A, bidirectional, and old two-pin sockets replaced, all checked and done "only" by a licensed electrician, with a new ΥΔΕ if anything in the fuse box changes. The rulebook's own example swaps a 16 A breaker for a 10 A one. Electrician again, new ΥΔΕ again. So the first step of installing a device for "non-specialists" is calling a specialist.
 
 ## New buildings need not apply
 
@@ -137,9 +137,9 @@ LOL.
 
 ### Ο ηλεκτρολόγος
 
-Το «plug-in» τελικά είναι τρόπος του λέγειν. Η ίδια η απόφαση (παράγραφος 3Β, [ολόκληρο το κείμενο](https://www.taxheaven.gr/circulars/55367/ypen-dapeek-102876-1958-14-09-2026) ή [ΦΕΚ, σελίδες 63726 έως 63727](https://nomotelia.gr/photos/File/5573b-26.pdf)) ζητάει δύο πράγματα για να εγκαταστήσεις και να συνδέσεις το σύστημα: ΥΔΕ σε ισχύ, και Υπεύθυνη Δήλωση από εγκαταστάτη ή μηχανικό ότι τηρούνται οι προδιαγραφές. Δεν έχει σημασία αν θα πειράξεις τον πίνακα. Κάποιος με άδεια πρέπει να βάλει την υπογραφή του. Στην πλατφόρμα μάλιστα δηλώνεις το ΑΦΜ, το όνομα και τη διεύθυνσή του. Επιλογή «το έβαλα εγώ» δεν υπάρχει πουθενά στο κείμενο.
+Το «plug-in» τελικά είναι τρόπος του λέγειν. Η ίδια η απόφαση (παράγραφος 3Β, [ολόκληρο το κείμενο](https://www.taxheaven.gr/circulars/55367/ypen-dapeek-102876-1958-14-09-2026) ή [ΦΕΚ, σελίδες 63726 έως 63727](https://nomotelia.gr/photos/File/5573b-26.pdf)) ζητάει δύο πράγματα για να εγκαταστήσεις και να συνδέσεις το σύστημα: ΥΔΕ σε ισχύ, και Υπεύθυνη Δήλωση από εγκαταστάτη ή μηχανικό ότι τηρούνται οι προδιαγραφές. Δεν έχει σημασία αν θα αλλάξει κάτι στον ηλεκτρικό πίνακα. Κάποιος με άδεια πρέπει να βάλει την υπογραφή του. Στην πλατφόρμα μάλιστα δηλώνεις το ΑΦΜ, το όνομα και τη διεύθυνσή του. Επιλογή «το έβαλα εγώ» δεν υπάρχει πουθενά στο κείμενο.
 
-Μετά έρχονται οι προδιαγραφές του ΔΕΔΔΗΕ (παράγραφος 4.2.2) και προσθέτουν δουλειά: ρελέ διαρροής (ΔΔΡ) έως 30 mA, τύπου Α, διπλής κατεύθυνσης, και αλλαγή των παλιών πριζών με σούκο. Όλα αυτά «μόνο» από αδειούχο ηλεκτρολόγο, και αν αλλάξει κάτι στον πίνακα, νέα ΥΔΕ. Στο δικό τους παράδειγμα, η ασφάλεια των 16 A γίνεται 10 A. Πάλι ηλεκτρολόγος, πάλι ΥΔΕ.
+Μετά έρχονται οι προδιαγραφές του ΔΕΔΔΗΕ (παράγραφος 4.2.2) και προσθέτουν δουλειά: ρελέ διαρροής (ΔΔΡ) έως 30 mA, τύπου Α, διπλής κατεύθυνσης, και αλλαγή των παλιών πριζών με σούκο. Όλα αυτά «μόνο» από αδειούχο ηλεκτρολόγο, και αν αλλάξει κάτι στον ηλεκτρικό πίνακα, νέα ΥΔΕ. Στο δικό τους παράδειγμα, η ασφάλεια των 16 A γίνεται 10 A. Πάλι ηλεκτρολόγος, πάλι ΥΔΕ.
 
 Δηλαδή, για να βάλεις μια συσκευή «για μη ειδικούς», το πρώτο βήμα είναι να φωνάξεις ειδικό.
 
