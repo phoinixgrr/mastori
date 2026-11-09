@@ -84,22 +84,22 @@ Put it together. Solar is switched off because the grid can't absorb it, batteri
 
 ## Does it even pay?
 
-An hourly model, with my assumptions. Change them to fit yours. 1 kW of panels in Athens makes about 1,300 kWh a year, electricity costs €0.20 per kWh, and surplus pays €0 in both countries. In Greece the kit costs €800 with 24% VAT, plus a guessed €200 for the electrician, so €1,000. In Germany it costs €645 without VAT, with no electrician, plus two extra panels for the 2,000 Wp allowed (€300 with VAT), so about €887 for 2 kW. "Home all day" uses about 450 W from 7 to 23. "Out at work" is away 8 to 17 with only the fridge and router on (150 W).
+An hourly model, with my assumptions. Change them to fit yours. 1 kW of panels on a south-facing balcony railing in Athens makes about 1,000 kWh a year (that is what the EU's [PVGIS](https://re.jrc.ec.europa.eu/pvg_tools/en/) calculates; an east or west railing is closer to 750), electricity costs €0.20 per kWh, and surplus pays €0 in both countries. In Greece the kit costs €800 with 24% VAT, plus a guessed €200 for the electrician, so €1,000. In Germany it costs €645 without VAT, with no electrician, plus two extra panels for the 2,000 Wp allowed (€300 with VAT), so about €887 for 2 kW. "Home all day" uses about 450 W from 7 to 23. "Out at work" is away 8 to 17 with only the fridge and router on (150 W).
 
 | You are | Greece: pays back in | Greece: ahead after 10 years | **Germany: pays back in** | **Germany: ahead after 10 years** |
 |---|---|---|---|---|
-| Home all day | 4.0 years | €1,489 | **2.7 years** | **€2,385** |
-| Out at work | 8.1 years | €228 | **6.0 years** | **€581** |
+| Home all day | 5.0 years | €999 | **2.9 years** | **€2,170** |
+| Out at work | 8.7 years | €151 | **6.5 years** | **€486** |
 
-The second row is most people. In Greece they pay €1,000, save about €123 a year, break even after 8 years and are €228 ahead after ten. In Germany the same person in the same flat is €581 ahead, two and a half times the gain. Remove only the electrician and the VAT and Greece's 8.1 years becomes 5.3. The rest is the extra panels, which hardly help an empty flat but are worth about €78 a year to one that is home.
+The second row is most people. In Greece they pay €1,000, save about €115 a year, break even after 8.7 years and are €151 ahead after ten. In Germany the same person in the same flat is €486 ahead, more than three times the gain. Remove only the electrician and the VAT and Greece's 8.7 years becomes 5.6. The rest is the extra panels, which hardly help an empty flat but are worth about €106 a year to one that is home.
 
-In that empty flat, 685 of the 1,299 kWh go to the grid for free, about €137 a year, and in the evening you buy electricity back at full price. A battery would fix the timing, but it costs more and isn't in these numbers. So the people who profit most are home all day: retirees, remote workers, a shop on the ground floor. Everyone else pays €1,000 to get back about €123 a year, on equipment that has to last 8 years just to break even, under rules that can change in the next edition.
+In that empty flat, 424 of the 1,000 kWh go to the grid for free, about €85 a year, and in the evening you buy electricity back at full price. A battery would fix the timing, but it costs more and isn't in these numbers. So the people who profit most are home all day: retirees, remote workers, a shop on the ground floor. Everyone else pays €1,000 to get back about €115 a year, on equipment that has to last almost 9 years just to break even, under rules that can change in the next edition.
 
-## So
+## Conclusion
 
-For some people it makes sense. At home during the day, with old enough wiring, it pays back in about 4 years. For someone who leaves at eight it takes about 8, and that is most people.
+For some people it makes sense. If your installation was built before 2024 and you are home during the day, it pays back in about 5 years. For someone who leaves at eight it takes almost 9, and that is most people.
 
-If you still want one, find out when your wiring was done. The decision wants a ΥΔΕ in force, and you can check yours on [DEDDIE's ΥΔΕ lookup](https://apps.deddie.gr/LicensedElectricianCertification/) with the first 11 digits of your supply number. If the wiring is from 2024 or later, wait. Otherwise: 1,000 W of panels, an inverter that is 800 W from the factory, straight into the wall, electrician first. And wait for the portal.
+If you still want one, find out when your electrical installation was built. The decision wants a ΥΔΕ in force, and you can check yours on [DEDDIE's ΥΔΕ lookup](https://apps.deddie.gr/LicensedElectricianCertification/) with the first 11 digits of your supply number. If it was built in 2024 or later, wait. Otherwise: 1,000 W of panels, an inverter that is 800 W from the factory, straight into the wall, electrician first. And wait for the portal.
 
 Most of the safety rules are fine on their own. The 0.1 s disconnect when you pull the plug is a good idea. The problem is all of it together. Greece legalised a device you plug into the wall, then wrote 26 pages about what must happen before you do. Germany got a million systems. We got a rulebook, and before you ask who it is for, go back to the part about who owns the grid.
 
@@ -197,25 +197,25 @@ LOL.
 
 Έκανα ένα μοντέλο ώρα με την ώρα. Οι παραδοχές είναι δικές μου, άλλαξέ τες αν η δική σου περίπτωση είναι διαφορετική:
 
-- 1 kW πάνελ στην Αθήνα βγάζει περίπου 1.300 kWh τον χρόνο. Το ρεύμα κοστίζει €0,20 την kWh. Το πλεόνασμα πληρώνεται €0 και στις δύο χώρες.
+- 1 kW πάνελ σε νότιο κάγκελο μπαλκονιού στην Αθήνα βγάζει περίπου 1.000 kWh τον χρόνο (αυτό υπολογίζει το ευρωπαϊκό [PVGIS](https://re.jrc.ec.europa.eu/pvg_tools/en/), σε ανατολικό ή δυτικό κάγκελο είναι κοντά στις 750). Το ρεύμα κοστίζει €0,20 την kWh. Το πλεόνασμα πληρώνεται €0 και στις δύο χώρες.
 - **Ελλάδα:** κιτ €800 με ΦΠΑ 24%, συν €200 που υπολογίζω για τον ηλεκτρολόγο. Σύνολο €1.000.
 - **Γερμανία:** το ίδιο κιτ χωρίς ΦΠΑ €645, χωρίς ηλεκτρολόγο, συν δύο ακόμα πάνελ αφού επιτρέπονται 2.000 Wp (€300 με ΦΠΑ). Περίπου €887 για 2 kW.
 - «Σπίτι όλη μέρα» σημαίνει γύρω στα 450 W από τις 7 το πρωί ως τις 11 το βράδυ. «Στη δουλειά» σημαίνει εκτός σπιτιού 8 με 5, με μόνο το ψυγείο και το router να δουλεύουν (150 W).
 
 | Προφίλ | Ελλάδα: απόσβεση | Ελλάδα: κέρδος σε 10 χρόνια | **Γερμανία: απόσβεση** | **Γερμανία: κέρδος σε 10 χρόνια** |
 |---|---|---|---|---|
-| Σπίτι όλη μέρα | 4,0 χρόνια | €1.489 | **2,7 χρόνια** | **€2.385** |
-| Στη δουλειά | 8,1 χρόνια | €228 | **6,0 χρόνια** | **€581** |
+| Σπίτι όλη μέρα | 5,0 χρόνια | €999 | **2,9 χρόνια** | **€2.170** |
+| Στη δουλειά | 8,7 χρόνια | €151 | **6,5 χρόνια** | **€486** |
 
-Η δεύτερη γραμμή είναι οι περισσότεροι. Στην Ελλάδα δίνεις €1.000, γλιτώνεις γύρω στα €123 τον χρόνο, τα βγάζεις σε 8 χρόνια και μετά από δέκα είσαι €228 μπροστά. Στη Γερμανία, ίδιο σπίτι, ίδιος ήλιος, είσαι €581 μπροστά. Δυόμισι φορές περισσότερα. Αν έφευγαν μόνο ο ηλεκτρολόγος και ο ΦΠΑ, τα 8,1 χρόνια θα γίνονταν 5,3. Τα υπόλοιπα είναι τα επιπλέον πάνελ: σε άδειο σπίτι δεν προσφέρουν σχεδόν τίποτα, σε σπίτι με κόσμο μέσα αξίζουν γύρω στα €78 τον χρόνο.
+Η δεύτερη γραμμή είναι οι περισσότεροι. Στην Ελλάδα δίνεις €1.000, γλιτώνεις γύρω στα €115 τον χρόνο, τα βγάζεις σε 8,7 χρόνια και μετά από δέκα είσαι €151 μπροστά. Στη Γερμανία, ίδιο σπίτι, ίδιος ήλιος, είσαι €486 μπροστά. Πάνω από τρεις φορές περισσότερα. Αν έφευγαν μόνο ο ηλεκτρολόγος και ο ΦΠΑ, τα 8,7 χρόνια θα γίνονταν 5,6. Τα υπόλοιπα είναι τα επιπλέον πάνελ: σε άδειο σπίτι δεν προσφέρουν σχεδόν τίποτα, σε σπίτι με κόσμο μέσα αξίζουν γύρω στα €106 τον χρόνο.
 
-Στο σπίτι που μένει άδειο, από τις 1.299 kWh οι 685 φεύγουν δωρεάν στο δίκτυο, περίπου €137 τον χρόνο, και το βράδυ αγοράζεις ρεύμα πίσω σε κανονική τιμή. Μια μπαταρία θα το έλυνε, αλλά κοστίζει και δεν την έχω βάλει στους υπολογισμούς. Οπότε κερδισμένοι βγαίνουν όσοι είναι σπίτι όλη μέρα: συνταξιούχοι, όσοι δουλεύουν από το σπίτι, ένα μαγαζί στο ισόγειο. Οι υπόλοιποι δίνουν €1.000 για να πάρουν πίσω €123 τον χρόνο, με εξοπλισμό που πρέπει να αντέξει 8 χρόνια απλώς για να βγει ο λογαριασμός, και με κανόνες που μπορεί να αλλάξουν στην επόμενη έκδοση.
+Στο σπίτι που μένει άδειο, από τις 1.000 kWh οι 424 φεύγουν δωρεάν στο δίκτυο, περίπου €85 τον χρόνο, και το βράδυ αγοράζεις ρεύμα πίσω σε κανονική τιμή. Μια μπαταρία θα το έλυνε, αλλά κοστίζει και δεν την έχω βάλει στους υπολογισμούς. Οπότε κερδισμένοι βγαίνουν όσοι είναι σπίτι όλη μέρα: συνταξιούχοι, όσοι δουλεύουν από το σπίτι, ένα μαγαζί στο ισόγειο. Οι υπόλοιποι δίνουν €1.000 για να πάρουν πίσω €115 τον χρόνο, με εξοπλισμό που πρέπει να αντέξει σχεδόν 9 χρόνια απλώς για να βγει ο λογαριασμός, και με κανόνες που μπορεί να αλλάξουν στην επόμενη έκδοση.
 
 ### Συμπέρασμα
 
-Για κάποιους αξίζει. Αν είσαι σπίτι τη μέρα και η καλωδίωση είναι αρκετά παλιά, τα λεφτά γυρίζουν σε περίπου 4 χρόνια. Αν φεύγεις στις οκτώ το πρωί, θέλει περίπου 8. Και οι περισσότεροι φεύγουν στις οκτώ.
+Για κάποιους αξίζει. Αν η ηλεκτρική εγκατάσταση του σπιτιού σου έχει γίνει πριν το 2024 και είσαι σπίτι τη μέρα, τα λεφτά γυρίζουν σε περίπου 5 χρόνια. Αν φεύγεις στις οκτώ το πρωί, θέλει σχεδόν 9. Και οι περισσότεροι φεύγουν στις οκτώ.
 
-Αν το θέλεις παρ' όλα αυτά, ξεκίνα από την καλωδίωση. Η απόφαση ζητάει ΥΔΕ σε ισχύ. Τη δική σου μπορείς να την ελέγξεις στην [αναζήτηση ΥΔΕ του ΔΕΔΔΗΕ](https://apps.deddie.gr/LicensedElectricianCertification/), με τα πρώτα 11 ψηφία του αριθμού παροχής. Αν η εγκατάσταση είναι από το 2024 και μετά, περίμενε. Αλλιώς: έως 1.000 W πάνελ, inverter 800 W από το εργοστάσιο, κατευθείαν στην πρίζα του τοίχου, και πρώτα ηλεκτρολόγος. Και φυσικά περιμένεις να ανοίξει η πύλη.
+Αν το θέλεις παρ' όλα αυτά, ξεκίνα βρίσκοντας πότε έγινε η ηλεκτρική εγκατάσταση του σπιτιού σου. Η απόφαση ζητάει ΥΔΕ σε ισχύ. Τη δική σου μπορείς να την ελέγξεις στην [αναζήτηση ΥΔΕ του ΔΕΔΔΗΕ](https://apps.deddie.gr/LicensedElectricianCertification/), με τα πρώτα 11 ψηφία του αριθμού παροχής. Αν έγινε το 2024 ή μετά, περίμενε. Αλλιώς: έως 1.000 W πάνελ, inverter 800 W από το εργοστάσιο, κατευθείαν στην πρίζα του τοίχου, και πρώτα ηλεκτρολόγος. Και φυσικά περιμένεις να ανοίξει η πύλη.
 
 Οι περισσότεροι κανόνες ασφαλείας, ένας-ένας, στέκουν. Το να σβήνει ο inverter σε 0,1 s όταν βγάζεις το φις είναι σωστό. Ο έλεγχος του ρελέ δεν είναι υπερβολή. Το πρόβλημα είναι το σύνολο. Νομιμοποιήσαμε μια συσκευή που μπαίνει στην πρίζα και γράψαμε 26 σελίδες για όσα πρέπει να γίνουν πριν τη βάλεις στην πρίζα. Η Γερμανία έχει ένα εκατομμύριο συστήματα. Εμείς έχουμε έναν κανονισμό. Κι αν αναρωτιέσαι για ποιον γράφτηκε, ξαναδιάβασε το κομμάτι για το σε ποιον ανήκει το δίκτυο.
 
