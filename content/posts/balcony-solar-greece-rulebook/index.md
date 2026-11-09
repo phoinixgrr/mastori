@@ -84,7 +84,7 @@ Put it together. Solar is switched off because the grid can't absorb it, batteri
 
 ## Does it even pay?
 
-An hourly model, with my assumptions. Change them to fit yours. 1 kW of panels on a south-facing balcony railing in Athens makes about 1,000 kWh a year (that is what the EU's [PVGIS](https://re.jrc.ec.europa.eu/pvg_tools/en/) calculates; an east or west railing is closer to 750), electricity costs €0.20 per kWh, and the surplus pays €0. The decision says so for Greece. Germany has a feed-in tariff on paper, but for a balcony system it needs a bidirectional meter and the effort is bigger than the income, so [almost nobody claims it](https://elektronik-zeit.de/balkonkraftwerk/netmetering/). In Greece the kit costs €800 with 24% VAT, plus a guessed €200 for the electrician, so €1,000. In Germany it costs €645 without VAT, with no electrician, plus two extra panels for the 2,000 Wp allowed (€300 with VAT), so about €887 for 2 kW. "Home all day" uses about 450 W from 7 to 23. "Out at work" is away 8 to 17 with only the fridge and router on (150 W).
+An hourly model, with my assumptions. Change them to fit yours. 1 kW of panels on a south-facing balcony railing in Athens makes about 1,000 kWh a year (that is what the EU's [PVGIS](https://re.jrc.ec.europa.eu/pvg_tools/en/) calculates; an east or west railing is closer to 750), electricity costs €0.20 per kWh, and I count the surplus as €0. In Greece the decision says so. [Germany has a feed-in tariff for the surplus](https://elektronik-zeit.de/balkonkraftwerk/netmetering/), if you apply for it, so the German numbers are conservative. In Greece the kit costs €800 with 24% VAT, plus a guessed €200 for the electrician, so €1,000. In Germany it costs €645 without VAT, with no electrician, plus two extra panels for the 2,000 Wp allowed (€300 with VAT), so about €887 for 2 kW. "Home all day" uses about 450 W from 7 to 23. "Out at work" is away 8 to 17 with only the fridge and router on (150 W).
 
 | You are | Greece: pays back in | Greece: ahead after 10 years | **Germany: pays back in** | **Germany: ahead after 10 years** |
 |---|---|---|---|---|
@@ -102,6 +102,28 @@ For some people it makes sense. If your installation was built before 2024 and y
 If you still want one, find out when your electrical installation was built. The decision wants a ΥΔΕ in force, and you can check yours on [DEDDIE's ΥΔΕ lookup](https://apps.deddie.gr/LicensedElectricianCertification/) with the first 11 digits of your supply number. If it was built in 2024 or later, wait. Otherwise: 1,000 W of panels, an inverter that is 800 W from the factory, straight into the wall, electrician first. And wait for the portal.
 
 Greece legalised a device you plug into the wall, then wrote 26 pages about what must happen before you do. Germany got a million systems. We got a rulebook, and before you ask who it is for, go back to the part about who owns the grid.
+
+## The whole thing in one table
+
+| | Germany | Greece |
+|---|---|---|
+| VAT on the kit | **0%** | full 24% |
+| Grants | some cities and states, for example up to €500 for tenants in Mecklenburg-Vorpommern | none that I found |
+| Panels | **up to 2,000 Wp** | up to 1,000 W in total |
+| Inverter | up to 800 VA, a software limit is common | 800 W built in hardware, the manufacturer's limit doesn't count |
+| Electrician | **not needed** | always: a ΥΔΕ in force and a signed declaration from an installer or engineer |
+| Age of the wiring | nobody asks | nothing built from 2024 on |
+| Registration | one web form | Taxisnet portal, with the installer's details |
+| Meter and checks | an old meter is tolerated for now | DEDDIE fits telemetry on your supply and runs sample inspections |
+| When you can start | today | the day the portal opens, announced by 31 December 2026 |
+| Surplus | **a feed-in tariff for the surplus, if you apply** | nothing, by decision |
+| Permit or connection fee | none | none |
+| The steps | buy it, plug it in, fill in one form | check the age of the installation, hire an electrician, swap the RCD and sockets, ΥΔΕ in force, signed declaration, register on the portal, wait for the portal to open, accept the telemetry and a possible inspection |
+| Pays back, home all day (my model) | **2.9 years** | 5.0 years |
+| Pays back, out at work (my model) | **6.5 years** | 8.7 years |
+| Ahead after 10 years, out at work | **€486** | €151 |
+
+Count the rows where Greece wins. Take your time.
 
 *Not legal or electrical advice. [Read the PDF](/downloads/deddie-plug-in-solar-specs-1st-edition-2026-10.pdf) before you buy anything. It is DEDDIE's first edition of the specifications (October 2026), hosted here as a copy.*
 
@@ -197,7 +219,7 @@ LOL.
 
 Έκανα ένα μοντέλο ώρα με την ώρα. Οι παραδοχές είναι δικές μου, άλλαξέ τες αν η δική σου περίπτωση είναι διαφορετική:
 
-- 1 kW πάνελ σε νότιο κάγκελο μπαλκονιού στην Αθήνα βγάζει περίπου 1.000 kWh τον χρόνο (αυτό υπολογίζει το ευρωπαϊκό [PVGIS](https://re.jrc.ec.europa.eu/pvg_tools/en/), σε ανατολικό ή δυτικό κάγκελο είναι κοντά στις 750). Το ρεύμα κοστίζει €0,20 την kWh. Το πλεόνασμα πληρώνεται €0. Για την Ελλάδα το λέει η απόφαση. Στη Γερμανία υπάρχει θεωρητικά τιμή αποζημίωσης, αλλά σε σύστημα μπαλκονιού χρειάζεται μετρητής διπλής κατεύθυνσης και η ταλαιπωρία κοστίζει περισσότερο από το κέρδος, οπότε [σχεδόν κανείς δεν τη διεκδικεί](https://elektronik-zeit.de/balkonkraftwerk/netmetering/).
+- 1 kW πάνελ σε νότιο κάγκελο μπαλκονιού στην Αθήνα βγάζει περίπου 1.000 kWh τον χρόνο (αυτό υπολογίζει το ευρωπαϊκό [PVGIS](https://re.jrc.ec.europa.eu/pvg_tools/en/), σε ανατολικό ή δυτικό κάγκελο είναι κοντά στις 750). Το ρεύμα κοστίζει €0,20 την kWh. Το πλεόνασμα το υπολογίζω €0. Στην Ελλάδα το ορίζει η απόφαση. Η [Γερμανία έχει τιμή αποζημίωσης για το πλεόνασμα](https://elektronik-zeit.de/balkonkraftwerk/netmetering/), αν κάνεις αίτηση, άρα τα γερμανικά νούμερα είναι συντηρητικά.
 - **Ελλάδα:** κιτ €800 με ΦΠΑ 24%, συν €200 που υπολογίζω για τον ηλεκτρολόγο. Σύνολο €1.000.
 - **Γερμανία:** το ίδιο κιτ χωρίς ΦΠΑ €645, χωρίς ηλεκτρολόγο, συν δύο ακόμα πάνελ αφού επιτρέπονται 2.000 Wp (€300 με ΦΠΑ). Περίπου €887 για 2 kW.
 - «Σπίτι όλη μέρα» σημαίνει γύρω στα 450 W από τις 7 το πρωί ως τις 11 το βράδυ. «Στη δουλειά» σημαίνει εκτός σπιτιού 8 με 5, με μόνο το ψυγείο και το router να δουλεύουν (150 W).
@@ -218,5 +240,27 @@ LOL.
 Αν το θέλεις παρ' όλα αυτά, ξεκίνα βρίσκοντας πότε έγινε η ηλεκτρική εγκατάσταση του σπιτιού σου. Η απόφαση ζητάει ΥΔΕ σε ισχύ. Τη δική σου μπορείς να την ελέγξεις στην [αναζήτηση ΥΔΕ του ΔΕΔΔΗΕ](https://apps.deddie.gr/LicensedElectricianCertification/), με τα πρώτα 11 ψηφία του αριθμού παροχής. Αν έγινε το 2024 ή μετά, περίμενε. Αλλιώς: έως 1.000 W πάνελ, inverter 800 W από το εργοστάσιο, κατευθείαν στην πρίζα του τοίχου, και πρώτα ηλεκτρολόγος. Και φυσικά περιμένεις να ανοίξει η πύλη.
 
 Νομιμοποιήσαμε μια συσκευή που μπαίνει στην πρίζα και γράψαμε 26 σελίδες για όσα πρέπει να γίνουν πριν τη βάλεις στην πρίζα. Η Γερμανία έχει ένα εκατομμύριο συστήματα. Εμείς έχουμε έναν κανονισμό. Κι αν αναρωτιέσαι για ποιον γράφτηκε, ξαναδιάβασε το κομμάτι για το σε ποιον ανήκει το δίκτυο.
+
+### Όλο το πακέτο σε έναν πίνακα
+
+| | Γερμανία | Ελλάδα |
+|---|---|---|
+| ΦΠΑ στο κιτ | **0%** | πλήρης, 24% |
+| Επιδοτήσεις | σε κάποιες πόλεις και κρατίδια, π.χ. έως €500 για ενοικιαστές στο Μεκλεμβούργο-Πομερανία | καμία που να βρήκα |
+| Πάνελ | **έως 2.000 Wp** | έως 1.000 W συνολικά |
+| Inverter | έως 800 VA, ο περιορισμός με software είναι συνηθισμένος | 800 W από το εργοστάσιο, το όριο του κατασκευαστή δεν μετράει |
+| Ηλεκτρολόγος | **δεν χρειάζεται** | πάντα: ΥΔΕ σε ισχύ και υπογεγραμμένη δήλωση εγκαταστάτη ή μηχανικού |
+| Ηλικία της εγκατάστασης | δεν τη ρωτάει κανείς | τίποτα από το 2024 και μετά |
+| Δήλωση | μία φόρμα | πύλη με Taxisnet και στοιχεία εγκαταστάτη |
+| Μετρητής και έλεγχοι | ο παλιός μετρητής ανέχεται προσωρινά | ο ΔΕΔΔΗΕ βάζει τηλεμέτρηση στην παροχή και κάνει δειγματοληπτικούς ελέγχους |
+| Πότε ξεκινάς | σήμερα | όταν ανοίξει η πύλη, με ημερομηνία που ανακοινώνεται έως 31 Δεκεμβρίου 2026 |
+| Πλεόνασμα | **υπάρχει τιμή αποζημίωσης, αν κάνεις αίτηση** | τίποτα, το ορίζει η απόφαση |
+| Άδεια ή τέλος σύνδεσης | κανένα | κανένα |
+| Τα βήματα | το αγοράζεις, το βάζεις στην πρίζα, συμπληρώνεις μια φόρμα | έλεγχος ηλικίας της εγκατάστασης, ηλεκτρολόγος, αλλαγή ΔΔΡ και πριζών, ΥΔΕ σε ισχύ, υπογεγραμμένη δήλωση, δήλωση στην πύλη, αναμονή να ανοίξει η πύλη, τηλεμέτρηση και πιθανός έλεγχος |
+| Απόσβεση, σπίτι όλη μέρα (το μοντέλο μου) | **2,9 χρόνια** | 5,0 χρόνια |
+| Απόσβεση, στη δουλειά | **6,5 χρόνια** | 8,7 χρόνια |
+| Κέρδος σε 10 χρόνια, στη δουλειά | **€486** | €151 |
+
+Μέτρα τις γραμμές όπου κερδίζει η Ελλάδα. Μην βιάζεσαι.
 
 *Δεν είναι νομική ή ηλεκτρολογική συμβουλή. [Διάβασε το PDF](/downloads/deddie-plug-in-solar-specs-1st-edition-2026-10.pdf) πριν αγοράσεις οτιδήποτε. Είναι η πρώτη έκδοση των προδιαγραφών του ΔΕΔΔΗΕ (Οκτώβριος 2026), σε αντίγραφο εδώ.*
