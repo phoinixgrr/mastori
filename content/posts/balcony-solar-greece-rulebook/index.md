@@ -59,7 +59,7 @@ There is more. DEDDIE will fit a telemetry system on your supply and run sample 
 
 Germany wants people to do this, so it made it cheap and easy. No VAT ([0% since 2023](https://www.selbst.de/balkonkraftwerk-foerderung-fuer-mieter-und-eigentuemer-78938.html)). [Local grants](https://priwatt.de/blog/balkonkraftwerk-foerderung/) in some places, for example [up to €500 in Mecklenburg-Vorpommern](https://www.cleanthinking.de/foerderung-der-balkon-pv-anlage/) for tenants. Twice the panels, with an 800 VA inverter and up to 2,000 Wp. And one web form in the [Marktstammdatenregister](https://elektronik-zeit.de/balkonkraftwerk/anmelden/), with no electrician. You buy it, carry it up, plug it in and fill in a form. People do it on a Saturday.
 
-Greece: full VAT, no subsidy that I found, half the panels, an electrician, and nothing for the surplus. Germany says: please do this, we will make it cheap. Greece says: you may, if you pay for the electrician, the RCD, the paperwork and the VAT. Germany treats a balcony panel like an appliance. We treat it like a power station, and then forbid the extension lead.
+Greece: full VAT, no subsidy, half the panels, an electrician, and nothing for the surplus. Germany says: please do this, we will make it cheap. Greece says: you may, if you pay for the electrician, the RCD, the paperwork and the VAT. Germany treats a balcony panel like an appliance. We treat it like a power station, and then forbid the extension lead.
 
 According to B2Green, the Greek rules are largely based on a German standard, [DIN VDE V 0126-95](https://www.homeandsmart.de/din-vde-0126-95-balkonsolar-norm-erklaert-0040-651569). So we took the German technical document, added our own bureaucracy and left out the incentives. And Greece has a lot more sun than Germany, so it is the one with the better reason to make this easy.
 
@@ -108,7 +108,7 @@ Greece legalised a device you plug into the wall, then wrote 26 pages about what
 | | Germany | Greece |
 |---|---|---|
 | VAT on the kit | **0%** | full 24% |
-| Grants | some cities and states, for example up to €500 for tenants in Mecklenburg-Vorpommern | none that I found |
+| Grants | some cities and states, for example up to €500 for tenants in Mecklenburg-Vorpommern | none |
 | Panels | **up to 2,000 Wp** | up to 1,000 W in total |
 | Inverter | up to 800 VA, a software limit is common | 800 W built in hardware, the manufacturer's limit doesn't count |
 | Electrician | **not needed** | always: a ΥΔΕ in force and a signed declaration from an installer or engineer |
@@ -192,7 +192,7 @@ LOL.
 
 Το αγοράζεις, το ανεβάζεις στο μπαλκόνι, το βάζεις στην πρίζα και συμπληρώνεις τη φόρμα. Δουλειά για ένα Σάββατο.
 
-Εδώ: ολόκληρος ο ΦΠΑ, καμία επιδότηση (τουλάχιστον δεν βρήκα), μισά πάνελ, ηλεκτρολόγος, και μηδέν για ό,τι περισσεύει. Η Γερμανία λέει «βάλτε το, θα σας το κάνουμε φτηνό». Εμείς λέμε «βάλτε το, αφού πληρώσετε ηλεκτρολόγο, ρελέ, χαρτιά και ΦΠΑ». Εκεί το πάνελ του μπαλκονιού είναι οικιακή συσκευή. Εδώ το αντιμετωπίζουμε σαν μικρό σταθμό παραγωγής, και για σιγουριά απαγορεύουμε και τη μπαλαντέζα.
+Εδώ: ολόκληρος ο ΦΠΑ, καμία επιδότηση, μισά πάνελ, ηλεκτρολόγος, και μηδέν για ό,τι περισσεύει. Η Γερμανία λέει «βάλτε το, θα σας το κάνουμε φτηνό». Εμείς λέμε «βάλτε το, αφού πληρώσετε ηλεκτρολόγο, ρελέ, χαρτιά και ΦΠΑ». Εκεί το πάνελ του μπαλκονιού είναι οικιακή συσκευή. Εδώ το αντιμετωπίζουμε σαν μικρό σταθμό παραγωγής, και για σιγουριά απαγορεύουμε και τη μπαλαντέζα.
 
 Το καλύτερο; Σύμφωνα με το B2Green, οι ελληνικές προδιαγραφές στηρίζονται κυρίως στο γερμανικό πρότυπο [DIN VDE V 0126-95](https://www.homeandsmart.de/din-vde-0126-95-balkonsolar-norm-erklaert-0040-651569). Πήραμε δηλαδή το γερμανικό κείμενο, κρατήσαμε τα τεχνικά, προσθέσαμε τη δική μας γραφειοκρατία και πετάξαμε τα κίνητρα. Με τόσο περισσότερο ήλιο από τη Γερμανία, θα είχαμε κάθε λόγο να το κάνουμε πιο εύκολο, όχι πιο δύσκολο.
 
@@ -246,7 +246,7 @@ LOL.
 | | Γερμανία | Ελλάδα |
 |---|---|---|
 | ΦΠΑ στο κιτ | **0%** | πλήρης, 24% |
-| Επιδοτήσεις | σε κάποιες πόλεις και κρατίδια, π.χ. έως €500 για ενοικιαστές στο Μεκλεμβούργο-Πομερανία | καμία που να βρήκα |
+| Επιδοτήσεις | σε κάποιες πόλεις και κρατίδια, π.χ. έως €500 για ενοικιαστές στο Μεκλεμβούργο-Πομερανία | καμία |
 | Πάνελ | **έως 2.000 Wp** | έως 1.000 W συνολικά |
 | Inverter | έως 800 VA, ο περιορισμός με software είναι συνηθισμένος | 800 W από το εργοστάσιο, το όριο του κατασκευαστή δεν μετράει |
 | Ηλεκτρολόγος | **δεν χρειάζεται** | πάντα: ΥΔΕ σε ισχύ και υπογεγραμμένη δήλωση εγκαταστάτη ή μηχανικού |
