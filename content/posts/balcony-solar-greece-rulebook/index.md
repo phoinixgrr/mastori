@@ -41,7 +41,7 @@ If you own a bigger one, you can't use it as it is.
 
 "Plug-in" turns out to be a figure of speech. The decision itself (paragraph 3Β, [full text](https://www.taxheaven.gr/circulars/55367/ypen-dapeek-102876-1958-14-09-2026) or [Government Gazette pages 63726 to 63727](https://nomotelia.gr/photos/File/5573b-26.pdf)) says that to install and connect one of these systems you need two things: a ΥΔΕ (the installer's declaration) in force, **and** a declaration from the responsible installer or engineer that the specifications are met (*Υπεύθυνη Δήλωση του υπεύθυνου εγκαταστάτη ή μηχανικού κατάλληλης ειδικότητας*). It doesn't matter whether anything in your fuse box changes. Someone with a licence has to sign. The installer's tax number, name and address are among the fields you must fill in, and I found no "I installed it myself" option anywhere in the text.
 
-Then DEDDIE's rulebook adds the work. Section 4.2.2 wants an RCD of 30 mA or less, type A, bidirectional, and old two-pin sockets replaced, all checked and done "only" by a licensed electrician, with a new ΥΔΕ if anything in the fuse box changes. The rulebook's own example swaps a 16 A breaker for a 10 A one. Electrician again, new ΥΔΕ again. So the first step of installing a device for "non-specialists" is calling a specialist.
+Then DEDDIE's rulebook adds the work. Section 4.2.2 wants an RCD of 30 mA or less, type A, bidirectional, and old two-pin sockets replaced, all checked and done "only" by a licensed electrician, with a new ΥΔΕ if anything in the fuse box changes. The rulebook's own example swaps a 16 A breaker for a 10 A one. Electrician again, new ΥΔΕ again. So the first step of installing a device for "non-specialists" is calling a specialist. Meanwhile you can plug a 2,300 W hair dryer into any socket and nobody asks a thing: no electrician, no declaration, no portal. That's 10 amps through a heating element that can easily catch fire. The inverter is capped at 800 W, about 3.5 amps, and disconnects in 0.1 seconds if the grid drops. That one needs a signature.
 
 ## New buildings need not apply
 
@@ -163,7 +163,7 @@ LOL.
 
 Μετά έρχονται οι προδιαγραφές του ΔΕΔΔΗΕ (παράγραφος 4.2.2) και προσθέτουν δουλειά: ρελέ διαρροής (ΔΔΡ) έως 30 mA, τύπου Α, διπλής κατεύθυνσης, και αλλαγή των παλιών πριζών με σούκο. Όλα αυτά «μόνο» από αδειούχο ηλεκτρολόγο, και αν αλλάξει κάτι στον ηλεκτρικό πίνακα, νέα ΥΔΕ. Στο δικό τους παράδειγμα, η ασφάλεια των 16 A γίνεται 10 A. Πάλι ηλεκτρολόγος, πάλι ΥΔΕ.
 
-Δηλαδή, για να βάλεις μια συσκευή «για μη ειδικούς», το πρώτο βήμα είναι να φωνάξεις ειδικό.
+Δηλαδή, για να βάλεις μια συσκευή «για μη ειδικούς», το πρώτο βήμα είναι να φωνάξεις ειδικό. Την ίδια ώρα βάζεις στην πρίζα πιστολάκι 2.300 W και δεν σε ρωτάει κανείς τίποτα: ούτε ηλεκτρολόγο, ούτε δήλωση, ούτε πύλη. Είναι 10 αμπέρ σε μια αντίσταση που μπορεί άνετα να πάρει φωτιά. Ο inverter είναι κομμένος στα 800 W, περίπου 3,5 αμπέρ, και αποσυνδέεται σε 0,1 δευτερόλεπτο αν φύγει το δίκτυο. Αυτός θέλει υπογραφή.
 
 ### Όχι σε καλωδιώσεις από το 2024 και μετά
 
